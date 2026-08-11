@@ -1,11 +1,9 @@
 <script>
-    import Tour360 from "$lib/components/Tour360.svelte";
-    import AboutUs from "$lib/ui/AboutUs.svelte";
     import Landing from "$lib/ui/Landing.svelte";
-    import RealTimeWalking from "$lib/ui/RealTimeWalking.svelte";
-    import Values from "$lib/ui/Values.svelte";
-
-
+    import AboutUs from "$lib/ui/AboutUs.svelte";
+    import InteractionApplications from "$lib/ui/InteractionApplications.svelte";
+    import MiniGames from "$lib/ui/MiniGames.svelte";
+    import AiAssitant from "$lib/components/AiAssitant.svelte";
 </script>
 
 <svelte:head>
@@ -13,21 +11,21 @@
 </svelte:head>
 
 <section class="relative w-full h-screen flex flex-col justify-center items-center overflow-hidden">
-    <Landing/>
+    <Landing />
 </section>
 
 <section class="relative w-full h-screen flex flex-col justify-center items-center overflow-hidden">
-    <AboutUs/>
-</section>
-
-<section class="w-full p-2 ">
-    <Values/>
+    <AboutUs />
 </section>
 
 <section>
-    <Tour360/>
+    <InteractionApplications />
 </section>
 
-<section class="relative w-full h-screen flex">
-    <RealTimeWalking/>
+<section class="relative w-full h-screen flex flex-col justify-center items-center overflow-hidden">
+    <MiniGames />
+</section>
+
+<section class="relative w-full min-h-screen flex flex-col justify-center items-center overflow-hidden py-8">
+    <AiAssitant />
 </section>

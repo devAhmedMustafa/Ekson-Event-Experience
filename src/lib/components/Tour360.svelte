@@ -1,6 +1,5 @@
 <script lang="ts">
     import { Canvas, T } from "@threlte/core";
-    import { OrbitControls } from "@threlte/extras";
     import * as THREE from "three";
     import { onMount } from "svelte";
 
