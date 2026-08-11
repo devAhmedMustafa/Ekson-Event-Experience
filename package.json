@@ -27,6 +27,6 @@
 		"three": "^0.185.1"
 	},
 	"overrides": {
-		"cookies": "^0.7.0"
+		"cookie": "^0.7.0"
 	}
 }
