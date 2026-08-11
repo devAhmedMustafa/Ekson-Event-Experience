@@ -3,8 +3,9 @@
 @theme {
     --color-primary: #009dd6;
     --color-secondary: #04547c;
-    --color-text: #ebe9fc;
-    --color-background: #010104;
+    --color-text: #010104;
+    --color-background: #ebe9fc;
+    
 }
 
 body {

@@ -1,4 +1,5 @@
 <script>
+    import Tour360 from "$lib/components/Tour360.svelte";
     import AboutUs from "$lib/ui/AboutUs.svelte";
     import Landing from "$lib/ui/Landing.svelte";
     import Values from "$lib/ui/Values.svelte";
@@ -20,4 +21,8 @@
 
 <section class="w-full p-2 ">
     <Values/>
+</section>
+
+<section>
+    <Tour360/>
 </section>
