@@ -1,36 +1,83 @@
 <script lang="ts">
+    interface ValueItem {
+        code: string;
+        title: string;
+        sub: string;
+        description: string;
+        icon: string;
+        symbol: string;
+    }
 
-    const values = [
+    const values: ValueItem[] = [
         {
-            "title": "Attract",
-            "sub": "More Visitors",
-            "icon": "icons/multiple-users-silhouette.png"
+            code: "01",
+            title: "Attract",
+            sub: "High-Density Footfall",
+            description: "Magnetize exhibition visitors with larger-than-life interactive spatial visuals.",
+            icon: "icons/multiple-users-silhouette.png",
+            symbol: "groups"
         },
         {
-            "title": "Increase",
-            "sub": "Engagement",
-            "icon": "icons/life-line.png"
+            code: "02",
+            title: "Engage",
+            sub: "Dwell Time & Excitement",
+            description: "Turn passive observers into active participants through competitive gamification.",
+            icon: "icons/life-line.png",
+            symbol: "trending_up"
         },
         {
-            "title": "Encourage",
-            "sub": "Interaction",
-            "icon": "icons/double-tap.png"
+            code: "03",
+            title: "Interact",
+            sub: "Natural Spatial Touch",
+            description: "Seamless 3D manipulation, touchless gesture sensing, and instant WebAR.",
+            icon: "icons/double-tap.png",
+            symbol: "touch_app"
         },
         {
-            "title": "Create",
-            "sub": "Memorable Experiences",
-            "icon": "icons/artificial.png"
+            code: "04",
+            title: "Memorize",
+            sub: "Unforgettable Recall",
+            description: "Forge lasting emotional connections that amplify post-event ROI and brand loyalty.",
+            icon: "icons/artificial.png",
+            symbol: "neurology"
         }
-    ]
-
+    ];
 </script>
 
-<ul class="flex justify-center items-center flex-wrap">
-    {#each values as value, i}
-        <li class="flex flex-col items-center justify-center gap-2 w-54 py-3" style={i < values.length - 1 ? "border-right: 1px solid #bbbbbb;" : ""}>
-            <img class="size-8" src={value.icon} alt=""/>
-            <h3 class="text-xl font-bold text-text">{value.title}</h3>
-            <p class="text-sm text-text/70 text-center">{value.sub}</p>
-        </li>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
+    {#each values as value}
+        <div
+            class="group relative bg-white rounded-xl p-5 border border-black/10 shadow-xs hover:shadow-md hover:border-primary/40 transition-all duration-300 flex flex-col justify-between overflow-hidden"
+        >
+            <!-- Watermark Code -->
+            <span class="absolute top-2 right-3 font-mono text-[28px] font-black text-black/[0.04] group-hover:text-primary/10 transition">
+                {value.code}
+            </span>
+
+            <div>
+                <!-- Icon Frame -->
+                <div class="size-11 rounded-lg bg-primary/10 text-primary flex items-center justify-center mb-3 group-hover:bg-primary group-hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-[24px]">
+                        {value.symbol}
+                    </span>
+                </div>
+
+                <!-- Titles -->
+                <h3 class="text-lg font-black text-text uppercase tracking-tight">
+                    {value.title}
+                </h3>
+                <p class="text-xs font-bold text-primary font-mono mt-0.5">
+                    {value.sub}
+                </p>
+
+                <!-- Description -->
+                <p class="text-[11px] text-text/70 leading-relaxed mt-2">
+                    {value.description}
+                </p>
+            </div>
+
+            <!-- Bottom Progress Line -->
+            <div class="w-full h-0.5 bg-black/5 mt-4 group-hover:bg-primary transition-colors"></div>
+        </div>
     {/each}
-</ul>
+</div>

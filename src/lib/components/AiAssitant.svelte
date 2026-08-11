@@ -4,15 +4,20 @@
     let inputMessage = $state("");
     let isGenerating = $state(false);
     let isSpeaking = $state(false);
+    let isRecording = $state(false);
     let isAudioPaused = $state(true);
     let isMuted = $state(false);
+    let recordDuration = $state(0);
     let audioCurrentTime = $state(0);
     let audioDuration = $state(0);
     let audioSrc = $state<string | null>(null);
     let lastUserQuery = $state<string | null>(null);
-    let statusMessage = $state("Type a question below to speak with Ekson AI.");
+    let statusMessage = $state("Type a question or click the mic to speak with Ekson AI.");
 
     let audioElement = $state<HTMLAudioElement | null>(null);
+    let mediaRecorder: MediaRecorder | null = null;
+    let audioChunks: Blob[] = [];
+    let recordTimerInterval: any = null;
 
     const quickPrompts = [
         "Tell me about Ekson's interactive booth experiences.",
@@ -47,6 +52,31 @@
         });
     }
 
+    function triggerAudioPlayback(blob: Blob) {
+        if (audioSrc) {
+            URL.revokeObjectURL(audioSrc);
+        }
+        audioSrc = URL.createObjectURL(blob);
+
+        setTimeout(() => {
+            if (audioElement) {
+                audioElement.currentTime = 0;
+                audioElement.muted = isMuted;
+                audioElement.play().then(() => {
+                    isSpeaking = true;
+                    isAudioPaused = false;
+                    statusMessage = "Speaking...";
+                }).catch((err) => {
+                    console.warn("Autoplay blocked by browser:", err);
+                    isSpeaking = false;
+                    isAudioPaused = true;
+                    statusMessage = "Click Play to hear voice response.";
+                });
+            }
+        }, 60);
+    }
+
+    // Text query to /api/chat/speech
     async function sendTextMessage(textToSend?: string) {
         const text = (textToSend || inputMessage).trim();
         if (!text || isGenerating) return;
@@ -57,19 +87,16 @@
         statusMessage = "Generating voice response...";
 
         try {
-            // Stop current playback if running
             if (audioElement) {
                 audioElement.pause();
             }
 
-            // Call POST /api/chat/speech on EksonServer
             let response = await fetch("/api/chat/speech", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ message: text }),
             }).catch(() => null);
 
-            // Fallback direct port 3000 fetch if proxy unavailable
             if (!response || !response.ok) {
                 response = await fetch("http://localhost:3000/api/chat/speech", {
                     method: "POST",
@@ -84,35 +111,146 @@
 
             const audioBlob = await response.blob();
             if (audioBlob.size > 100) {
-                if (audioSrc) {
-                    URL.revokeObjectURL(audioSrc);
-                }
-                const newUrl = URL.createObjectURL(audioBlob);
-                audioSrc = newUrl;
-
-                // Trigger playback
-                setTimeout(() => {
-                    if (audioElement) {
-                        audioElement.currentTime = 0;
-                        audioElement.muted = isMuted;
-                        audioElement.play().then(() => {
-                            isSpeaking = true;
-                            isAudioPaused = false;
-                            statusMessage = "Speaking...";
-                        }).catch((err) => {
-                            console.warn("Autoplay blocked by browser:", err);
-                            isSpeaking = false;
-                            isAudioPaused = true;
-                            statusMessage = "Click Play to hear voice response.";
-                        });
-                    }
-                }, 60);
+                triggerAudioPlayback(audioBlob);
             } else {
                 statusMessage = "No audio received. Please try again.";
             }
         } catch (error) {
             console.error("Speech call error:", error);
             statusMessage = "Could not connect to voice server. Please verify EksonServer is running.";
+        } finally {
+            isGenerating = false;
+        }
+    }
+
+    // Microphone Recording & /api/voice/chat
+    async function toggleRecording() {
+        if (isRecording) {
+            stopRecording();
+        } else {
+            await startRecording();
+        }
+    }
+
+    async function startRecording() {
+        if (isGenerating) return;
+        if (audioElement) audioElement.pause();
+
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            audioChunks = [];
+            recordDuration = 0;
+
+            let mimeType = "audio/webm";
+            if (MediaRecorder.isTypeSupported("audio/webm;codecs=opus")) {
+                mimeType = "audio/webm;codecs=opus";
+            } else if (MediaRecorder.isTypeSupported("audio/mp4")) {
+                mimeType = "audio/mp4";
+            }
+
+            mediaRecorder = new MediaRecorder(stream, { mimeType });
+
+            mediaRecorder.ondataavailable = (event) => {
+                if (event.data.size > 0) {
+                    audioChunks.push(event.data);
+                }
+            };
+
+            mediaRecorder.onstop = async () => {
+                clearInterval(recordTimerInterval);
+                const recordedBlob = new Blob(audioChunks, { type: mimeType });
+                stream.getTracks().forEach((track) => track.stop());
+                await sendVoiceChat(recordedBlob);
+            };
+
+            mediaRecorder.start(150);
+            isRecording = true;
+            statusMessage = "Listening... Speak your question now.";
+
+            recordTimerInterval = setInterval(() => {
+                recordDuration += 1;
+            }, 1000);
+        } catch (err) {
+            console.error("Microphone access error:", err);
+            statusMessage = "Microphone access denied. Please allow microphone permissions.";
+            isRecording = false;
+        }
+    }
+
+    function stopRecording() {
+        if (mediaRecorder && isRecording) {
+            mediaRecorder.stop();
+            isRecording = false;
+            clearInterval(recordTimerInterval);
+            statusMessage = "Processing your voice audio...";
+        }
+    }
+
+    async function sendVoiceChat(blob: Blob) {
+        isGenerating = true;
+        lastUserQuery = "Voice Message 🎙️";
+        statusMessage = "Connecting to Ekson Voice AI...";
+
+        try {
+            const formData = new FormData();
+            formData.append("audio", blob, "voice-input.webm");
+            formData.append("file", blob, "voice-input.webm");
+            formData.append("voice", blob, "voice-input.webm");
+
+            // Call POST /api/voice/chat
+            let response = await fetch("/api/voice/chat", {
+                method: "POST",
+                body: formData,
+            }).catch(() => null);
+
+            if (!response || !response.ok) {
+                response = await fetch("http://localhost:3000/api/voice/chat", {
+                    method: "POST",
+                    body: formData,
+                });
+            }
+
+            if (!response.ok) {
+                throw new Error(`Server returned status ${response.status}`);
+            }
+
+            // Extract transcript if provided
+            const transcriptHeader = response.headers.get("x-user-transcript") || response.headers.get("x-transcript");
+            if (transcriptHeader) {
+                lastUserQuery = decodeURIComponent(transcriptHeader);
+            }
+
+            const contentType = response.headers.get("content-type") || "";
+
+            if (contentType.includes("audio") || contentType.includes("octet-stream")) {
+                const audioBlob = await response.blob();
+                if (audioBlob.size > 100) {
+                    triggerAudioPlayback(audioBlob);
+                }
+            } else if (contentType.includes("json")) {
+                const json = await response.json();
+                if (json.transcript) {
+                    lastUserQuery = json.transcript;
+                }
+                if (json.audioUrl) {
+                    const audioRes = await fetch(json.audioUrl);
+                    triggerAudioPlayback(await audioRes.blob());
+                } else if (json.audioBase64 || json.audio) {
+                    const b64 = json.audioBase64 || json.audio;
+                    const res = await fetch(`data:audio/mp3;base64,${b64}`);
+                    triggerAudioPlayback(await res.blob());
+                } else if (json.reply || json.text || json.message) {
+                    await sendTextMessage(json.reply || json.text || json.message);
+                }
+            } else {
+                const audioBlob = await response.blob();
+                if (audioBlob.size > 100) {
+                    triggerAudioPlayback(audioBlob);
+                }
+            }
+        } catch (error) {
+            console.error("Voice chat error:", error);
+            statusMessage = "Could not process voice request. Please verify EksonServer is running.";
         } finally {
             isGenerating = false;
         }
@@ -129,10 +267,16 @@
         if (audioSrc) {
             URL.revokeObjectURL(audioSrc);
         }
+        if (recordTimerInterval) {
+            clearInterval(recordTimerInterval);
+        }
+        if (mediaRecorder && isRecording) {
+            mediaRecorder.stop();
+        }
     });
 </script>
 
-<!-- Hidden Bound Audio Element with Native Svelte Runes Bindings -->
+<!-- Hidden Bound Audio Element -->
 <audio
     bind:this={audioElement}
     src={audioSrc || ""}
@@ -171,31 +315,47 @@
     </div>
 
     <!-- Center Interactive Voice Visualizer Stage -->
-    <div class="flex-1 flex flex-col items-center justify-center my-auto py-8 gap-6">
+    <div class="flex-1 flex flex-col items-center justify-center my-auto py-6 gap-6">
         <!-- Dynamic Pulsing Voice Orb -->
         <div class="relative flex items-center justify-center">
             <!-- Ripple Rings -->
-            <div class="absolute size-44 sm:size-52 rounded-full border border-primary/20 transition-all duration-700 {isSpeaking ? 'scale-125 opacity-100 animate-ping' : isGenerating ? 'scale-110 opacity-70 animate-pulse' : 'scale-100 opacity-40'}"></div>
-            <div class="absolute size-36 sm:size-44 rounded-full border border-primary/30 transition-all duration-500 {isSpeaking ? 'scale-115 opacity-80' : 'scale-100 opacity-20'}"></div>
+            <div class="absolute size-44 sm:size-52 rounded-full border transition-all duration-700 {isRecording ? 'border-rose-400 scale-130 opacity-90 animate-ping' : isSpeaking ? 'border-primary/20 scale-125 opacity-100 animate-ping' : isGenerating ? 'border-primary/20 scale-110 opacity-70 animate-pulse' : 'border-primary/20 scale-100 opacity-40'}"></div>
+            <div class="absolute size-36 sm:size-44 rounded-full border transition-all duration-500 {isRecording ? 'border-rose-500 scale-120 opacity-80' : isSpeaking ? 'border-primary/30 scale-115 opacity-80' : 'border-primary/30 scale-100 opacity-20'}"></div>
 
-            <!-- Central Voice Core (Clickable to Toggle Play/Pause) -->
+            <!-- Central Voice Core (Clickable for Play/Pause or Voice Recording) -->
             <button
-                onclick={togglePlayback}
-                disabled={!audioSrc || isGenerating}
-                class="relative size-28 sm:size-34 rounded-full bg-white shadow-xl border border-black/5 flex flex-col items-center justify-center transition-all duration-300 {isSpeaking ? 'scale-105 shadow-primary/25 shadow-2xl ring-4 ring-primary/20 cursor-pointer' : audioSrc ? 'cursor-pointer hover:border-primary/40' : 'cursor-default'}"
-                title={audioSrc ? (isSpeaking ? "Click to Pause" : "Click to Play") : "Voice Assistant"}
+                onclick={() => {
+                    if (isRecording) {
+                        stopRecording();
+                    } else if (audioSrc && !isAudioPaused) {
+                        togglePlayback();
+                    } else {
+                        toggleRecording();
+                    }
+                }}
+                disabled={isGenerating}
+                class="relative size-28 sm:size-34 rounded-full bg-white shadow-xl border flex flex-col items-center justify-center transition-all duration-300 cursor-pointer {isRecording ? 'border-rose-500 ring-4 ring-rose-400/30 scale-105 shadow-rose-200 shadow-2xl' : isSpeaking ? 'border-primary ring-4 ring-primary/20 scale-105 shadow-primary/25 shadow-2xl' : 'border-black/5 hover:border-primary/40'}"
+                title={isRecording ? "Click to Stop Recording & Send" : isSpeaking ? "Click to Pause" : "Click to Speak"}
             >
-                <span class="material-symbols-outlined text-[40px] sm:text-[48px] text-primary transition-all {isSpeaking ? 'animate-pulse' : isGenerating ? 'animate-spin' : ''}">
-                    {isGenerating ? "progress_activity" : isSpeaking ? "graphic_eq" : audioSrc ? (isAudioPaused ? "play_arrow" : "pause") : "mic"}
+                <span class="material-symbols-outlined text-[40px] sm:text-[48px] transition-all {isRecording ? 'text-rose-600 animate-pulse' : isGenerating ? 'text-primary animate-spin' : isSpeaking ? 'text-primary animate-pulse' : 'text-primary'}">
+                    {isGenerating ? "progress_activity" : isRecording ? "mic" : isSpeaking ? "graphic_eq" : audioSrc ? (isAudioPaused ? "play_arrow" : "pause") : "mic"}
                 </span>
 
-                {#if isSpeaking}
+                {#if isRecording}
+                    <span class="text-[9px] font-mono font-bold text-rose-600 tracking-widest uppercase mt-0.5 animate-pulse">
+                        REC {recordDuration}s
+                    </span>
+                {:else if isSpeaking}
                     <span class="text-[9px] font-mono font-bold text-primary tracking-widest uppercase mt-0.5 animate-pulse">
                         SPEAKING
                     </span>
                 {:else if audioSrc && isAudioPaused}
                     <span class="text-[9px] font-mono font-bold text-text/40 tracking-widest uppercase mt-0.5">
                         PAUSED
+                    </span>
+                {:else}
+                    <span class="text-[9px] font-mono font-bold text-text/40 tracking-widest uppercase mt-0.5">
+                        TAP TO SPEAK
                     </span>
                 {/if}
             </button>
@@ -214,12 +374,12 @@
                 </div>
             {/if}
 
-            <!-- Dedicated Voice Control Bar (Play/Pause, Mute, Replay) -->
+            <!-- Dedicated Voice Control Bar -->
             <div class="flex items-center gap-2 mt-1">
                 <!-- Play / Pause Button -->
                 <button
                     onclick={togglePlayback}
-                    disabled={!audioSrc || isGenerating}
+                    disabled={!audioSrc || isGenerating || isRecording}
                     class="px-3.5 py-1.5 bg-white hover:bg-slate-50 text-text border border-black/10 shadow-xs text-xs font-mono font-bold uppercase tracking-wider flex items-center gap-1.5 cursor-pointer transition disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                     <span class="material-symbols-outlined text-[16px] text-primary">
@@ -231,7 +391,7 @@
                 <!-- Replay Button -->
                 <button
                     onclick={replayAudio}
-                    disabled={!audioSrc || isGenerating}
+                    disabled={!audioSrc || isGenerating || isRecording}
                     class="px-3 py-1.5 bg-white hover:bg-slate-50 text-text border border-black/10 shadow-xs text-xs font-mono font-bold uppercase tracking-wider flex items-center gap-1 cursor-pointer transition disabled:opacity-40 disabled:cursor-not-allowed"
                     title="Replay from start"
                 >
@@ -256,14 +416,14 @@
         </div>
     </div>
 
-    <!-- Bottom Text Input Section -->
+    <!-- Bottom Input & Microphone Section -->
     <div class="w-full max-w-2xl flex flex-col gap-2 shrink-0">
         <!-- Quick Prompts Row -->
         <div class="flex items-center justify-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
             {#each quickPrompts as prompt}
                 <button
                     onclick={() => sendTextMessage(prompt)}
-                    disabled={isGenerating}
+                    disabled={isGenerating || isRecording}
                     class="px-2.5 py-1 bg-white hover:bg-primary/10 hover:text-primary text-text/70 text-[10px] font-mono whitespace-nowrap transition cursor-pointer border border-black/5 shadow-xs disabled:opacity-50"
                 >
                     {prompt}
@@ -271,24 +431,35 @@
             {/each}
         </div>
 
-        <!-- Clean Text Input Bar -->
-        <div class="relative flex items-center bg-white border border-black/10 shadow-md p-1.5 transition-focus-within focus-within:border-primary">
-            <span class="material-symbols-outlined text-[20px] text-text/40 ml-2.5 mr-1.5 shrink-0">
-                chat
-            </span>
+        <!-- Clean Input & Mic Control Bar -->
+        <div class="relative flex items-center bg-white border border-black/10 shadow-md p-1.5 transition-focus-within focus-within:border-primary gap-1">
+            <!-- Dedicated Microphone Button -->
+            <button
+                onclick={toggleRecording}
+                disabled={isGenerating}
+                class="size-9 rounded-none flex items-center justify-center transition cursor-pointer shrink-0 {isRecording ? 'bg-rose-600 text-white animate-pulse shadow-sm' : 'bg-black/5 hover:bg-primary hover:text-white text-text/70'}"
+                title={isRecording ? "Stop Recording & Send" : "Click to Speak via Microphone"}
+                aria-label="Microphone Voice Input"
+            >
+                <span class="material-symbols-outlined text-[20px]">
+                    {isRecording ? "stop" : "mic"}
+                </span>
+            </button>
 
+            <!-- Text Input Field -->
             <input
                 type="text"
                 bind:value={inputMessage}
                 onkeydown={handleKeydown}
-                disabled={isGenerating}
-                placeholder="Type your question for the AI voice assistant..."
+                disabled={isGenerating || isRecording}
+                placeholder={isRecording ? "Listening to your voice..." : "Type a question or click the mic to speak..."}
                 class="flex-1 px-2 py-2 text-xs sm:text-sm font-sans text-text placeholder:text-text/40 bg-transparent focus:outline-none"
             />
 
+            <!-- Send Text Button -->
             <button
                 onclick={() => sendTextMessage()}
-                disabled={!inputMessage.trim() || isGenerating}
+                disabled={!inputMessage.trim() || isGenerating || isRecording}
                 class="px-4 sm:px-5 py-2 bg-primary hover:bg-primary/90 text-white font-mono text-xs font-bold uppercase tracking-wider transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1 cursor-pointer shrink-0"
             >
                 <span>{isGenerating ? "Synthesizing..." : "Ask"}</span>
