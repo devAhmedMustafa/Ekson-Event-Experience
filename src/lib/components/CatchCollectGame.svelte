@@ -178,24 +178,24 @@
     });
 </script>
 
-<div class="w-full h-full flex flex-col md:flex-row items-center justify-between p-4 md:p-6 gap-4 md:gap-6 select-none font-sans overflow-hidden">
-    <!-- BIG INTERACTIVE MAIN STAGE (ARCADE CANVAS) -->
+<div class="w-full h-full flex flex-col md:flex-row items-center justify-between p-2 sm:p-4 md:p-6 gap-3 md:gap-6 select-none font-sans overflow-hidden">
+    <!-- BIG INTERACTIVE MAIN STAGE (ARCADE CANVAS - FULL ON MOBILE) -->
     <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
         bind:this={gameArea}
         onmousemove={handleMouseMove}
         ontouchmove={handleTouchMove}
-        class="flex-1 w-full h-full relative bg-slate-100 overflow-hidden flex flex-col justify-between p-3 border border-black/5 font-mono"
+        class="flex-1 w-full h-full relative bg-slate-100 overflow-hidden flex flex-col justify-between p-2.5 sm:p-3 border border-black/5 font-mono"
     >
         <!-- Top HUD -->
         <div class="flex items-center justify-between z-20 text-xs font-bold">
-            <div class="flex items-center gap-2 px-3 py-1 bg-white text-text shadow-xs border border-black/5">
-                <span class="text-primary font-mono font-bold">SCORE:</span>
-                <span class="text-sm font-black font-mono">{score.toString().padStart(4, "0")}</span>
+            <div class="flex items-center gap-1.5 px-2.5 py-1 bg-white text-text shadow-xs border border-black/5">
+                <span class="text-primary font-mono font-bold text-[10px] sm:text-xs">SCORE:</span>
+                <span class="text-xs sm:text-sm font-black font-mono">{score.toString().padStart(4, "0")}</span>
             </div>
 
-            <div class="flex items-center gap-1.5 px-3 py-1 {timeLeft <= 5 ? 'bg-rose-600 text-white animate-pulse' : 'bg-white text-text border border-black/5 shadow-xs'}">
-                <span class="material-symbols-outlined text-[15px] {timeLeft <= 5 ? 'text-white' : 'text-primary'}">timer</span>
+            <div class="flex items-center gap-1 px-2.5 py-1 {timeLeft <= 5 ? 'bg-rose-600 text-white animate-pulse' : 'bg-white text-text border border-black/5 shadow-xs'} text-[10px] sm:text-xs">
+                <span class="material-symbols-outlined text-[14px] {timeLeft <= 5 ? 'text-white' : 'text-primary'}">timer</span>
                 <span>{timeLeft}S</span>
             </div>
         </div>
@@ -207,7 +207,7 @@
                     class="absolute size-6 transform -translate-x-1/2 will-change-transform flex items-center justify-center {item.isHazard ? 'text-rose-600' : 'text-primary'} drop-shadow-sm"
                     style="left: {item.x}%; top: {item.y}px;"
                 >
-                    <span class="material-symbols-outlined text-[24px]">
+                    <span class="material-symbols-outlined text-[22px] sm:text-[24px]">
                         {item.icon}
                     </span>
                 </div>
@@ -226,41 +226,41 @@
             <!-- Sharp Laser Catch Bar -->
             <div
                 bind:this={basketEl}
-                class="absolute bottom-5 -translate-x-1/2 h-2.5 w-24 bg-gradient-to-r from-primary via-cyan-400 to-primary transition-all duration-75 {basketGlow ? 'shadow-[0_0_20px_#009dd6] scale-y-125' : 'shadow-[0_0_10px_rgba(0,157,214,0.4)]'}"
+                class="absolute bottom-4 sm:bottom-5 -translate-x-1/2 h-2.5 w-20 sm:w-24 bg-gradient-to-r from-primary via-cyan-400 to-primary transition-all duration-75 {basketGlow ? 'shadow-[0_0_20px_#009dd6] scale-y-125' : 'shadow-[0_0_10px_rgba(0,157,214,0.4)]'}"
                 style="left: {basketX}%;"
             ></div>
         </div>
 
         <!-- Inactive / Game Over Overlay Screens -->
         {#if !isPlaying && !isGameOver}
-            <div class="absolute inset-0 z-30 bg-white/90 backdrop-blur-xs flex flex-col items-center justify-center gap-2.5 p-4 text-center">
-                <span class="material-symbols-outlined text-[40px] text-primary">
+            <div class="absolute inset-0 z-30 bg-white/90 backdrop-blur-xs flex flex-col items-center justify-center gap-2 sm:gap-2.5 p-4 text-center">
+                <span class="material-symbols-outlined text-[36px] sm:text-[40px] text-primary">
                     token
                 </span>
-                <h4 class="text-lg font-bold text-text uppercase tracking-wider">Catch & Collect</h4>
-                <p class="text-xs text-text/60 max-w-xs leading-tight">
-                    INTERCEPT FALLING TOKENS & DIAMONDS. EVADE HAZARD SIGNALS.
+                <h4 class="text-base sm:text-lg font-bold text-text uppercase tracking-wider">Catch & Collect</h4>
+                <p class="text-[10px] sm:text-xs text-text/60 max-w-xs leading-tight">
+                    INTERCEPT FALLING TOKENS. EVADE HAZARD SIGNALS.
                 </p>
                 <button
                     onclick={startGame}
-                    class="mt-1 px-5 py-2 bg-primary text-white text-xs font-bold uppercase tracking-wider hover:bg-primary/90 transition shadow-md shadow-primary/25 cursor-pointer"
+                    class="mt-1 px-4 sm:px-5 py-1.5 sm:py-2 bg-primary text-white text-[11px] sm:text-xs font-bold uppercase tracking-wider hover:bg-primary/90 transition shadow-md shadow-primary/25 cursor-pointer"
                 >
-                    Initialize Game (20s)
+                    Start Game (20s)
                 </button>
             </div>
         {:else if isGameOver}
-            <div class="absolute inset-0 z-30 bg-white/90 backdrop-blur-xs flex flex-col items-center justify-center gap-2 p-4 text-center">
-                <span class="material-symbols-outlined text-[32px] text-emerald-600">
+            <div class="absolute inset-0 z-30 bg-white/90 backdrop-blur-xs flex flex-col items-center justify-center gap-1.5 sm:gap-2 p-4 text-center">
+                <span class="material-symbols-outlined text-[28px] sm:text-[32px] text-emerald-600">
                     verified
                 </span>
-                <h4 class="text-xs uppercase tracking-widest text-text/60">Session Complete</h4>
-                <div class="text-3xl font-black text-primary my-0.5">{score} <span class="text-xs font-normal text-text/40">PTS</span></div>
+                <h4 class="text-[10px] uppercase tracking-widest text-text/60">Session Complete</h4>
+                <div class="text-2xl sm:text-3xl font-black text-primary my-0.5">{score} <span class="text-xs font-normal text-text/40">PTS</span></div>
                 {#if highScore > 0}
-                    <span class="text-xs text-text/60">SESSION_BEST: <b class="text-secondary">{highScore} PTS</b></span>
+                    <span class="text-[10px] sm:text-xs text-text/60">BEST: <b class="text-secondary">{highScore} PTS</b></span>
                 {/if}
                 <button
                     onclick={startGame}
-                    class="mt-1 px-5 py-2 bg-primary text-white text-xs font-bold uppercase tracking-wider hover:bg-primary/90 transition cursor-pointer shadow-md"
+                    class="mt-1 px-4 sm:px-5 py-1.5 sm:py-2 bg-primary text-white text-[11px] sm:text-xs font-bold uppercase tracking-wider hover:bg-primary/90 transition cursor-pointer shadow-md"
                 >
                     Play Again
                 </button>
@@ -268,12 +268,12 @@
         {/if}
 
         <div class="z-20 text-left">
-            <span class="text-[9px] text-text/40 tracking-widest uppercase">MOVE CURSOR / TOUCH TO STEER COLLECTOR</span>
+            <span class="text-[8px] sm:text-[9px] text-text/40 tracking-widest uppercase">TOUCH / MOVE CURSOR TO STEER</span>
         </div>
     </div>
 
-    <!-- SEPARATE COMPACT DESCRIPTION WINDOW (NO COLLISION) -->
-    <div class="w-full md:w-68 shrink-0 bg-white p-4 shadow-xs border border-black/5 flex flex-col justify-between h-auto md:h-full font-sans">
+    <!-- DESKTOP DESCRIPTION WINDOW (HIDDEN ON MOBILE) -->
+    <div class="hidden md:flex w-68 shrink-0 bg-white p-4 shadow-xs border border-black/5 flex-col justify-between h-full font-sans">
         <div class="flex flex-col gap-2">
             <div class="flex items-center justify-between font-mono text-[9px] text-text/50 uppercase tracking-widest">
                 <div class="flex items-center gap-1">

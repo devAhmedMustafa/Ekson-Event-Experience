@@ -16,34 +16,35 @@
 
 <Navbar />
 
-<section id="landing" class="relative w-full h-screen flex flex-col justify-center items-center overflow-hidden">
+<section id="landing" class="relative w-full min-h-[100dvh] md:h-screen flex flex-col justify-center items-center overflow-hidden">
     <Landing />
 </section>
 
-<section id="about" class="relative w-full h-screen flex flex-col justify-center items-center overflow-hidden">
+<section id="about" class="relative w-full min-h-[100dvh] md:h-screen flex flex-col justify-center items-center overflow-hidden py-4">
     <AboutUs />
 </section>
 
-<section id="interactive">
+<!-- NO overflow-hidden on interactive section so position:sticky works for Tour360 & TrueScaleDemo -->
+<section id="interactive" class="relative w-full">
     <InteractionApplications />
 </section>
 
-<section id="minigames" class="relative w-full h-screen flex flex-col justify-center items-center overflow-hidden">
+<section id="minigames" class="relative w-full min-h-[100dvh] md:h-screen flex flex-col justify-center items-center overflow-hidden py-4">
     <MiniGames />
 </section>
 
-<section id="ai-assistant" class="relative w-full min-h-screen flex flex-col justify-center items-center overflow-hidden py-8">
+<section id="ai-assistant" class="relative w-full min-h-[100dvh] md:h-screen flex flex-col justify-center items-center overflow-hidden py-4">
     <AiAssitant />
 </section>
 
-<section id="ar-apps">
-    <ARApps/>
+<section id="ar-apps" class="relative w-full overflow-hidden">
+    <ARApps />
 </section>
 
-<section id="plans" class="relative w-full h-screen flex flex-col justify-center items-center overflow-hidden">
+<section id="plans" class="relative w-full min-h-[100dvh] md:h-screen flex flex-col justify-center items-center overflow-hidden py-4">
     <InvestmentPlans />
 </section>
 
-<section id="footer" class="relative w-full h-screen flex flex-col justify-center items-center overflow-hidden">
+<section id="footer" class="relative w-full min-h-[100dvh] md:h-screen flex flex-col justify-center items-center overflow-hidden py-4">
     <Footer />
 </section>

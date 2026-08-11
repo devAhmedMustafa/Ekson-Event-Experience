@@ -95,32 +95,32 @@
     }
 </script>
 
-<div class="w-full h-full flex flex-col md:flex-row items-center justify-between p-4 md:p-6 gap-4 md:gap-6 select-none font-sans overflow-hidden">
-    <!-- BIG INTERACTIVE MAIN STAGE (QUIZ ARENA) -->
-    <div class="flex-1 w-full h-full flex flex-col justify-between p-3.5 md:p-4 bg-white/40 border border-black/5 overflow-hidden font-mono">
+<div class="w-full h-full flex flex-col md:flex-row items-center justify-between p-2 sm:p-4 md:p-6 gap-3 md:gap-6 select-none font-sans overflow-hidden">
+    <!-- BIG INTERACTIVE MAIN STAGE (QUIZ ARENA - FULL ON MOBILE) -->
+    <div class="flex-1 w-full h-full flex flex-col justify-between p-2.5 sm:p-3.5 md:p-4 bg-white/40 border border-black/5 overflow-hidden font-mono">
         {#if !isQuizComplete}
             <!-- Question Header HUD -->
-            <div class="flex items-center justify-between pb-2 border-b border-black/5 shrink-0 text-xs">
-                <div class="flex items-center gap-2">
-                    <span class="px-2 py-0.5 bg-primary text-white font-bold text-[10px] uppercase tracking-wider">
+            <div class="flex items-center justify-between pb-1.5 sm:pb-2 border-b border-black/5 shrink-0 text-xs">
+                <div class="flex items-center gap-1.5 sm:gap-2">
+                    <span class="px-2 py-0.5 bg-primary text-white font-bold text-[9px] sm:text-[10px] uppercase tracking-wider">
                         Q_0{currentQIndex + 1} / 0{questions.length}
                     </span>
-                    <span class="text-text/50 font-mono text-[11px]">INTERACTIVE KNOWLEDGE TEST</span>
+                    <span class="text-text/50 font-mono text-[9px] sm:text-[11px] hidden xs:inline">KNOWLEDGE TEST</span>
                 </div>
-                <div class="flex items-center gap-1 font-bold text-secondary text-[11px]">
-                    <span class="material-symbols-outlined text-[14px] text-primary">stars</span>
+                <div class="flex items-center gap-1 font-bold text-secondary text-[10px] sm:text-[11px]">
+                    <span class="material-symbols-outlined text-[13px] sm:text-[14px] text-primary">stars</span>
                     <span>SCORE: {score} PTS</span>
                 </div>
             </div>
 
             <!-- Question Prompt -->
-            <div class="my-auto py-1">
-                <h4 class="text-sm sm:text-base font-extrabold text-text font-sans leading-snug tracking-tight mb-3">
+            <div class="my-auto py-1 overflow-y-auto max-h-[320px]">
+                <h4 class="text-xs sm:text-sm md:text-base font-extrabold text-text font-sans leading-snug tracking-tight mb-2 sm:mb-3">
                     {currentQuestion.question}
                 </h4>
 
                 <!-- Options List -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2">
                     {#each currentQuestion.options as option, idx}
                         {@const isSelected = selectedOptionIndex === idx}
                         {@const isCorrect = idx === currentQuestion.correctIndex}
@@ -128,7 +128,7 @@
                         <button
                             onclick={() => selectOption(idx)}
                             disabled={isAnswered}
-                            class="p-2.5 text-left text-xs transition-all flex items-start gap-2.5 border cursor-pointer disabled:cursor-default {isAnswered
+                            class="p-2 sm:p-2.5 text-left text-xs transition-all flex items-start gap-2 border cursor-pointer disabled:cursor-default {isAnswered
                                 ? isCorrect
                                     ? 'bg-emerald-50 border-emerald-500 text-emerald-950 font-bold'
                                     : isSelected
@@ -136,17 +136,17 @@
                                       : 'bg-white/60 border-black/5 text-text/40 opacity-60'
                                 : 'bg-white hover:bg-slate-50 border-black/5 text-text hover:border-primary/50 shadow-xs'}"
                         >
-                            <span class="size-4 shrink-0 flex items-center justify-center font-bold text-[10px] {isAnswered && isCorrect ? 'bg-emerald-500 text-white' : isAnswered && isSelected ? 'bg-rose-500 text-white' : 'bg-black/5 text-text/60'}">
+                            <span class="size-4 shrink-0 flex items-center justify-center font-bold text-[9px] sm:text-[10px] {isAnswered && isCorrect ? 'bg-emerald-500 text-white' : isAnswered && isSelected ? 'bg-rose-500 text-white' : 'bg-black/5 text-text/60'}">
                                 {String.fromCharCode(65 + idx)}
                             </span>
-                            <span class="font-sans text-[11px] leading-tight select-none">{option}</span>
+                            <span class="font-sans text-[10px] sm:text-[11px] leading-tight select-none">{option}</span>
                         </button>
                     {/each}
                 </div>
 
                 {#if isAnswered}
-                    <div class="mt-2.5 p-2 bg-slate-50 border-l-2 {selectedOptionIndex === currentQuestion.correctIndex ? 'border-l-emerald-500 text-emerald-900' : 'border-l-rose-500 text-rose-900'} text-[11px] font-sans flex items-start gap-1.5 animate-fadeIn">
-                        <span class="material-symbols-outlined text-[15px] shrink-0 {selectedOptionIndex === currentQuestion.correctIndex ? 'text-emerald-600' : 'text-rose-600'}">
+                    <div class="mt-2 p-1.5 sm:p-2 bg-slate-50 border-l-2 {selectedOptionIndex === currentQuestion.correctIndex ? 'border-l-emerald-500 text-emerald-900' : 'border-l-rose-500 text-rose-900'} text-[10px] sm:text-[11px] font-sans flex items-start gap-1.5">
+                        <span class="material-symbols-outlined text-[14px] sm:text-[15px] shrink-0 {selectedOptionIndex === currentQuestion.correctIndex ? 'text-emerald-600' : 'text-rose-600'}">
                             {selectedOptionIndex === currentQuestion.correctIndex ? 'check_circle' : 'info'}
                         </span>
                         <p class="leading-tight">{currentQuestion.explanation}</p>
@@ -155,49 +155,49 @@
             </div>
 
             <!-- Footer Action Controls -->
-            <div class="flex items-center justify-between pt-2 border-t border-black/5 shrink-0">
-                <span class="text-[9px] text-text/40 uppercase tracking-wider">
-                    {isAnswered ? "SELECTION LOCKED" : "SELECT YOUR ANSWER"}
+            <div class="flex items-center justify-between pt-1.5 sm:pt-2 border-t border-black/5 shrink-0">
+                <span class="text-[8px] sm:text-[9px] text-text/40 uppercase tracking-wider">
+                    {isAnswered ? "LOCKED" : "TAP AN OPTION"}
                 </span>
 
                 {#if isAnswered}
                     <button
                         onclick={nextQuestion}
-                        class="px-4 py-1.5 bg-primary hover:bg-primary/90 text-white text-[11px] font-bold uppercase tracking-wider transition flex items-center gap-1 cursor-pointer shadow-xs"
+                        class="px-3 sm:px-4 py-1 sm:py-1.5 bg-primary hover:bg-primary/90 text-white text-[10px] sm:text-[11px] font-bold uppercase tracking-wider transition flex items-center gap-1 cursor-pointer shadow-xs"
                     >
-                        <span>{currentQIndex < questions.length - 1 ? "Next Question" : "View Results"}</span>
-                        <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                        <span>{currentQIndex < questions.length - 1 ? "Next" : "Results"}</span>
+                        <span class="material-symbols-outlined text-[13px] sm:text-[14px]">arrow_forward</span>
                     </button>
                 {/if}
             </div>
         {:else}
             <!-- Final Results Stage -->
-            <div class="w-full h-full flex flex-col items-center justify-center p-4 text-center font-sans">
-                <span class="material-symbols-outlined text-[44px] text-primary mb-1">
+            <div class="w-full h-full flex flex-col items-center justify-center p-3 sm:p-4 text-center font-sans">
+                <span class="material-symbols-outlined text-[36px] sm:text-[44px] text-primary mb-0.5">
                     psychology
                 </span>
-                <span class="font-mono text-[10px] text-text/50 uppercase tracking-widest">ASSESSMENT COMPLETE</span>
-                <h4 class="text-xl sm:text-2xl font-black uppercase text-text tracking-tight mt-0.5">
+                <span class="font-mono text-[9px] sm:text-[10px] text-text/50 uppercase tracking-widest">ASSESSMENT COMPLETE</span>
+                <h4 class="text-lg sm:text-2xl font-black uppercase text-text tracking-tight mt-0.5">
                     Product Mastery Score
                 </h4>
 
-                <div class="text-4xl font-black text-secondary font-mono my-2">
-                    {score} <span class="text-sm font-normal text-text/40">/ 1000 PTS</span>
+                <div class="text-3xl sm:text-4xl font-black text-secondary font-mono my-1 sm:my-2">
+                    {score} <span class="text-xs sm:text-sm font-normal text-text/40">/ 1000 PTS</span>
                 </div>
 
-                <div class="p-2.5 bg-white border border-black/5 shadow-xs max-w-sm w-full mb-3 text-left">
-                    <div class="flex items-center justify-between text-[11px] font-mono mb-1">
+                <div class="p-2 sm:p-2.5 bg-white border border-black/5 shadow-xs max-w-sm w-full mb-2 sm:mb-3 text-left">
+                    <div class="flex items-center justify-between text-[10px] sm:text-[11px] font-mono mb-0.5">
                         <span class="text-text/50">RECOMMENDATION:</span>
                         <span class="font-bold text-primary">TIER 1 SPATIAL TECH</span>
                     </div>
-                    <p class="text-xs text-text/70 leading-relaxed font-sans">
+                    <p class="text-[11px] sm:text-xs text-text/70 leading-relaxed font-sans">
                         Deploy Ekson 3D Virtual Tour & Synchronized Leaderboards for peak booth ROI.
                     </p>
                 </div>
 
                 <button
                     onclick={restartQuiz}
-                    class="px-6 py-2 bg-primary hover:bg-primary/90 text-white font-mono text-xs font-bold uppercase tracking-wider transition cursor-pointer flex items-center gap-1.5 shadow-md shadow-primary/20"
+                    class="px-5 sm:px-6 py-1.5 sm:py-2 bg-primary hover:bg-primary/90 text-white font-mono text-xs font-bold uppercase tracking-wider transition cursor-pointer flex items-center gap-1.5 shadow-md shadow-primary/20"
                 >
                     <span class="material-symbols-outlined text-[15px]">replay</span>
                     <span>Retake Quiz</span>
@@ -206,8 +206,8 @@
         {/if}
     </div>
 
-    <!-- SEPARATE COMPACT DESCRIPTION WINDOW (NO COLLISION) -->
-    <div class="w-full md:w-68 shrink-0 bg-white p-4 shadow-xs border border-black/5 flex flex-col justify-between h-auto md:h-full font-sans">
+    <!-- DESKTOP DESCRIPTION WINDOW (HIDDEN ON MOBILE) -->
+    <div class="hidden md:flex w-68 shrink-0 bg-white p-4 shadow-xs border border-black/5 flex-col justify-between h-full font-sans">
         <div class="flex flex-col gap-2">
             <div class="flex items-center justify-between font-mono text-[9px] text-text/50 uppercase tracking-widest">
                 <div class="flex items-center gap-1">

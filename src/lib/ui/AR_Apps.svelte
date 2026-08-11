@@ -72,7 +72,7 @@
         currentIndex = index;
     }
 
-    // Drag gestures
+    // Touch & Mouse Handlers for Drag/Swipe
     function handleTouchStart(e: TouchEvent) {
         isDragging = true;
         startX = e.touches[0].clientX;
@@ -81,7 +81,8 @@
 
     function handleTouchMove(e: TouchEvent) {
         if (!isDragging) return;
-        dragOffset = e.touches[0].clientX - startX;
+        const currentX = e.touches[0].clientX;
+        dragOffset = currentX - startX;
     }
 
     function handleTouchEnd() {
@@ -94,7 +95,7 @@
 
     function handleMouseDown(e: MouseEvent) {
         const target = e.target as HTMLElement;
-        if (target.closest("button, a, input")) return;
+        if (target.closest("button, input, a")) return;
         isDragging = true;
         startX = e.clientX;
         dragOffset = 0;
@@ -140,35 +141,39 @@
 
 <svelte:window onkeydown={handleKeyDown} />
 
-<div class="w-full h-full max-h-screen max-w-6xl mx-auto px-4 md:px-6 py-4 flex flex-col justify-center select-none font-sans overflow-hidden">
+<div class="w-full h-full min-h-[100dvh] md:h-screen max-w-6xl mx-auto px-3 sm:px-6 py-3 sm:py-4 flex flex-col justify-between select-none font-sans overflow-hidden">
     <!-- Header -->
-    <div class="flex items-end justify-between mb-3 pb-2 border-b border-black/5 shrink-0">
+    <div class="flex items-end justify-between mb-2 pb-1.5 border-b border-black/5 shrink-0">
         <div>
-            <h2 class="text-2xl sm:text-3xl font-extrabold text-text tracking-tight uppercase">
+            <div class="flex items-center gap-2 font-mono text-[9px] sm:text-[10px] uppercase tracking-widest text-primary font-bold mb-0.5">
+                <span class="size-1.5 bg-primary"></span>
+                <span>06 / Spatial Lens</span>
+            </div>
+            <h2 class="text-xl sm:text-2xl md:text-3xl font-extrabold text-text tracking-tight uppercase">
                 AR Applications
             </h2>
         </div>
 
         <!-- Metric Counter & Nav Controls -->
-        <div class="flex items-center gap-3">
-            <span class="font-mono text-xs font-bold text-text/50 tracking-widest">
+        <div class="flex items-center gap-2 sm:gap-3">
+            <span class="font-mono text-[10px] sm:text-xs font-bold text-text/50 tracking-widest">
                 [0{currentIndex + 1} / 0{totalApps}]
             </span>
 
             <div class="flex items-center gap-1">
                 <button
                     onclick={prevSlide}
-                    class="size-8 bg-black/3 hover:bg-primary hover:text-white text-text flex items-center justify-center transition-colors active:scale-95 cursor-pointer border border-black/5"
+                    class="size-7 sm:size-8 bg-black/3 hover:bg-primary hover:text-white text-text flex items-center justify-center transition-colors active:scale-95 cursor-pointer border border-black/5"
                     aria-label="Previous AR App"
                 >
-                    <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+                    <span class="material-symbols-outlined text-[15px] sm:text-[16px]">arrow_back</span>
                 </button>
                 <button
                     onclick={nextSlide}
-                    class="size-8 bg-black/3 hover:bg-primary hover:text-white text-text flex items-center justify-center transition-colors active:scale-95 cursor-pointer border border-black/5"
+                    class="size-7 sm:size-8 bg-black/3 hover:bg-primary hover:text-white text-text flex items-center justify-center transition-colors active:scale-95 cursor-pointer border border-black/5"
                     aria-label="Next AR App"
                 >
-                    <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+                    <span class="material-symbols-outlined text-[15px] sm:text-[16px]">arrow_forward</span>
                 </button>
             </div>
         </div>
@@ -177,7 +182,7 @@
     <!-- Main Viewport Carousel -->
     <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
     <div
-        class="relative w-full h-95 sm:h-102.5 md:h-112.5 max-h-[62vh] backdrop-blur-md overflow-hidden cursor-grab active:cursor-grabbing shrink-0"
+        class="relative w-full h-[55vh] sm:h-[60vh] md:h-[65vh] max-h-[560px] overflow-hidden cursor-grab active:cursor-grabbing shrink-0"
         ontouchstart={handleTouchStart}
         ontouchmove={handleTouchMove}
         ontouchend={handleTouchEnd}
@@ -194,55 +199,40 @@
             style="transform: translateX(calc(-{currentIndex * 100}% + {dragOffset}px)); transition: {isDragging ? 'none' : 'transform 0.45s cubic-bezier(0.2, 0.9, 0.3, 1)'};"
         >
             {#each arApps as app, idx}
-                <div class="w-full h-full shrink-0 flex items-center justify-center ">
-                    <div class="w-full h-full flex flex-col md:flex-row items-center justify-between gap-4 overflow-hidden">
+                <div class="w-full h-full shrink-0 flex items-center justify-center px-1">
+                    <div class="w-full h-full flex flex-col md:flex-row items-center justify-between gap-3 sm:gap-4 overflow-hidden bg-white border border-black/10 p-3 sm:p-5 shadow-xs">
                         
                         <!-- LEFT: Clean QR Code Image Panel -->
-                        <div class="w-full md:w-68 h-full p-4 flex flex-col justify-between items-center shrink-0">
+                        <div class="w-full md:w-60 lg:w-72 h-auto md:h-full flex flex-row md:flex-col justify-between items-center shrink-0 gap-3">
+                            <div class="text-left md:text-center w-full">
+                                <h3 class="text-base sm:text-lg font-black text-text uppercase tracking-tight">
+                                    {app.title}
+                                </h3>
+                                <p class="text-[10px] sm:text-xs text-primary font-mono font-bold mt-0.5">
+                                    {app.tagline}
+                                </p>
+                            </div>
 
                             <!-- QR Code Image Stage -->
-                            <div class="flex flex-col items-center justify-center my-auto">
-                                <div class="relative size-44 sm:size-48 p-2 bg-white border border-black/10 flex items-center justify-center">
-                                    <!-- QR Image Element -->
-                                    <img
-                                        src={app.qrImage}
-                                        alt="{app.title} QR Code"
-                                        class="w-full h-full object-contain"
-                                        onerror={(e) => {
-                                            const img = e.currentTarget as HTMLImageElement;
-                                            img.style.display = 'none';
-                                            const fallback = img.nextElementSibling as HTMLElement;
-                                            if (fallback) fallback.classList.remove('hidden');
-                                        }}
-                                    />
-                                </div>
+                            <div class="relative size-28 sm:size-36 md:size-44 p-1.5 sm:p-2 bg-white border border-black/10 flex items-center justify-center shrink-0">
+                                <img
+                                    src={app.qrImage}
+                                    alt="{app.title} QR Code"
+                                    class="w-full h-full object-contain"
+                                />
                             </div>
 
                             <!-- Scan Hint -->
-                            <div class="flex items-center gap-1 font-mono text-[9px] text-text/50 uppercase tracking-wider">
+                            <div class="hidden md:flex items-center gap-1 font-mono text-[9px] text-text/50 uppercase tracking-wider">
                                 <span class="material-symbols-outlined text-[13px] text-primary">qr_code_scanner</span>
                                 <span>SCAN TO LAUNCH</span>
                             </div>
                         </div>
 
                         <!-- RIGHT: Preview Video Stage & Info -->
-                        <div class="flex-1 w-full h-full flex flex-col justify-betweenoverflow-hidden">
-                            <!-- Video Top Header -->
-                            <div class="flex items-center justify-between mb-1.5 shrink-0">
-                                
-
-                                <!-- Tech Pills -->
-                                <div class="hidden sm:flex items-center gap-1 font-mono text-[9px]">
-                                    {#each app.tech as t}
-                                        <span class="px-2 py-0.5 bg-black/3 border border-black/5 text-text/70">
-                                            {t}
-                                        </span>
-                                    {/each}
-                                </div>
-                            </div>
-
+                        <div class="flex-1 w-full h-full flex flex-col justify-between overflow-hidden">
                             <!-- Video Frame -->
-                            <div class="relative flex-1 w-full bg-slate-900 overflow-hidden group/vid my-1 border border-black/10">
+                            <div class="relative flex-1 w-full bg-slate-900 overflow-hidden group/vid my-1 border border-black/10 min-h-[140px]">
                                 <!-- svelte-ignore a11y_media_has_caption -->
                                 <video
                                     bind:this={videoElements[idx]}
@@ -254,47 +244,37 @@
                                     playsinline
                                 ></video>
 
-                                <!-- Pause/Play Trigger -->
+                                <!-- Play/Pause Overlay Button -->
                                 <button
                                     onclick={() => toggleVideo(idx)}
-                                    class="absolute bottom-2 right-2 size-7 bg-black/60 hover:bg-primary text-white flex items-center justify-center transition cursor-pointer backdrop-blur-md"
+                                    class="absolute bottom-2 right-2 size-7 bg-black/60 hover:bg-black/80 text-white flex items-center justify-center backdrop-blur-xs transition cursor-pointer"
                                     aria-label="Toggle Video Playback"
                                 >
-                                    <span class="material-symbols-outlined text-[15px]">
-                                        {videoElements[idx]?.paused ? 'play_arrow' : 'pause'}
+                                    <span class="material-symbols-outlined text-[16px]">
+                                        {isVideoPlaying ? "pause" : "play_arrow"}
                                     </span>
                                 </button>
                             </div>
 
-                            <!-- Video Bottom Description -->
-                            <div class="mt-1.5 pt-1.5 border-t border-black/5 flex items-center justify-between text-xs shrink-0">
-                                <p class="text-text/70 leading-snug max-w-lg text-[11px]">
-                                    {app.description}
-                                </p>
-                            </div>
+                            <!-- Description -->
+                            <p class="text-[10px] sm:text-xs text-text/70 leading-snug line-clamp-2 mt-1">
+                                {app.description}
+                            </p>
                         </div>
-
                     </div>
                 </div>
             {/each}
         </div>
     </div>
 
-    <!-- Minimal Sharp Tabs Navigation Bar -->
-    <div class="grid grid-cols-3 gap-2 mt-7 px-10 shrink-0">
-        {#each arApps as app, idx}
+    <!-- Bottom Indicator Pagination Dots -->
+    <div class="flex items-center justify-center gap-2 shrink-0 pt-1">
+        {#each arApps as _, idx}
             <button
                 onclick={() => goToSlide(idx)}
-                class="flex items-center justify-between px-3 py-1.5 text-left transition-all duration-200 cursor-pointer {currentIndex === idx ? 'bg-primary text-white shadow-xs' : 'bg-white/70 text-text/70 hover:bg-white hover:text-text border border-black/5'}"
-            >
-                <div class="flex items-center gap-2 truncate">
-                    <span class="material-symbols-outlined text-[15px] {currentIndex === idx ? 'text-white' : 'text-primary'} shrink-0">
-                        view_in_ar
-                    </span>
-                    <span class="text-xs font-bold tracking-tight truncate">{app.title}</span>
-                </div>
-                <span class="font-mono text-[9px] {currentIndex === idx ? 'text-white/80' : 'text-text/40'} ml-1.5 shrink-0">{app.code}</span>
-            </button>
+                class="h-1 transition-all duration-300 cursor-pointer {currentIndex === idx ? 'w-8 bg-primary' : 'w-2 bg-black/10 hover:bg-black/20'}"
+                aria-label="Go to AR App {idx + 1}"
+            ></button>
         {/each}
     </div>
 </div>

@@ -43,10 +43,16 @@
     }
 </script>
 
-<div class="w-full h-full flex flex-col md:flex-row items-center justify-between p-4 md:p-6 gap-4 md:gap-6 select-none font-sans overflow-hidden">
-    <!-- BIG INTERACTIVE MAIN STAGE (NON-OVERLAPPING) -->
-    <div class="flex-1 w-full h-full flex items-center justify-center relative overflow-hidden bg-white/40 border border-black/5 p-2">
-        <div class="relative flex items-center justify-center size-60 sm:size-68 md:size-76 my-auto">
+<div class="w-full h-full flex flex-col md:flex-row items-center justify-between p-2 sm:p-4 md:p-6 gap-3 md:gap-6 select-none font-sans overflow-hidden">
+    <!-- BIG INTERACTIVE MAIN STAGE (FULL VIEWPORT ON MOBILE) -->
+    <div class="flex-1 w-full h-full flex flex-col items-center justify-center relative overflow-hidden bg-white/40 border border-black/5 p-2">
+        <!-- Mobile Top Hint -->
+        <div class="md:hidden flex items-center justify-between w-full pb-1 text-[10px] font-mono text-text/60">
+            <span class="font-bold text-primary">EXP_01 // LUCKY WHEEL</span>
+            <span>TAP SPIN BUTTON</span>
+        </div>
+
+        <div class="relative flex items-center justify-center size-56 sm:size-68 md:size-76 my-auto">
             <!-- Top Indicator Needle -->
             <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 z-20 w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-t-[18px] border-t-primary drop-shadow-md"></div>
 
@@ -97,7 +103,7 @@
             <button
                 onclick={spin}
                 disabled={isSpinning}
-                class="absolute size-16 rounded-full bg-white text-text font-mono text-xs font-bold tracking-widest uppercase flex flex-col items-center justify-center hover:bg-primary hover:text-white transition-colors disabled:opacity-75 disabled:cursor-not-allowed z-10 shadow-lg border border-black/5 cursor-pointer"
+                class="absolute size-14 sm:size-16 rounded-full bg-white text-text font-mono text-xs font-bold tracking-widest uppercase flex flex-col items-center justify-center hover:bg-primary hover:text-white transition-colors disabled:opacity-75 disabled:cursor-not-allowed z-10 shadow-lg border border-black/5 cursor-pointer"
             >
                 <span class="material-symbols-outlined text-[16px] {isSpinning ? 'animate-spin text-primary' : ''}">sync</span>
                 <span class="text-[9px] mt-0.5">{isSpinning ? "LOCK" : "SPIN"}</span>
@@ -112,8 +118,8 @@
         </div>
     </div>
 
-    <!-- SEPARATE COMPACT DESCRIPTION WINDOW (NO COLLISION / NO OVERLAP) -->
-    <div class="w-full md:w-68 shrink-0 bg-white p-4 shadow-xs border border-black/5 flex flex-col justify-between h-auto md:h-full">
+    <!-- DESKTOP DESCRIPTION WINDOW (HIDDEN ON MOBILE TO PRIORITIZE GAMEPLAY) -->
+    <div class="hidden md:flex w-68 shrink-0 bg-white p-4 shadow-xs border border-black/5 flex-col justify-between h-full">
         <div class="flex flex-col gap-2">
             <div class="flex items-center justify-between font-mono text-[9px] text-text/50 uppercase tracking-widest">
                 <div class="flex items-center gap-1">

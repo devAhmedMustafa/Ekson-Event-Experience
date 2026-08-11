@@ -12,7 +12,7 @@
     let audioDuration = $state(0);
     let audioSrc = $state<string | null>(null);
     let lastUserQuery = $state<string | null>(null);
-    let statusMessage = $state("Type a question or click the mic to speak with Ekson AI.");
+    let statusMessage = $state("Type a question or tap the mic to speak.");
 
     let audioElement = $state<HTMLAudioElement | null>(null);
     let mediaRecorder: MediaRecorder | null = null;
@@ -86,19 +86,21 @@
         isGenerating = true;
         statusMessage = "Generating voice response...";
 
+        const serverUrl = (import.meta.env.VITE_SERVER_URL || '').replace(/\/+$/, '');
+
         try {
             if (audioElement) {
                 audioElement.pause();
             }
 
-            let response = await fetch("/api/chat/speech", {
+            let response = await fetch(`${serverUrl}/api/chat/speech`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ message: text }),
             }).catch(() => null);
 
             if (!response || !response.ok) {
-                response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/chat/speech`, {
+                response = await fetch("/api/chat/speech", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ message: text }),
@@ -191,20 +193,21 @@
         lastUserQuery = "Voice Message 🎙️";
         statusMessage = "Connecting to Ekson Voice AI...";
 
+        const serverUrl = (import.meta.env.VITE_SERVER_URL || '').replace(/\/+$/, '');
+
         try {
             const formData = new FormData();
             formData.append("audio", blob, "voice-input.webm");
             formData.append("file", blob, "voice-input.webm");
             formData.append("voice", blob, "voice-input.webm");
 
-            // Call POST /api/voice/chat
-            let response = await fetch("/api/voice/chat", {
+            let response = await fetch(`${serverUrl}/api/voice/chat`, {
                 method: "POST",
                 body: formData,
             }).catch(() => null);
 
             if (!response || !response.ok) {
-                response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/voice/chat`, {
+                response = await fetch("/api/voice/chat", {
                     method: "POST",
                     body: formData,
                 });
@@ -302,21 +305,25 @@
     }}
 ></audio>
 
-<div class="relative w-full h-full max-w-4xl mx-auto px-4 md:px-8 py-8 flex flex-col justify-between items-center select-none font-sans overflow-hidden min-h-125">
+<div class="relative w-full h-full max-w-4xl mx-auto px-3 sm:px-6 md:px-8 py-4 sm:py-6 flex flex-col justify-between items-center select-none font-sans overflow-hidden min-h-[500px]">
     <!-- Top Header -->
     <div class="text-center shrink-0">
-        <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-text tracking-tight uppercase">
+        <div class="flex items-center justify-center gap-2 font-mono text-[10px] uppercase tracking-widest text-primary font-bold mb-0.5">
+            <span class="size-1.5 bg-primary"></span>
+            <span>05 / Voice Concierge</span>
+        </div>
+        <h2 class="text-xl sm:text-3xl md:text-4xl font-black text-text tracking-tight uppercase">
             Ekson AI Assistant
         </h2>
     </div>
 
     <!-- Center Interactive Voice Visualizer Stage -->
-    <div class="flex-1 flex flex-col items-center justify-center my-auto py-6 gap-6">
+    <div class="flex-1 flex flex-col items-center justify-center my-auto py-3 sm:py-6 gap-4 sm:gap-6">
         <!-- Dynamic Pulsing Voice Orb -->
         <div class="relative flex items-center justify-center">
             <!-- Ripple Rings -->
-            <div class="absolute size-44 sm:size-52 rounded-full border transition-all duration-700 {isRecording ? 'border-rose-400 scale-130 opacity-90 animate-ping' : isSpeaking ? 'border-primary/20 scale-125 opacity-100 animate-ping' : isGenerating ? 'border-primary/20 scale-110 opacity-70 animate-pulse' : 'border-primary/20 scale-100 opacity-40'}"></div>
-            <div class="absolute size-36 sm:size-44 rounded-full border transition-all duration-500 {isRecording ? 'border-rose-500 scale-120 opacity-80' : isSpeaking ? 'border-primary/30 scale-115 opacity-80' : 'border-primary/30 scale-100 opacity-20'}"></div>
+            <div class="absolute size-36 sm:size-44 md:size-52 rounded-full border transition-all duration-700 {isRecording ? 'border-rose-400 scale-125 opacity-90 animate-ping' : isSpeaking ? 'border-primary/20 scale-120 opacity-100 animate-ping' : isGenerating ? 'border-primary/20 scale-110 opacity-70 animate-pulse' : 'border-primary/20 scale-100 opacity-40'}"></div>
+            <div class="absolute size-28 sm:size-36 md:size-44 rounded-full border transition-all duration-500 {isRecording ? 'border-rose-500 scale-115 opacity-80' : isSpeaking ? 'border-primary/30 scale-110 opacity-80' : 'border-primary/30 scale-100 opacity-20'}"></div>
 
             <!-- Central Voice Core (Clickable for Play/Pause or Voice Recording) -->
             <button
@@ -330,27 +337,27 @@
                     }
                 }}
                 disabled={isGenerating}
-                class="relative size-28 sm:size-34 rounded-full bg-white shadow-xl border flex flex-col items-center justify-center transition-all duration-300 cursor-pointer {isRecording ? 'border-rose-500 ring-4 ring-rose-400/30 scale-105 shadow-rose-200 shadow-2xl' : isSpeaking ? 'border-primary ring-4 ring-primary/20 scale-105 shadow-primary/25 shadow-2xl' : 'border-black/5 hover:border-primary/40'}"
+                class="relative size-24 sm:size-28 md:size-34 rounded-full bg-white shadow-xl border flex flex-col items-center justify-center transition-all duration-300 cursor-pointer {isRecording ? 'border-rose-500 ring-4 ring-rose-400/30 scale-105 shadow-rose-200 shadow-2xl' : isSpeaking ? 'border-primary ring-4 ring-primary/20 scale-105 shadow-primary/25 shadow-2xl' : 'border-black/5 hover:border-primary/40'}"
                 title={isRecording ? "Click to Stop Recording & Send" : isSpeaking ? "Click to Pause" : "Click to Speak"}
             >
-                <span class="material-symbols-outlined text-[40px] sm:text-[48px] transition-all {isRecording ? 'text-rose-600 animate-pulse' : isGenerating ? 'text-primary animate-spin' : isSpeaking ? 'text-primary animate-pulse' : 'text-primary'}">
+                <span class="material-symbols-outlined text-[32px] sm:text-[40px] md:text-[48px] transition-all {isRecording ? 'text-rose-600 animate-pulse' : isGenerating ? 'text-primary animate-spin' : isSpeaking ? 'text-primary animate-pulse' : 'text-primary'}">
                     {isGenerating ? "progress_activity" : isRecording ? "mic" : isSpeaking ? "graphic_eq" : audioSrc ? (isAudioPaused ? "play_arrow" : "pause") : "mic"}
                 </span>
 
                 {#if isRecording}
-                    <span class="text-[9px] font-mono font-bold text-rose-600 tracking-widest uppercase mt-0.5 animate-pulse">
+                    <span class="text-[8px] sm:text-[9px] font-mono font-bold text-rose-600 tracking-widest uppercase mt-0.5 animate-pulse">
                         REC {recordDuration}s
                     </span>
                 {:else if isSpeaking}
-                    <span class="text-[9px] font-mono font-bold text-primary tracking-widest uppercase mt-0.5 animate-pulse">
+                    <span class="text-[8px] sm:text-[9px] font-mono font-bold text-primary tracking-widest uppercase mt-0.5 animate-pulse">
                         SPEAKING
                     </span>
                 {:else if audioSrc && isAudioPaused}
-                    <span class="text-[9px] font-mono font-bold text-text/40 tracking-widest uppercase mt-0.5">
+                    <span class="text-[8px] sm:text-[9px] font-mono font-bold text-text/40 tracking-widest uppercase mt-0.5">
                         PAUSED
                     </span>
                 {:else}
-                    <span class="text-[9px] font-mono font-bold text-text/40 tracking-widest uppercase mt-0.5">
+                    <span class="text-[8px] sm:text-[9px] font-mono font-bold text-text/40 tracking-widest uppercase mt-0.5">
                         TAP TO SPEAK
                     </span>
                 {/if}
@@ -358,55 +365,55 @@
         </div>
 
         <!-- Dynamic Status & Query Display -->
-        <div class="flex flex-col items-center text-center gap-2.5 max-w-md px-4">
-            <p class="text-sm sm:text-base font-bold text-text transition-all tracking-tight">
+        <div class="flex flex-col items-center text-center gap-2 max-w-md px-2">
+            <p class="text-xs sm:text-sm md:text-base font-bold text-text transition-all tracking-tight">
                 {statusMessage}
             </p>
 
             {#if lastUserQuery}
-                <div class="flex items-center gap-1.5 px-3 py-1 bg-white border border-black/5 text-[11px] text-text/60 max-w-sm truncate shadow-xs">
-                    <span class="font-bold text-primary font-mono text-[10px]">YOU:</span>
+                <div class="flex items-center gap-1.5 px-2.5 py-1 bg-white border border-black/5 text-[10px] sm:text-[11px] text-text/60 max-w-xs sm:max-w-sm truncate shadow-xs">
+                    <span class="font-bold text-primary font-mono text-[9px] sm:text-[10px]">YOU:</span>
                     <span class="truncate">"{lastUserQuery}"</span>
                 </div>
             {/if}
 
             <!-- Dedicated Voice Control Bar -->
-            <div class="flex items-center gap-2 mt-1">
+            <div class="flex items-center gap-1.5 sm:gap-2 mt-1">
                 <!-- Play / Pause Button -->
                 <button
                     onclick={togglePlayback}
                     disabled={!audioSrc || isGenerating || isRecording}
-                    class="px-3.5 py-1.5 bg-white hover:bg-slate-50 text-text border border-black/10 shadow-xs text-xs font-mono font-bold uppercase tracking-wider flex items-center gap-1.5 cursor-pointer transition disabled:opacity-40 disabled:cursor-not-allowed"
+                    class="px-2.5 sm:px-3.5 py-1 sm:py-1.5 bg-white hover:bg-slate-50 text-text border border-black/10 shadow-xs text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider flex items-center gap-1 cursor-pointer transition disabled:opacity-40 disabled:cursor-not-allowed"
                 >
-                    <span class="material-symbols-outlined text-[16px] text-primary">
+                    <span class="material-symbols-outlined text-[14px] sm:text-[16px] text-primary">
                         {isSpeaking ? "pause" : "play_arrow"}
                     </span>
-                    <span>{isSpeaking ? "Pause" : "Play Voice"}</span>
+                    <span>{isSpeaking ? "Pause" : "Play"}</span>
                 </button>
 
                 <!-- Replay Button -->
                 <button
                     onclick={replayAudio}
                     disabled={!audioSrc || isGenerating || isRecording}
-                    class="px-3 py-1.5 bg-white hover:bg-slate-50 text-text border border-black/10 shadow-xs text-xs font-mono font-bold uppercase tracking-wider flex items-center gap-1 cursor-pointer transition disabled:opacity-40 disabled:cursor-not-allowed"
+                    class="px-2.5 sm:px-3 py-1 sm:py-1.5 bg-white hover:bg-slate-50 text-text border border-black/10 shadow-xs text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider flex items-center gap-1 cursor-pointer transition disabled:opacity-40 disabled:cursor-not-allowed"
                     title="Replay from start"
                 >
-                    <span class="material-symbols-outlined text-[16px] text-secondary">
+                    <span class="material-symbols-outlined text-[14px] sm:text-[16px] text-secondary">
                         replay
                     </span>
-                    <span>Replay</span>
+                    <span class="hidden sm:inline">Replay</span>
                 </button>
 
                 <!-- Mute / Unmute Button -->
                 <button
                     onclick={toggleMute}
-                    class="px-2.5 py-1.5 bg-white hover:bg-slate-50 text-text border border-black/10 shadow-xs text-xs font-mono font-bold uppercase tracking-wider flex items-center gap-1 cursor-pointer transition {isMuted ? 'bg-rose-50 text-rose-600 border-rose-200' : ''}"
+                    class="px-2 sm:px-2.5 py-1 sm:py-1.5 bg-white hover:bg-slate-50 text-text border border-black/10 shadow-xs text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider flex items-center gap-1 cursor-pointer transition {isMuted ? 'bg-rose-50 text-rose-600 border-rose-200' : ''}"
                     title={isMuted ? "Unmute Voice" : "Mute Voice"}
                 >
-                    <span class="material-symbols-outlined text-[16px] {isMuted ? 'text-rose-600' : 'text-text/70'}">
+                    <span class="material-symbols-outlined text-[14px] sm:text-[16px] {isMuted ? 'text-rose-600' : 'text-text/70'}">
                         {isMuted ? "volume_off" : "volume_up"}
                     </span>
-                    <span>{isMuted ? "Muted" : "Mute"}</span>
+                    <span class="hidden sm:inline">{isMuted ? "Muted" : "Mute"}</span>
                 </button>
             </div>
         </div>
@@ -415,12 +422,12 @@
     <!-- Bottom Input & Microphone Section -->
     <div class="w-full max-w-2xl flex flex-col gap-2 shrink-0">
         <!-- Quick Prompts Row -->
-        <div class="flex items-center justify-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+        <div class="flex items-center justify-start sm:justify-center gap-1.5 overflow-x-auto pb-1 scrollbar-none max-w-full">
             {#each quickPrompts as prompt}
                 <button
                     onclick={() => sendTextMessage(prompt)}
                     disabled={isGenerating || isRecording}
-                    class="px-2.5 py-1 bg-white hover:bg-primary/10 hover:text-primary text-text/70 text-[10px] font-mono whitespace-nowrap transition cursor-pointer border border-black/5 shadow-xs disabled:opacity-50"
+                    class="px-2 py-1 bg-white hover:bg-primary/10 hover:text-primary text-text/70 text-[9px] sm:text-[10px] font-mono whitespace-nowrap transition cursor-pointer border border-black/5 shadow-xs disabled:opacity-50 shrink-0"
                 >
                     {prompt}
                 </button>
@@ -428,16 +435,16 @@
         </div>
 
         <!-- Clean Input & Mic Control Bar -->
-        <div class="relative flex items-center bg-white border border-black/10 shadow-md p-1.5 transition-focus-within focus-within:border-primary gap-1">
+        <div class="relative flex items-center bg-white border border-black/10 shadow-md p-1 sm:p-1.5 transition-focus-within focus-within:border-primary gap-1">
             <!-- Dedicated Microphone Button -->
             <button
                 onclick={toggleRecording}
                 disabled={isGenerating}
-                class="size-9 rounded-none flex items-center justify-center transition cursor-pointer shrink-0 {isRecording ? 'bg-rose-600 text-white animate-pulse shadow-sm' : 'bg-black/5 hover:bg-primary hover:text-white text-text/70'}"
+                class="size-8 sm:size-9 rounded-none flex items-center justify-center transition cursor-pointer shrink-0 {isRecording ? 'bg-rose-600 text-white animate-pulse shadow-sm' : 'bg-black/5 hover:bg-primary hover:text-white text-text/70'}"
                 title={isRecording ? "Stop Recording & Send" : "Click to Speak via Microphone"}
                 aria-label="Microphone Voice Input"
             >
-                <span class="material-symbols-outlined text-[20px]">
+                <span class="material-symbols-outlined text-[18px] sm:text-[20px]">
                     {isRecording ? "stop" : "mic"}
                 </span>
             </button>
@@ -448,18 +455,18 @@
                 bind:value={inputMessage}
                 onkeydown={handleKeydown}
                 disabled={isGenerating || isRecording}
-                placeholder={isRecording ? "Listening to your voice..." : "Type a question or click the mic to speak..."}
-                class="flex-1 px-2 py-2 text-xs sm:text-sm font-sans text-text placeholder:text-text/40 bg-transparent focus:outline-none"
+                placeholder={isRecording ? "Listening..." : "Ask the AI voice assistant..."}
+                class="flex-1 min-w-0 px-2 py-1.5 sm:py-2 text-xs sm:text-sm font-sans text-text placeholder:text-text/40 bg-transparent focus:outline-none"
             />
 
             <!-- Send Text Button -->
             <button
                 onclick={() => sendTextMessage()}
                 disabled={!inputMessage.trim() || isGenerating || isRecording}
-                class="px-4 sm:px-5 py-2 bg-primary hover:bg-primary/90 text-white font-mono text-xs font-bold uppercase tracking-wider transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1 cursor-pointer shrink-0"
+                class="px-3 sm:px-5 py-1.5 sm:py-2 bg-primary hover:bg-primary/90 text-white font-mono text-[10px] sm:text-xs font-bold uppercase tracking-wider transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1 cursor-pointer shrink-0"
             >
-                <span>{isGenerating ? "Synthesizing..." : "Ask"}</span>
-                <span class="material-symbols-outlined text-[14px]">send</span>
+                <span>{isGenerating ? "..." : "Ask"}</span>
+                <span class="material-symbols-outlined text-[12px] sm:text-[14px]">send</span>
             </button>
         </div>
     </div>

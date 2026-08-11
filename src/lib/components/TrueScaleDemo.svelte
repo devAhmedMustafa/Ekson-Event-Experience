@@ -80,17 +80,16 @@
     });
 </script>
 
-<div bind:this={container} class="relative w-full h-[350vh] font-sans select-none">
+<div bind:this={container} class="relative w-full h-[300vh] sm:h-[350vh] font-sans select-none">
     <!-- Sticky 100vh 3D Stage in Light Mode -->
-    <div class="sticky top-0 w-full h-screen overflow-hidden flex flex-col justify-between p-4 sm:p-6">
+    <div class="sticky top-0 w-full h-[100dvh] md:h-screen overflow-hidden flex flex-col justify-between p-3 sm:p-6">
         
         <!-- TOP CENTER TITLE ON TOP OF THE MODEL -->
-        <div class="z-20 w-full max-w-4xl mx-auto text-center shrink-0 pt-2">
-            
-            <h2 class="text-3xl sm:text-4xl md:text-5xl font-black text-text tracking-tight uppercase">
+        <div class="z-20 w-full max-w-4xl mx-auto text-center shrink-0 pt-1 sm:pt-2">
+            <h2 class="text-2xl sm:text-3xl md:text-5xl font-black text-text tracking-tight uppercase">
                 True Scale Demo
             </h2>
-            <p class="text-xs sm:text-sm text-text/60 font-medium mt-0.5">
+            <p class="text-[11px] sm:text-xs md:text-sm text-text/60 font-medium mt-0.5">
                 Explore real-time 1:1 scale interactive spatial architecture.
             </p>
         </div>
@@ -154,17 +153,21 @@
         </div>
 
         <!-- BOTTOM HUD: Light Mode Stage Telemetry & Angle Keyframes -->
-        <div class="z-20 w-full max-w-5xl mx-auto flex flex-col gap-2.5 shrink-0 pb-2">
+        <div class="z-20 w-full max-w-5xl mx-auto flex flex-col gap-1.5 sm:gap-2.5 shrink-0 pb-1 sm:pb-2">
             <!-- Stage Callout & Quick Angle Navigation -->
-            <div class="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-3">
-                
+            <div class="flex items-center justify-between gap-2">
+                <div class="bg-white/80 backdrop-blur-md px-2.5 py-1 border border-black/10 shadow-xs">
+                    <span class="font-mono text-[9px] sm:text-[10px] font-bold text-primary uppercase">
+                        {currentStage.title}
+                    </span>
+                </div>
 
                 <!-- Camera Keyframe Presets -->
                 <div class="flex items-center gap-1 bg-white/80 backdrop-blur-md p-1 border border-black/10 shadow-xs">
                     {#each cameraKeyframes as kf, idx}
                         <button
                             onclick={() => jumpToStage(idx)}
-                            class="px-2.5 py-1 text-[10px] font-mono font-bold uppercase tracking-wider transition cursor-pointer border {currentStage.title === kf.title ? 'bg-primary text-white border-primary shadow-xs' : 'bg-black/3 text-text/60 hover:text-text border-black/5'}"
+                            class="px-2 sm:px-2.5 py-0.5 sm:py-1 text-[9px] sm:text-[10px] font-mono font-bold uppercase tracking-wider transition cursor-pointer border {currentStage.title === kf.title ? 'bg-primary text-white border-primary shadow-xs' : 'bg-black/3 text-text/60 hover:text-text border-black/5'}"
                             title={kf.title}
                         >
                             0{idx + 1}
@@ -181,8 +184,8 @@
                 ></div>
             </div>
 
-            <div class="flex items-center justify-between text-[9px] font-mono text-text/40 uppercase">
-                <span>SCROLL TO EXPLORE ARCHITECTURE</span>
+            <div class="flex items-center justify-between text-[8px] sm:text-[9px] font-mono text-text/40 uppercase">
+                <span>SCROLL TO EXPLORE</span>
                 <span>STAGE [{Math.round(scrollProgress * 100)}%]</span>
             </div>
         </div>

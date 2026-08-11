@@ -4,7 +4,7 @@
     import RealTimeWalking from "./RealTimeWalking.svelte";
 </script>
 
-<div class="w-screen">
+<div class="w-full">
     <Tour360 />
     <RealTimeWalking />
     <TrueScaleDemo />
