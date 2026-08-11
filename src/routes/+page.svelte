@@ -2,6 +2,7 @@
     import Tour360 from "$lib/components/Tour360.svelte";
     import AboutUs from "$lib/ui/AboutUs.svelte";
     import Landing from "$lib/ui/Landing.svelte";
+    import RealTimeWalking from "$lib/ui/RealTimeWalking.svelte";
     import Values from "$lib/ui/Values.svelte";
 
 
@@ -25,4 +26,8 @@
 
 <section>
     <Tour360/>
+</section>
+
+<section class="relative w-full h-screen flex">
+    <RealTimeWalking/>
 </section>
