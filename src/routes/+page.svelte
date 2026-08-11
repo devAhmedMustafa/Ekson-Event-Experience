@@ -4,6 +4,7 @@
     import InteractionApplications from "$lib/ui/InteractionApplications.svelte";
     import MiniGames from "$lib/ui/MiniGames.svelte";
     import AiAssitant from "$lib/components/AiAssitant.svelte";
+    import ARApps from "$lib/ui/AR_Apps.svelte";
 </script>
 
 <svelte:head>
@@ -28,4 +29,8 @@
 
 <section class="relative w-full min-h-screen flex flex-col justify-center items-center overflow-hidden py-8">
     <AiAssitant />
+</section>
+
+<section>
+    <ARApps/>
 </section>

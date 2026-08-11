@@ -158,7 +158,7 @@
     }}
 ></audio>
 
-<div class="relative w-full h-full max-w-4xl mx-auto px-4 md:px-8 py-8 flex flex-col justify-between items-center select-none font-sans overflow-hidden min-h-[500px]">
+<div class="relative w-full h-full max-w-4xl mx-auto px-4 md:px-8 py-8 flex flex-col justify-between items-center select-none font-sans overflow-hidden min-h-125">
     <!-- Top Header -->
     <div class="text-center shrink-0">
         <div class="flex items-center justify-center gap-2 font-mono text-[11px] uppercase tracking-widest text-text/60 mb-1">
