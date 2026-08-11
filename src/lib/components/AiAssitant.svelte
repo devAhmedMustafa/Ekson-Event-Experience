@@ -98,7 +98,7 @@
             }).catch(() => null);
 
             if (!response || !response.ok) {
-                response = await fetch("http://localhost:3000/api/chat/speech", {
+                response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/chat/speech`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ message: text }),
@@ -204,7 +204,7 @@
             }).catch(() => null);
 
             if (!response || !response.ok) {
-                response = await fetch("http://localhost:3000/api/voice/chat", {
+                response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/voice/chat`, {
                     method: "POST",
                     body: formData,
                 });
@@ -305,10 +305,6 @@
 <div class="relative w-full h-full max-w-4xl mx-auto px-4 md:px-8 py-8 flex flex-col justify-between items-center select-none font-sans overflow-hidden min-h-125">
     <!-- Top Header -->
     <div class="text-center shrink-0">
-        <div class="flex items-center justify-center gap-2 font-mono text-[11px] uppercase tracking-widest text-text/60 mb-1">
-            <span class="size-1.5 bg-primary"></span>
-            <span>05 / Voice Concierge</span>
-        </div>
         <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-text tracking-tight uppercase">
             Ekson AI Assistant
         </h2>

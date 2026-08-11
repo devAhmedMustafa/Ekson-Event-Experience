@@ -144,10 +144,6 @@
     <!-- Header -->
     <div class="flex items-end justify-between mb-3 pb-2 border-b border-black/5 shrink-0">
         <div>
-            <div class="flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-text/60 mb-0.5">
-                <span class="size-1.5 bg-primary"></span>
-                <span>03 / Spatial Augmentation</span>
-            </div>
             <h2 class="text-2xl sm:text-3xl font-extrabold text-text tracking-tight uppercase">
                 AR Applications
             </h2>

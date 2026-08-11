@@ -268,7 +268,7 @@
 
             // Fallback direct port 3000 fetch if proxy unavailable
             if (!response || !response.ok) {
-                response = await fetch("http://localhost:3000/api/plans/request", {
+                response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/plans/request`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(payload)

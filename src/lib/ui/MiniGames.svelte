@@ -120,10 +120,6 @@
     <!-- Architectural Header -->
     <div class="flex items-end justify-between mb-4 pb-3 border-b border-text/10 shrink-0">
         <div>
-            <div class="flex items-center gap-2 font-mono text-[11px] uppercase tracking-widest text-text/60 mb-1">
-                <span class="size-1.5 bg-primary"></span>
-                <span>04 / Interactive Gamification</span>
-            </div>
             <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-text tracking-tight uppercase">
                 Event Mini-Games
             </h2>
@@ -157,7 +153,7 @@
     <!-- Main Viewport (Sharp, Borderless Surface) -->
     <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
     <div
-        class="relative w-full h-[390px] sm:h-[420px] md:h-[450px] max-h-[60vh] bg-white/60 backdrop-blur-md overflow-hidden cursor-grab active:cursor-grabbing shrink-0"
+        class="relative w-full h-97.5 sm:h-105 md:h-112.5 max-h-[60vh] bg-white/60 backdrop-blur-md overflow-hidden cursor-grab active:cursor-grabbing shrink-0"
         ontouchstart={handleTouchStart}
         ontouchmove={handleTouchMove}
         ontouchend={handleTouchEnd}
