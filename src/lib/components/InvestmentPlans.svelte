@@ -340,7 +340,7 @@
                         </div>
 
                         <!-- Tagline -->
-                        <p class="text-[10px] sm:text-[11px] text-text/70 text-center min-h-[22px] sm:min-h-[26px] leading-snug px-1">
+                        <p class="text-[10px] sm:text-[11px] text-text/70 text-center min-h-5.5 sm:min-h-6.5 leading-snug px-1">
                             {plan.tagline}
                             {#if plan.highlightText}
                                 <span class="text-primary font-bold">{plan.highlightText}</span>

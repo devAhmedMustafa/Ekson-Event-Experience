@@ -26,7 +26,7 @@
     });
 </script>
 
-<div class="relative w-full h-full min-h-[100dvh] md:h-screen flex flex-col justify-between items-center px-4 md:px-8 py-6 sm:py-8 select-none font-sans overflow-hidden">
+<div class="relative w-full h-full min-h-dvh md:h-screen flex flex-col justify-between items-center px-4 md:px-8 py-6 sm:py-8 select-none font-sans overflow-hidden">
     <!-- Top Spacer for Floating Navbar -->
     <div class="h-6 sm:h-8"></div>
 
@@ -34,7 +34,7 @@
     <div class="relative z-10 flex flex-col items-center justify-center my-auto text-center max-w-5xl px-2">
         <!-- Main Headline with Mix Blend Difference & Staggered Reveal -->
         <h1
-            class="text-4xl sm:text-6xl md:text-8xl lg:text-9xl font-black text-center text-white mix-blend-difference tracking-tight leading-[0.95] uppercase transition-all duration-1000 ease-out {isLoaded ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-8 scale-95'}"
+            class="text-4xl sm:text-6xl md:text-8xl lg:text-9xl font-black text-center text-white tracking-tight leading-[0.95] uppercase transition-all duration-1000 ease-out {isLoaded ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-8 scale-95'}"
             style="transform: translate3d({mouseX * 0.4}px, {mouseY * 0.4}px, 0);"
         >
             <span class="inline-block hover:tracking-wide transition-all duration-300">

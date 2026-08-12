@@ -36,9 +36,9 @@
 </script>
 
 <div bind:this={container} class="relative w-full h-[300vh] sm:h-[400vh]">
-    <div class="sticky top-0 h-[100dvh] md:h-screen w-full overflow-hidden flex flex-col justify-between p-4 sm:p-8 md:p-12 select-none">
+    <div class="sticky top-0 h-dvh md:h-screen w-full overflow-hidden flex flex-col justify-between p-4 sm:p-8 md:p-12 select-none">
         <!-- Floating Info HUD -->
-        <div class="relative z-10 max-w-xl bg-black/40 backdrop-blur-md p-4 sm:p-6 text-white border border-white/10 shadow-lg">
+        <div class="relative z-10 max-w-xl p-4 sm:p-6 text-white shadow-lg">
             <div class="flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-primary font-bold mb-1">
                 <span class="size-1.5 bg-primary"></span>
                 <span>03 / Virtual Presence</span>
