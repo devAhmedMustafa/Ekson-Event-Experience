@@ -297,7 +297,7 @@
         <div class="flex items-center justify-center sm:justify-start gap-2 font-mono text-[9px] sm:text-[10px] uppercase tracking-widest text-primary font-bold mb-0.5">
             <span>Ekson Technology</span>
             <span class="size-1.5 bg-primary"></span>
-            <span>07 / Investment Plans</span>
+            <span>09 / Investment Plans</span>
         </div>
         <h2 class="text-xl sm:text-2xl md:text-3xl font-black text-text tracking-tight uppercase">
             Investment Plans

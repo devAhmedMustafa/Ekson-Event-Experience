@@ -15,19 +15,15 @@
     }
 </script>
 
-<div class="relative w-full h-full min-h-[100dvh] md:h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-4 sm:py-6 flex flex-col justify-between select-none font-sans overflow-hidden">
+<div class="relative w-full h-full min-h-dvh md:h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-4 sm:py-6 flex flex-col justify-between select-none font-sans overflow-hidden">
     <!-- Huge Watermark Brand Accent in Background -->
-    <div class="absolute -bottom-4 -right-4 text-[90px] sm:text-[160px] md:text-[220px] font-black text-black/[0.04] tracking-tighter pointer-events-none select-none z-0">
+    <div class="absolute -bottom-4 -right-4 text-[90px] sm:text-[160px] md:text-[220px] font-black text-black/4 tracking-tighter pointer-events-none select-none z-0">
         EKSON
     </div>
 
     <!-- Top Headline Section -->
     <div class="relative z-10 flex flex-col sm:flex-row items-start sm:items-end justify-between pb-3 sm:pb-4 border-b border-black/5 shrink-0 gap-3 sm:gap-4">
         <div>
-            <div class="flex items-center gap-2 font-mono text-[9px] sm:text-[10px] uppercase tracking-widest text-primary font-bold mb-0.5">
-                <span class="size-1.5 bg-primary"></span>
-                <span>08 / Connect With Us</span>
-            </div>
             <h2 class="text-xl sm:text-3xl md:text-4xl font-black text-text tracking-tight uppercase">
                 Let's Build the Future of Events
             </h2>

@@ -6,12 +6,12 @@
     }
 </script>
 
-<div class="flex flex-col md:flex-row min-h-[100dvh] md:h-screen w-full bg-white select-none font-sans overflow-hidden">
+<div class="flex flex-col md:flex-row min-h-dvh md:h-screen w-full bg-white select-none font-sans overflow-hidden">
     <!-- Left Narrative Column -->
     <div class="w-full md:w-1/2 p-6 sm:p-10 md:p-14 flex flex-col justify-center my-auto">
         <div class="flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-primary font-bold mb-1">
             <span class="size-1.5 bg-primary"></span>
-            <span>04 / Interactive Walkthrough</span>
+            <span>05 / Interactive Walkthrough</span>
         </div>
         <h2 class="text-2xl sm:text-4xl md:text-5xl font-black text-text tracking-tight uppercase leading-tight mb-3">
             Real-Time Walkthrough

@@ -310,7 +310,7 @@
     <div class="text-center shrink-0">
         <div class="flex items-center justify-center gap-2 font-mono text-[10px] uppercase tracking-widest text-primary font-bold mb-0.5">
             <span class="size-1.5 bg-primary"></span>
-            <span>05 / Voice Concierge</span>
+            <span>07 / Voice Concierge</span>
         </div>
         <h2 class="text-xl sm:text-3xl md:text-4xl font-black text-text tracking-tight uppercase">
             Ekson AI Assistant

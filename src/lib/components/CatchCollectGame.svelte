@@ -1,14 +1,16 @@
 <script lang="ts">
-    import { onDestroy } from "svelte";
+    import { onMount, onDestroy } from "svelte";
 
     interface FallingItem {
         id: number;
         x: number;
         y: number;
         speed: number;
-        icon: string;
+        type: "diamond" | "star" | "token" | "hazard";
         points: number;
-        isHazard?: boolean;
+        size: number;
+        rotation: number;
+        rotSpeed: number;
     }
 
     interface FloatingScore {
@@ -17,6 +19,18 @@
         y: number;
         text: string;
         color: string;
+        alpha: number;
+        vy: number;
+    }
+
+    interface Particle {
+        x: number;
+        y: number;
+        vx: number;
+        vy: number;
+        color: string;
+        alpha: number;
+        size: number;
     }
 
     let isPlaying = $state(false);
@@ -24,30 +38,63 @@
     let score = $state(0);
     let highScore = $state(0);
     let timeLeft = $state(20);
-    let basketX = $state(50);
-    let basketGlow = $state(false);
-    let items = $state<FallingItem[]>([]);
-    let popups = $state<FloatingScore[]>([]);
+
+    let canvasEl: HTMLCanvasElement | null = null;
+    let containerEl: HTMLElement | null = null;
+    let ctx: CanvasRenderingContext2D | null = null;
+
+    let basketX = 0;
+    let targetBasketX = 0;
+    let basketWidth = 90;
+    const basketHeight = 10;
+    let basketGlowTimer = 0;
+
+    let items: FallingItem[] = [];
+    let popups: FloatingScore[] = [];
+    let particles: Particle[] = [];
 
     let gameLoopId: number | null = null;
     let timerInterval: number | null = null;
+    let lastTime = 0;
+    let spawnTimer = 0;
     let nextItemId = 0;
     let nextPopupId = 0;
-    let gameArea: HTMLElement | null = null;
-    let basketEl: HTMLElement | null = null;
 
-    const ITEM_TYPES = [
-        { icon: "diamond", points: 150, isHazard: false, weight: 3 },
-        { icon: "star", points: 100, isHazard: false, weight: 4 },
-        { icon: "token", points: 250, isHazard: false, weight: 2 },
-        { icon: "emergency", points: -100, isHazard: true, weight: 2 },
+    let canvasWidth = 400;
+    let canvasHeight = 360;
+    let dpr = 1;
+
+    const ITEM_CONFIGS = [
+        { type: "diamond" as const, points: 150, weight: 3, speedMin: 180, speedMax: 260 },
+        { type: "star" as const, points: 100, weight: 4, speedMin: 160, speedMax: 230 },
+        { type: "token" as const, points: 250, weight: 2, speedMin: 200, speedMax: 300 },
+        { type: "hazard" as const, points: -100, weight: 2.5, speedMin: 170, speedMax: 250 },
     ];
 
+    function resizeCanvas() {
+        if (!containerEl || !canvasEl) return;
+        const rect = containerEl.getBoundingClientRect();
+        canvasWidth = rect.width;
+        canvasHeight = rect.height;
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+        canvasEl.width = canvasWidth * dpr;
+        canvasEl.height = canvasHeight * dpr;
+        canvasEl.style.width = `${canvasWidth}px`;
+        canvasEl.style.height = `${canvasHeight}px`;
+
+        basketWidth = Math.max(70, Math.min(110, canvasWidth * 0.22));
+
+        if (ctx) {
+            ctx.scale(dpr, dpr);
+        }
+    }
+
     function spawnItem() {
-        const totalWeight = ITEM_TYPES.reduce((acc, cur) => acc + cur.weight, 0);
+        const totalWeight = ITEM_CONFIGS.reduce((acc, cur) => acc + cur.weight, 0);
         let random = Math.random() * totalWeight;
-        let selected = ITEM_TYPES[0];
-        for (const item of ITEM_TYPES) {
+        let selected = ITEM_CONFIGS[0];
+        for (const item of ITEM_CONFIGS) {
             if (random < item.weight) {
                 selected = item;
                 break;
@@ -55,38 +102,60 @@
             random -= item.weight;
         }
 
-        const newItem: FallingItem = {
+        const margin = 30;
+        const x = Math.random() * (canvasWidth - margin * 2) + margin;
+        const speed = Math.random() * (selected.speedMax - selected.speedMin) + selected.speedMin;
+
+        items.push({
             id: ++nextItemId,
-            x: Math.floor(Math.random() * 76) + 12,
-            y: -24,
-            speed: Math.random() * 1.2 + 2.4,
-            icon: selected.icon,
+            x,
+            y: -20,
+            speed,
+            type: selected.type,
             points: selected.points,
-            isHazard: selected.isHazard,
-        };
-        items.push(newItem);
+            size: selected.type === "hazard" ? 14 : 12,
+            rotation: Math.random() * Math.PI * 2,
+            rotSpeed: (Math.random() - 0.5) * 4,
+        });
     }
 
     function addPopup(x: number, y: number, text: string, color: string) {
-        const id = ++nextPopupId;
-        popups.push({ id, x, y, text, color });
-        setTimeout(() => {
-            popups = popups.filter((p) => p.id !== id);
-        }, 600);
+        popups.push({
+            id: ++nextPopupId,
+            x,
+            y,
+            text,
+            color,
+            alpha: 1.0,
+            vy: -40,
+        });
+    }
+
+    function createExplosion(x: number, y: number, color: string, count = 8) {
+        for (let i = 0; i < count; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const speed = Math.random() * 80 + 30;
+            particles.push({
+                x,
+                y,
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed,
+                color,
+                alpha: 1.0,
+                size: Math.random() * 3 + 2,
+            });
+        }
     }
 
     function triggerCatch(item: FallingItem, catchY: number) {
         score = Math.max(0, score + item.points);
-        addPopup(
-            item.x,
-            catchY - 24,
-            item.points > 0 ? `+${item.points}` : `${item.points}`,
-            item.isHazard ? "text-rose-600" : "text-emerald-600"
-        );
-        basketGlow = true;
-        setTimeout(() => {
-            basketGlow = false;
-        }, 140);
+        const isHazard = item.type === "hazard";
+        const color = isHazard ? "#e11d48" : "#059669";
+        const popupText = item.points > 0 ? `+${item.points}` : `${item.points}`;
+
+        addPopup(item.x, catchY - 15, popupText, color);
+        createExplosion(item.x, catchY, isHazard ? "#f43f5e" : "#009dd6", isHazard ? 12 : 8);
+        basketGlowTimer = 0.2;
     }
 
     function startGame() {
@@ -96,99 +165,313 @@
         timeLeft = 20;
         items = [];
         popups = [];
-        basketX = 50;
+        particles = [];
+        spawnTimer = 0;
+        basketX = canvasWidth / 2;
+        targetBasketX = canvasWidth / 2;
+        lastTime = performance.now();
 
-        let spawnCounter = 0;
-
+        if (timerInterval) clearInterval(timerInterval);
         timerInterval = window.setInterval(() => {
+            if (!isPlaying) return;
             timeLeft -= 1;
             if (timeLeft <= 0) {
                 endGame();
             }
         }, 1000);
-
-        const loop = () => {
-            if (!isPlaying) return;
-
-            spawnCounter++;
-            if (spawnCounter % 28 === 0) {
-                spawnItem();
-            }
-
-            let basketY = 320;
-            let basketHalfWidthPercent = 10;
-            let gameHeight = 380;
-
-            if (gameArea && basketEl) {
-                const gameRect = gameArea.getBoundingClientRect();
-                const basketRect = basketEl.getBoundingClientRect();
-                basketY = basketRect.top - gameRect.top;
-                basketHalfWidthPercent = ((basketRect.width / gameRect.width) * 100) / 2;
-                gameHeight = gameRect.height;
-            }
-
-            items = items
-                .map((item) => ({ ...item, y: item.y + item.speed }))
-                .filter((item) => {
-                    const itemBottomY = item.y + 24;
-                    if (itemBottomY >= basketY && item.y <= basketY + 16) {
-                        if (Math.abs(item.x - basketX) <= basketHalfWidthPercent + 2) {
-                            triggerCatch(item, basketY);
-                            return false;
-                        }
-                    }
-                    return item.y < gameHeight + 30;
-                });
-
-            gameLoopId = requestAnimationFrame(loop);
-        };
-
-        gameLoopId = requestAnimationFrame(loop);
     }
 
     function endGame() {
         isPlaying = false;
         isGameOver = true;
         if (timerInterval) clearInterval(timerInterval);
-        if (gameLoopId) cancelAnimationFrame(gameLoopId);
         if (score > highScore) {
             highScore = score;
         }
     }
 
-    function handleMouseMove(e: MouseEvent) {
-        if (!isPlaying || !gameArea) return;
-        const rect = gameArea.getBoundingClientRect();
-        const relativeX = e.clientX - rect.left;
-        const percent = (relativeX / rect.width) * 100;
-        basketX = Math.max(10, Math.min(90, percent));
+    function handlePointerMove(clientX: number) {
+        if (!containerEl) return;
+        const rect = containerEl.getBoundingClientRect();
+        const relativeX = clientX - rect.left;
+        targetBasketX = Math.max(basketWidth / 2, Math.min(canvasWidth - basketWidth / 2, relativeX));
     }
 
-    function handleTouchMove(e: TouchEvent) {
-        if (!isPlaying || !gameArea) return;
-        const rect = gameArea.getBoundingClientRect();
-        const relativeX = e.touches[0].clientX - rect.left;
-        const percent = (relativeX / rect.width) * 100;
-        basketX = Math.max(10, Math.min(90, percent));
+    function onMouseMove(e: MouseEvent) {
+        if (!isPlaying) return;
+        handlePointerMove(e.clientX);
     }
+
+    function onTouchMove(e: TouchEvent) {
+        if (!isPlaying || e.touches.length === 0) return;
+        handlePointerMove(e.touches[0].clientX);
+    }
+
+    function drawDiamond(c: CanvasRenderingContext2D, x: number, y: number, size: number) {
+        c.save();
+        c.translate(x, y);
+        c.fillStyle = "#009dd6";
+        c.strokeStyle = "#ffffff";
+        c.lineWidth = 1.5;
+        c.beginPath();
+        c.moveTo(0, -size);
+        c.lineTo(size * 0.85, 0);
+        c.lineTo(0, size);
+        c.lineTo(-size * 0.85, 0);
+        c.closePath();
+        c.fill();
+        c.stroke();
+
+        // Facet detail
+        c.fillStyle = "rgba(255, 255, 255, 0.4)";
+        c.beginPath();
+        c.moveTo(0, -size);
+        c.lineTo(size * 0.4, 0);
+        c.lineTo(0, size * 0.6);
+        c.closePath();
+        c.fill();
+        c.restore();
+    }
+
+    function drawStar(c: CanvasRenderingContext2D, x: number, y: number, size: number, rot: number) {
+        c.save();
+        c.translate(x, y);
+        c.rotate(rot);
+        c.fillStyle = "#f59e0b";
+        c.strokeStyle = "#ffffff";
+        c.lineWidth = 1.2;
+        c.beginPath();
+        for (let i = 0; i < 5; i++) {
+            const angle = (i * 2 * Math.PI) / 5 - Math.PI / 2;
+            const innerAngle = angle + Math.PI / 5;
+            const rOuter = size;
+            const rInner = size * 0.45;
+            if (i === 0) {
+                c.moveTo(Math.cos(angle) * rOuter, Math.sin(angle) * rOuter);
+            } else {
+                c.lineTo(Math.cos(angle) * rOuter, Math.sin(angle) * rOuter);
+            }
+            c.lineTo(Math.cos(innerAngle) * rInner, Math.sin(innerAngle) * rInner);
+        }
+        c.closePath();
+        c.fill();
+        c.stroke();
+        c.restore();
+    }
+
+    function drawToken(c: CanvasRenderingContext2D, x: number, y: number, size: number) {
+        c.save();
+        c.translate(x, y);
+        c.fillStyle = "#10b981";
+        c.strokeStyle = "#ffffff";
+        c.lineWidth = 1.5;
+        c.beginPath();
+        c.arc(0, 0, size, 0, Math.PI * 2);
+        c.fill();
+        c.stroke();
+
+        c.fillStyle = "rgba(255, 255, 255, 0.9)";
+        c.font = `bold ${Math.round(size * 1.1)}px monospace`;
+        c.textAlign = "center";
+        c.textBaseline = "middle";
+        c.fillText("E", 0, 1);
+        c.restore();
+    }
+
+    function drawHazard(c: CanvasRenderingContext2D, x: number, y: number, size: number, rot: number) {
+        c.save();
+        c.translate(x, y);
+        c.rotate(rot);
+        c.fillStyle = "#ef4444";
+        c.strokeStyle = "#ffffff";
+        c.lineWidth = 1.5;
+        c.beginPath();
+        c.moveTo(0, -size * 1.1);
+        c.lineTo(size, size * 0.9);
+        c.lineTo(-size, size * 0.9);
+        c.closePath();
+        c.fill();
+        c.stroke();
+
+        c.fillStyle = "#ffffff";
+        c.font = `bold ${Math.round(size * 0.9)}px sans-serif`;
+        c.textAlign = "center";
+        c.textBaseline = "middle";
+        c.fillText("!", 0, 2);
+        c.restore();
+    }
+
+    function renderLoop(now: number) {
+        if (!ctx) return;
+
+        // Frame-rate independent delta time (clamped to prevent huge jumps on tab switch)
+        const dt = Math.min((now - lastTime) / 1000, 0.05);
+        lastTime = now;
+
+        // Clear canvas
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+        // Draw subtle background grid
+        ctx.strokeStyle = "rgba(0, 0, 0, 0.03)";
+        ctx.lineWidth = 1;
+        const gridSize = 30;
+        for (let x = 0; x < canvasWidth; x += gridSize) {
+            ctx.beginPath();
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x, canvasHeight);
+            ctx.stroke();
+        }
+        for (let y = 0; y < canvasHeight; y += gridSize) {
+            ctx.beginPath();
+            ctx.moveTo(0, y);
+            ctx.lineTo(canvasWidth, y);
+            ctx.stroke();
+        }
+
+        if (isPlaying) {
+            // Smoothly interpolate basket position toward mouse/touch target
+            basketX += (targetBasketX - basketX) * Math.min(1.0, dt * 25);
+
+            // Time-based spawning (Independent of display refresh rate)
+            spawnTimer += dt;
+            const spawnInterval = 0.42; // spawn every 420ms
+            if (spawnTimer >= spawnInterval) {
+                spawnItem();
+                spawnTimer = 0;
+            }
+
+            // Basket vertical coordinates
+            const basketY = canvasHeight - 28;
+            const basketHalf = basketWidth / 2;
+
+            // Update & draw falling items
+            items = items.filter((item) => {
+                item.y += item.speed * dt;
+                item.rotation += item.rotSpeed * dt;
+
+                // Collision detection with catcher bar
+                if (item.y >= basketY - 14 && item.y <= basketY + basketHeight + 4) {
+                    if (Math.abs(item.x - basketX) <= basketHalf + item.size * 0.8) {
+                        triggerCatch(item, basketY);
+                        return false;
+                    }
+                }
+
+                // Render item
+                if (item.type === "diamond") {
+                    drawDiamond(ctx!, item.x, item.y, item.size);
+                } else if (item.type === "star") {
+                    drawStar(ctx!, item.x, item.y, item.size, item.rotation);
+                } else if (item.type === "token") {
+                    drawToken(ctx!, item.x, item.y, item.size);
+                } else {
+                    drawHazard(ctx!, item.x, item.y, item.size, item.rotation);
+                }
+
+                return item.y < canvasHeight + 30;
+            });
+
+            // Update & draw particles
+            particles = particles.filter((p) => {
+                p.x += p.vx * dt;
+                p.y += p.vy * dt;
+                p.alpha -= dt * 2.2;
+
+                if (p.alpha <= 0) return false;
+
+                ctx!.save();
+                ctx!.globalAlpha = p.alpha;
+                ctx!.fillStyle = p.color;
+                ctx!.beginPath();
+                ctx!.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx!.fill();
+                ctx!.restore();
+
+                return true;
+            });
+
+            // Update & draw floating score popups
+            popups = popups.filter((pop) => {
+                pop.y += pop.vy * dt;
+                pop.alpha -= dt * 1.6;
+
+                if (pop.alpha <= 0) return false;
+
+                ctx!.save();
+                ctx!.globalAlpha = pop.alpha;
+                ctx!.fillStyle = pop.color;
+                ctx!.font = "bold 13px monospace";
+                ctx!.textAlign = "center";
+                ctx!.fillText(pop.text, pop.x, pop.y);
+                ctx!.restore();
+
+                return true;
+            });
+
+            // Draw laser catcher bar with glow effect
+            if (basketGlowTimer > 0) {
+                basketGlowTimer -= dt;
+            }
+
+            ctx.save();
+            const barX = basketX - basketHalf;
+            const glow = basketGlowTimer > 0;
+
+            if (glow) {
+                ctx.shadowColor = "#009dd6";
+                ctx.shadowBlur = 15;
+            }
+
+            const gradient = ctx.createLinearGradient(barX, 0, barX + basketWidth, 0);
+            gradient.addColorStop(0, "#009dd6");
+            gradient.addColorStop(0.5, "#38bdf8");
+            gradient.addColorStop(1, "#009dd6");
+
+            ctx.fillStyle = gradient;
+            ctx.fillRect(barX, basketY, basketWidth, basketHeight);
+
+            // Top highlight line
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(barX + 4, basketY, basketWidth - 8, 2);
+            ctx.restore();
+        }
+
+        gameLoopId = requestAnimationFrame(renderLoop);
+    }
+
+    onMount(() => {
+        if (canvasEl) {
+            ctx = canvasEl.getContext("2d");
+            resizeCanvas();
+            window.addEventListener("resize", resizeCanvas);
+            lastTime = performance.now();
+            gameLoopId = requestAnimationFrame(renderLoop);
+        }
+
+        return () => {
+            window.removeEventListener("resize", resizeCanvas);
+            if (gameLoopId) cancelAnimationFrame(gameLoopId);
+            if (timerInterval) clearInterval(timerInterval);
+        };
+    });
 
     onDestroy(() => {
-        if (timerInterval) clearInterval(timerInterval);
         if (gameLoopId) cancelAnimationFrame(gameLoopId);
+        if (timerInterval) clearInterval(timerInterval);
     });
 </script>
 
 <div class="w-full h-full flex flex-col md:flex-row items-center justify-between p-2 sm:p-4 md:p-6 gap-3 md:gap-6 select-none font-sans overflow-hidden">
-    <!-- BIG INTERACTIVE MAIN STAGE (ARCADE CANVAS - FULL ON MOBILE) -->
+    <!-- BIG INTERACTIVE MAIN STAGE (HIGH-REFRESH CANVAS ENGINE) -->
     <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
-        bind:this={gameArea}
-        onmousemove={handleMouseMove}
-        ontouchmove={handleTouchMove}
-        class="flex-1 w-full h-full relative bg-slate-100 overflow-hidden flex flex-col justify-between p-2.5 sm:p-3 border border-black/5 font-mono"
+        bind:this={containerEl}
+        onmousemove={onMouseMove}
+        ontouchmove={onTouchMove}
+        class="flex-1 w-full h-full relative bg-slate-100/90 overflow-hidden flex flex-col justify-between p-2.5 sm:p-3 border border-black/5 font-mono cursor-crosshair"
     >
         <!-- Top HUD -->
-        <div class="flex items-center justify-between z-20 text-xs font-bold">
+        <div class="flex items-center justify-between z-20 text-xs font-bold pointer-events-none">
             <div class="flex items-center gap-1.5 px-2.5 py-1 bg-white text-text shadow-xs border border-black/5">
                 <span class="text-primary font-mono font-bold text-[10px] sm:text-xs">SCORE:</span>
                 <span class="text-xs sm:text-sm font-black font-mono">{score.toString().padStart(4, "0")}</span>
@@ -200,75 +483,56 @@
             </div>
         </div>
 
-        <!-- Falling Geometric Items Area -->
-        <div class="absolute inset-0 pointer-events-none overflow-hidden">
-            {#each items as item (item.id)}
-                <div
-                    class="absolute size-6 transform -translate-x-1/2 will-change-transform flex items-center justify-center {item.isHazard ? 'text-rose-600' : 'text-primary'} drop-shadow-sm"
-                    style="left: {item.x}%; top: {item.y}px;"
-                >
-                    <span class="material-symbols-outlined text-[22px] sm:text-[24px]">
-                        {item.icon}
-                    </span>
-                </div>
-            {/each}
+        <!-- HTML5 2D Fast Arcade Canvas -->
+        <canvas
+            bind:this={canvasEl}
+            class="absolute inset-0 w-full h-full pointer-events-none"
+        ></canvas>
 
-            <!-- Floating Popups -->
-            {#each popups as pop (pop.id)}
-                <div
-                    class="absolute text-xs font-black {pop.color} font-mono animate-bounce drop-shadow-sm"
-                    style="left: {pop.x}%; top: {pop.y}px;"
-                >
-                    {pop.text}
-                </div>
-            {/each}
-
-            <!-- Sharp Laser Catch Bar -->
-            <div
-                bind:this={basketEl}
-                class="absolute bottom-4 sm:bottom-5 -translate-x-1/2 h-2.5 w-20 sm:w-24 bg-gradient-to-r from-primary via-cyan-400 to-primary transition-all duration-75 {basketGlow ? 'shadow-[0_0_20px_#009dd6] scale-y-125' : 'shadow-[0_0_10px_rgba(0,157,214,0.4)]'}"
-                style="left: {basketX}%;"
-            ></div>
-        </div>
-
-        <!-- Inactive / Game Over Overlay Screens -->
+        <!-- Overlay: Start Screen -->
         {#if !isPlaying && !isGameOver}
-            <div class="absolute inset-0 z-30 bg-white/90 backdrop-blur-xs flex flex-col items-center justify-center gap-2 sm:gap-2.5 p-4 text-center">
+            <div class="absolute inset-0 z-30 bg-white/92 backdrop-blur-xs flex flex-col items-center justify-center gap-2 sm:gap-2.5 p-4 text-center">
                 <span class="material-symbols-outlined text-[36px] sm:text-[40px] text-primary">
                     token
                 </span>
-                <h4 class="text-base sm:text-lg font-bold text-text uppercase tracking-wider">Catch & Collect</h4>
+                <h4 class="text-base sm:text-lg font-black text-text uppercase tracking-wider">Catch & Collect</h4>
                 <p class="text-[10px] sm:text-xs text-text/60 max-w-xs leading-tight">
-                    INTERCEPT FALLING TOKENS. EVADE HAZARD SIGNALS.
+                    INTERCEPT FALLING TOKENS & GEMS. EVADE HAZARDS.
                 </p>
+                <div class="flex items-center gap-3 my-1 text-[9px] font-mono text-text/70">
+                    <span class="text-primary font-bold">◆ DIAMOND (+150)</span>
+                    <span class="text-emerald-600 font-bold">● TOKEN (+250)</span>
+                    <span class="text-rose-600 font-bold">▲ HAZARD (-100)</span>
+                </div>
                 <button
                     onclick={startGame}
-                    class="mt-1 px-4 sm:px-5 py-1.5 sm:py-2 bg-primary text-white text-[11px] sm:text-xs font-bold uppercase tracking-wider hover:bg-primary/90 transition shadow-md shadow-primary/25 cursor-pointer"
+                    class="mt-1 px-5 py-2 bg-primary text-white text-[11px] sm:text-xs font-bold uppercase tracking-wider hover:bg-primary/90 transition shadow-md shadow-primary/25 cursor-pointer"
                 >
                     Start Game (20s)
                 </button>
             </div>
         {:else if isGameOver}
-            <div class="absolute inset-0 z-30 bg-white/90 backdrop-blur-xs flex flex-col items-center justify-center gap-1.5 sm:gap-2 p-4 text-center">
+            <!-- Overlay: Game Over Screen -->
+            <div class="absolute inset-0 z-30 bg-white/92 backdrop-blur-xs flex flex-col items-center justify-center gap-1.5 sm:gap-2 p-4 text-center">
                 <span class="material-symbols-outlined text-[28px] sm:text-[32px] text-emerald-600">
                     verified
                 </span>
-                <h4 class="text-[10px] uppercase tracking-widest text-text/60">Session Complete</h4>
+                <h4 class="text-[10px] uppercase tracking-widest text-text/60 font-bold">Session Complete</h4>
                 <div class="text-2xl sm:text-3xl font-black text-primary my-0.5">{score} <span class="text-xs font-normal text-text/40">PTS</span></div>
                 {#if highScore > 0}
                     <span class="text-[10px] sm:text-xs text-text/60">BEST: <b class="text-secondary">{highScore} PTS</b></span>
                 {/if}
                 <button
                     onclick={startGame}
-                    class="mt-1 px-4 sm:px-5 py-1.5 sm:py-2 bg-primary text-white text-[11px] sm:text-xs font-bold uppercase tracking-wider hover:bg-primary/90 transition cursor-pointer shadow-md"
+                    class="mt-2 px-5 py-2 bg-primary text-white text-[11px] sm:text-xs font-bold uppercase tracking-wider hover:bg-primary/90 transition cursor-pointer shadow-md"
                 >
                     Play Again
                 </button>
             </div>
         {/if}
 
-        <div class="z-20 text-left">
-            <span class="text-[8px] sm:text-[9px] text-text/40 tracking-widest uppercase">TOUCH / MOVE CURSOR TO STEER</span>
+        <div class="z-20 text-left pointer-events-none">
+            <span class="text-[8px] sm:text-[9px] text-text/40 tracking-widest uppercase">TOUCH / MOVE CURSOR TO STEER CATCHER</span>
         </div>
     </div>
 
@@ -280,7 +544,7 @@
                     <span class="size-1.5 bg-primary"></span>
                     <span>MODULE // 04</span>
                 </div>
-                <span class="text-primary font-bold">60 FPS</span>
+                <span class="text-primary font-bold">120+ FPS ENGINE</span>
             </div>
 
             <h3 class="text-base font-extrabold uppercase tracking-tight text-text flex items-center justify-between">
@@ -289,17 +553,17 @@
             </h3>
 
             <p class="text-xs text-text/70 leading-relaxed">
-                Kinetic arcade collection system tailored for gesture kiosks, touch displays and trade show engagement.
+                Hardware-accelerated kinetic arcade engine with delta-time physics for high-refresh touch kiosks and displays.
             </p>
 
             <div class="grid grid-cols-2 gap-2 pt-2 mt-1 border-t border-black/5 font-mono text-[10px]">
                 <div class="p-1.5 bg-black/[0.02] flex flex-col">
-                    <span class="text-text/40 text-[8px] uppercase">INPUT</span>
-                    <span class="font-bold text-text">TOUCH/OPTICAL</span>
+                    <span class="text-text/40 text-[8px] uppercase">RENDER</span>
+                    <span class="font-bold text-text">2D CANVAS</span>
                 </div>
                 <div class="p-1.5 bg-black/[0.02] flex flex-col">
-                    <span class="text-text/40 text-[8px] uppercase">RATE</span>
-                    <span class="font-bold text-primary">DYNAMIC</span>
+                    <span class="text-text/40 text-[8px] uppercase">TIMING</span>
+                    <span class="font-bold text-primary">DELTA-TIME</span>
                 </div>
             </div>
         </div>

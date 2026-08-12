@@ -1,194 +1,125 @@
 <script lang="ts">
     import { Canvas, T } from "@threlte/core";
     import { GLTF } from "@threlte/extras";
-    import * as THREE from "three";
-    import { onMount } from "svelte";
+    import CameraController from "./CameraController.svelte";
 
-    // Camera State
-    let position = $state<[x: number, y: number, z: number]>([0, 3.2, 5.2]);
-    let rotation = $state<[x: number, y: number, z: number]>([-0.115, 0, 0]);
-    let scrollProgress = $state(0);
-    let container = $state<HTMLElement | null>(null);
+    interface CameraPreset {
+        id: string;
+        label: string;
+        title: string;
+        pos: [number, number, number];
+        look: [number, number, number];
+    }
 
-    // Camera Waypoints for smooth cinematic journey
-    const cameraKeyframes = [
-        { progress: 0.0, pos: new THREE.Vector3(0, 3.8, 5.8), look: new THREE.Vector3(0, 1.2, 0), title: "Macro Architecture", desc: "1:1 True-Scale Volumetric Envelope" },
-        { progress: 0.35, pos: new THREE.Vector3(4.2, 2.8, 3.8), look: new THREE.Vector3(0, 0.9, 0), title: "Isometric Structural Depth", desc: "Dynamic Facade & Modular Geometry" },
-        { progress: 0.70, pos: new THREE.Vector3(-3.5, 1.8, 3.2), look: new THREE.Vector3(0, 0.7, 0), title: "Interactive Product Station", desc: "Digital Touchpoints & Display Integration" },
-        { progress: 1.0, pos: new THREE.Vector3(0, 1.4, 3.2), look: new THREE.Vector3(0, 0.8, 0), title: "Eye-Level Booth Immersion", desc: "Visitor Perspective Walk-In View" }
+    const presets: CameraPreset[] = [
+        { id: "iso", label: "01 ISO", title: "Isometric Overview", pos: [4.5, 3.2, 4.5], look: [0, 0.7, 0] },
+        { id: "front", label: "02 FRONT", title: "Front Elevation", pos: [0, 2.2, 5.2], look: [0, 0.8, 0] },
+        { id: "detail", label: "03 DETAIL", title: "Product Station", pos: [-3.2, 1.8, 3.2], look: [0, 0.7, 0] },
+        { id: "booth", label: "04 WALK-IN", title: "Eye Level View", pos: [0, 1.3, 3.0], look: [0, 0.8, 0] }
     ];
 
-    let currentStage = $derived.by(() => {
-        if (scrollProgress < 0.25) return cameraKeyframes[0];
-        if (scrollProgress < 0.60) return cameraKeyframes[1];
-        if (scrollProgress < 0.85) return cameraKeyframes[2];
-        return cameraKeyframes[3];
-    });
+    let activePreset = $state<string>("iso");
+    let autoRotate = $state(true);
+    let targetPos = $state<[number, number, number] | null>([4.5, 3.2, 4.5]);
+    let targetLookAt = $state<[number, number, number] | null>([0, 0.7, 0]);
 
-    const tempCam = new THREE.PerspectiveCamera();
-
-    function interpolateCamera(p: number) {
-        let i = 0;
-        while (i < cameraKeyframes.length - 1 && cameraKeyframes[i + 1].progress < p) {
-            i++;
-        }
-        const kf1 = cameraKeyframes[i];
-        const kf2 = cameraKeyframes[Math.min(i + 1, cameraKeyframes.length - 1)];
-
-        const span = kf2.progress - kf1.progress;
-        const localT = span > 0 ? (p - kf1.progress) / span : 0;
-        const easedT = localT * localT * (3 - 2 * localT); // Smoothstep
-
-        const curPos = new THREE.Vector3().lerpVectors(kf1.pos, kf2.pos, easedT);
-        const curLook = new THREE.Vector3().lerpVectors(kf1.look, kf2.look, easedT);
-
-        tempCam.position.copy(curPos);
-        tempCam.lookAt(curLook);
-
-        position = [curPos.x, curPos.y, curPos.z];
-        rotation = [tempCam.rotation.x, tempCam.rotation.y, tempCam.rotation.z];
+    function selectPreset(preset: CameraPreset) {
+        activePreset = preset.id;
+        targetPos = [...preset.pos];
+        targetLookAt = [...preset.look];
     }
 
-    function handleScroll() {
-        if (!container) return;
-        const rect = container.getBoundingClientRect();
-        const scrollableHeight = container.offsetHeight - window.innerHeight;
-        if (scrollableHeight <= 0) return;
-        const scrolled = -rect.top;
-        const progress = Math.min(Math.max(scrolled / scrollableHeight, 0), 1);
-        scrollProgress = progress;
-        interpolateCamera(progress);
+    function toggleAutoRotate() {
+        autoRotate = !autoRotate;
     }
-
-    function jumpToStage(index: number) {
-        if (!container) return;
-        const targetProgress = cameraKeyframes[index].progress;
-        const scrollableHeight = container.offsetHeight - window.innerHeight;
-        const targetScroll = container.offsetTop + (targetProgress * scrollableHeight);
-        window.scrollTo({ top: targetScroll, behavior: "smooth" });
-    }
-
-    onMount(() => {
-        window.addEventListener("scroll", handleScroll, { passive: true });
-        window.addEventListener("resize", handleScroll, { passive: true });
-        handleScroll();
-
-        return () => {
-            window.removeEventListener("scroll", handleScroll);
-            window.removeEventListener("resize", handleScroll);
-        };
-    });
 </script>
 
-<div bind:this={container} class="relative w-full h-[300vh] sm:h-[350vh] font-sans select-none">
-    <!-- Sticky 100vh 3D Stage in Light Mode -->
-    <div class="sticky top-0 w-full h-[100dvh] md:h-screen overflow-hidden flex flex-col justify-between p-3 sm:p-6">
-        
-        <!-- TOP CENTER TITLE ON TOP OF THE MODEL -->
-        <div class="z-20 w-full max-w-4xl mx-auto text-center shrink-0 pt-1 sm:pt-2">
-            <h2 class="text-2xl sm:text-3xl md:text-5xl font-black text-text tracking-tight uppercase">
+<div class="relative w-full h-full min-h-[380px] sm:min-h-[440px] md:min-h-full flex flex-col justify-between p-3 sm:p-5 select-none font-sans overflow-hidden bg-slate-50/60">
+    <!-- Top Header Badge & Title (Overlaid) -->
+    <div class="relative z-10 flex items-start justify-between gap-2 pointer-events-none">
+        <div>
+            <div class="flex items-center gap-1.5 font-mono text-[9px] sm:text-[10px] uppercase tracking-widest text-primary font-bold mb-0.5">
+                <span class="size-1.5 bg-primary"></span>
+                <span>04 / TRUE SCALE 3D</span>
+            </div>
+            <h3 class="text-lg sm:text-xl md:text-2xl font-black text-text uppercase tracking-tight">
                 True Scale Demo
-            </h2>
-            <p class="text-[11px] sm:text-xs md:text-sm text-text/60 font-medium mt-0.5">
-                Explore real-time 1:1 scale interactive spatial architecture.
+            </h3>
+            <p class="text-[10px] sm:text-xs text-text/60 font-medium max-w-xs mt-0.5">
+                1:1 Scale real-time architectural booth model.
             </p>
         </div>
 
-        <!-- 3D Canvas Viewport in Crisp Daylight Mode (No Floor Plane) -->
-        <div class="absolute inset-0 w-full h-full z-0">
-            <Canvas>
-                <T.PerspectiveCamera
-                    {position}
-                    {rotation}
-                    fov={60}
-                    near={0.1}
-                    far={1000}
-                    makeDefault
-                />
+        <div class="pointer-events-auto flex items-center gap-1">
+            <button
+                onclick={toggleAutoRotate}
+                class="size-7 sm:size-8 bg-white/90 hover:bg-white text-text flex items-center justify-center border border-black/10 shadow-xs transition cursor-pointer"
+                title={autoRotate ? "Pause Auto-Rotation" : "Enable Auto-Rotation"}
+                aria-label="Toggle Auto-Rotation"
+            >
+                <span class="material-symbols-outlined text-[16px] {autoRotate ? 'text-primary animate-spin' : 'text-text/60'}">
+                    sync
+                </span>
+            </button>
+        </div>
+    </div>
 
-                <!-- Clean Daylight Studio Lighting Rig -->
-                <!-- Key Directional Sunlight -->
-                <T.DirectionalLight
-                    position={[8, 14, 8]}
-                    intensity={2.8}
-                    color="#ffffff"
+    <!-- 3D Canvas Viewport with Orbit Mouse Controls -->
+    <div class="absolute inset-0 w-full h-full z-0 cursor-grab active:cursor-grabbing">
+        <Canvas>
+            <T.PerspectiveCamera
+                makeDefault
+                position={[4.5, 3.2, 4.5]}
+                fov={55}
+                near={0.1}
+                far={1000}
+            >
+                <CameraController
+                    {autoRotate}
+                    {targetPos}
+                    {targetLookAt}
+                    onUserInteraction={() => {
+                        // User started dragging
+                    }}
                 />
+            </T.PerspectiveCamera>
 
-                <!-- Cool Fill Light for crisp shadow definition -->
-                <T.DirectionalLight
-                    position={[-10, 8, -6]}
-                    intensity={1.4}
-                    color="#e0f2fe"
-                />
+            <!-- Daylight Studio Lighting Rig -->
+            <T.DirectionalLight position={[8, 14, 8]} intensity={2.8} color="#ffffff" />
+            <T.DirectionalLight position={[-10, 8, -6]} intensity={1.4} color="#e0f2fe" />
+            <T.DirectionalLight position={[0, 12, -10]} intensity={2.2} color="#009dd6" />
+            <T.HemisphereLight args={["#ffffff", "#e2e8f0", 1.2]} />
+            <T.PointLight position={[0, 5, 4]} intensity={1.8} color="#ffffff" distance={25} decay={2} />
 
-                <!-- Rim Backlight for sharp geometry separation -->
-                <T.DirectionalLight
-                    position={[0, 12, -10]}
-                    intensity={2.2}
-                    color="#009dd6"
-                />
+            <!-- True Scale 3D GLTF Model -->
+            <GLTF
+                url="3D/trueScale.glb"
+                position={[0, 0, 0]}
+                scale={0.2}
+                rotation={[0, Math.PI / 2, 0]}
+            />
+        </Canvas>
+    </div>
 
-                <!-- Natural Sky / Ground Ambient Fill -->
-                <T.HemisphereLight
-                    args={["#ffffff", "#e2e8f0", 1.2]}
-                />
-
-                <!-- Front Key Accent Light -->
-                <T.PointLight
-                    position={[0, 5, 4]}
-                    intensity={1.8}
-                    color="#ffffff"
-                    distance={25}
-                    decay={2}
-                />
-
-                <!-- True Scale 3D GLTF Model -->
-                <GLTF
-                    url="3D/trueScale.glb"
-                    position={[0, 0, 0]}
-                    scale={0.2}
-                    rotation={[0, Math.PI / 2, 0]}
-                />
-            </Canvas>
+    <!-- Bottom HUD Controls & Angle Presets -->
+    <div class="relative z-10 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 pt-2 border-t border-black/5 mt-auto">
+        <!-- Interaction Hint -->
+        <div class="flex items-center gap-1.5 bg-white/85 backdrop-blur-md px-2.5 py-1 border border-black/10 shadow-xs font-mono text-[9px] text-text/60 uppercase">
+            <span class="material-symbols-outlined text-[13px] text-primary">drag_pan</span>
+            <span>DRAG MOUSE TO ORBIT</span>
         </div>
 
-        <!-- BOTTOM HUD: Light Mode Stage Telemetry & Angle Keyframes -->
-        <div class="z-20 w-full max-w-5xl mx-auto flex flex-col gap-1.5 sm:gap-2.5 shrink-0 pb-1 sm:pb-2">
-            <!-- Stage Callout & Quick Angle Navigation -->
-            <div class="flex items-center justify-between gap-2">
-                <div class="bg-white/80 backdrop-blur-md px-2.5 py-1 border border-black/10 shadow-xs">
-                    <span class="font-mono text-[9px] sm:text-[10px] font-bold text-primary uppercase">
-                        {currentStage.title}
-                    </span>
-                </div>
-
-                <!-- Camera Keyframe Presets -->
-                <div class="flex items-center gap-1 bg-white/80 backdrop-blur-md p-1 border border-black/10 shadow-xs">
-                    {#each cameraKeyframes as kf, idx}
-                        <button
-                            onclick={() => jumpToStage(idx)}
-                            class="px-2 sm:px-2.5 py-0.5 sm:py-1 text-[9px] sm:text-[10px] font-mono font-bold uppercase tracking-wider transition cursor-pointer border {currentStage.title === kf.title ? 'bg-primary text-white border-primary shadow-xs' : 'bg-black/3 text-text/60 hover:text-text border-black/5'}"
-                            title={kf.title}
-                        >
-                            0{idx + 1}
-                        </button>
-                    {/each}
-                </div>
-            </div>
-
-            <!-- Scroll Progress Bar -->
-            <div class="w-full bg-black/10 h-1 rounded-full overflow-hidden">
-                <div
-                    class="h-full bg-primary transition-all duration-150"
-                    style="width: {Math.max(scrollProgress * 100, 3)}%;"
-                ></div>
-            </div>
-
-            <div class="flex items-center justify-between text-[8px] sm:text-[9px] font-mono text-text/40 uppercase">
-                <span>SCROLL TO EXPLORE</span>
-                <span>STAGE [{Math.round(scrollProgress * 100)}%]</span>
-            </div>
+        <!-- Camera Angle Preset Buttons -->
+        <div class="flex items-center gap-1 bg-white/85 backdrop-blur-md p-1 border border-black/10 shadow-xs overflow-x-auto scrollbar-none">
+            {#each presets as preset}
+                <button
+                    onclick={() => selectPreset(preset)}
+                    class="px-2 py-0.5 sm:px-2.5 sm:py-1 text-[9px] sm:text-[10px] font-mono font-bold uppercase tracking-wider transition cursor-pointer border shrink-0 {activePreset === preset.id ? 'bg-primary text-white border-primary shadow-xs' : 'bg-black/3 text-text/70 hover:text-text border-black/5'}"
+                    title={preset.title}
+                >
+                    {preset.label}
+                </button>
+            {/each}
         </div>
-
     </div>
 </div>

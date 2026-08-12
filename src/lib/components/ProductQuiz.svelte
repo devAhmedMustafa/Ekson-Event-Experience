@@ -210,10 +210,7 @@
     <div class="hidden md:flex w-68 shrink-0 bg-white p-4 shadow-xs border border-black/5 flex-col justify-between h-full font-sans">
         <div class="flex flex-col gap-2">
             <div class="flex items-center justify-between font-mono text-[9px] text-text/50 uppercase tracking-widest">
-                <div class="flex items-center gap-1">
-                    <span class="size-1.5 bg-primary"></span>
-                    <span>MODULE // 05</span>
-                </div>
+            
                 <span class="text-primary font-bold">INTERACTIVE</span>
             </div>
 

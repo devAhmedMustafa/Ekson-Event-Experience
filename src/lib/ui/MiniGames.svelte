@@ -116,13 +116,13 @@
 
 <svelte:window onkeydown={handleKeyDown} />
 
-<div class="w-full h-full min-h-[100dvh] md:h-screen max-w-6xl mx-auto px-3 sm:px-6 md:px-8 py-3 sm:py-4 flex flex-col justify-between select-none font-sans overflow-hidden">
+<div class="w-full h-full min-h-dvh md:h-screen max-w-6xl mx-auto px-3 sm:px-6 md:px-8 py-3 sm:py-4 flex flex-col justify-between select-none font-sans overflow-hidden">
     <!-- Clean Minimalist Header -->
     <div class="flex items-end justify-between mb-2 pb-1.5 border-b border-black/5 shrink-0">
         <div>
             <div class="flex items-center gap-2 font-mono text-[9px] sm:text-[10px] uppercase tracking-widest text-primary font-bold mb-0.5">
                 <span class="size-1.5 bg-primary"></span>
-                <span>04 / Interactive Gamification</span>
+                <span>06 / Interactive Gamification</span>
             </div>
             <h2 class="text-xl sm:text-2xl md:text-3xl font-extrabold text-text tracking-tight uppercase">
                 Mini Games Suite
@@ -157,7 +157,7 @@
     <!-- Main Viewport Surface -->
     <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
     <div
-        class="relative w-full h-[55vh] sm:h-[60vh] md:h-[65vh] max-h-[580px] bg-white/60 backdrop-blur-md overflow-hidden cursor-grab active:cursor-grabbing shrink-0"
+        class="relative w-full h-[55vh] sm:h-[60vh] md:h-[65vh] max-h-145 bg-white/60 backdrop-blur-md overflow-hidden cursor-grab active:cursor-grabbing shrink-0"
         ontouchstart={handleTouchStart}
         ontouchmove={handleTouchMove}
         ontouchend={handleTouchEnd}
