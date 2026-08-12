@@ -339,7 +339,7 @@
                         <!-- Circular Icon Hub -->
                         <div class="flex justify-center mt-1 mb-1">
                             <div class="size-8 sm:size-10 rounded-full flex items-center justify-center {plan.isPopular ? 'bg-primary/10 text-primary' : 'bg-slate-100 text-secondary'}">
-                                <span class="material-symbols-outlined text-[20px] sm:text-[22px]">
+                                <span class="material-symbols-rounded text-[20px] sm:text-[22px]">
                                     {plan.icon}
                                 </span>
                             </div>
@@ -367,7 +367,7 @@
                         <ul class="space-y-1 sm:space-y-1.5 font-sans text-[10px] sm:text-[11px] text-text/80 my-1.5">
                             {#each plan.features as feat}
                                 <li class="flex items-center gap-1.5 sm:gap-2">
-                                    <span class="material-symbols-outlined text-[14px] sm:text-[15px] text-primary shrink-0">
+                                    <span class="material-symbols-rounded text-[14px] sm:text-[15px] text-primary shrink-0">
                                         check_circle
                                     </span>
                                     <span class="leading-tight font-medium">{feat}</span>
@@ -379,10 +379,10 @@
                     <!-- Subscribe Button -->
                     <button
                         onclick={() => openModal(plan.name)}
-                        class="w-full mt-2 py-1.5 sm:py-2 px-3 rounded-lg text-[11px] sm:text-xs font-mono font-bold uppercase tracking-wider transition cursor-pointer flex items-center justify-center gap-1.5 {plan.isPopular ? 'bg-primary hover:bg-primary/90 text-white shadow-xs' : 'bg-slate-100 hover:bg-slate-200 text-text border border-black/5'}"
+                        class="w-full mt-2 py-2 px-3 rounded-full text-[11px] sm:text-xs font-mono font-bold uppercase tracking-wider transition cursor-pointer flex items-center justify-center gap-1.5 {plan.isPopular ? 'bg-primary hover:bg-primary/90 text-white shadow-xs' : 'bg-slate-100 hover:bg-slate-200 text-text border border-black/5'}"
                     >
                         <span>Subscribe</span>
-                        <span class="material-symbols-outlined text-[14px] sm:text-[15px]">arrow_forward</span>
+                        <span class="material-symbols-rounded text-[14px] sm:text-[15px]">arrow_forward</span>
                     </button>
                 </div>
             </div>
@@ -390,9 +390,9 @@
     </div>
 
     <!-- Bottom Highlights: ALL PLANS INCLUDE -->
-    <div class="w-full bg-white/70 backdrop-blur-md rounded-xl border border-black/5 p-2 sm:p-2.5 shadow-xs shrink-0 mt-1 sm:mt-2">
+    <div class="w-full bg-white/70 backdrop-blur-md rounded-2xl border border-black/5 p-3 sm:p-4 shadow-xs shrink-0 mt-1 sm:mt-2">
         <div class="text-center mb-1">
-            <span class="font-mono text-[8px] sm:text-[9px] text-text/50 font-bold uppercase tracking-widest bg-black/3 px-2 py-0.5 rounded-full border border-black/5">
+            <span class="font-mono text-[8px] sm:text-[9px] text-text/50 font-bold uppercase tracking-widest bg-black/3 px-3 py-0.5 rounded-full border border-black/5">
                 All Plans Include
             </span>
         </div>
@@ -400,7 +400,7 @@
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-1.5 sm:gap-2 text-left">
             {#each bottomInclusions as item}
                 <div class="flex items-start gap-1 sm:gap-1.5">
-                    <span class="material-symbols-outlined text-[15px] sm:text-[17px] text-primary shrink-0 mt-0.5">
+                    <span class="material-symbols-rounded text-[15px] sm:text-[17px] text-primary shrink-0 mt-0.5">
                         {item.icon}
                     </span>
                     <div class="flex flex-col">
@@ -421,7 +421,7 @@
         class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-3 sm:p-4 animate-fade-in"
         onclick={(e) => { if (e.target === e.currentTarget) closeModal(); }}
     >
-        <div class="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-black/10 overflow-hidden flex flex-col max-h-[92vh]">
+        <div class="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl border border-black/10 overflow-hidden flex flex-col max-h-[92vh]">
             <!-- Modal Header -->
             <div class="px-4 sm:px-6 py-3 sm:py-4 border-b border-black/5 flex items-center justify-between bg-slate-50/50 shrink-0">
                 <div>
@@ -435,10 +435,10 @@
                 </div>
                 <button
                     onclick={closeModal}
-                    class="size-7 sm:size-8 rounded-full bg-black/5 hover:bg-black/10 text-text/70 flex items-center justify-center transition cursor-pointer"
+                    class="size-8 rounded-full bg-black/5 hover:bg-black/10 text-text/70 flex items-center justify-center transition cursor-pointer"
                     aria-label="Close modal"
                 >
-                    <span class="material-symbols-outlined text-[18px]">close</span>
+                    <span class="material-symbols-rounded text-[18px]">close</span>
                 </button>
             </div>
 
@@ -448,7 +448,7 @@
                     <!-- Success Confirmation Screen -->
                     <div class="flex flex-col items-center text-center py-4 sm:py-6 gap-3">
                         <div class="size-14 sm:size-16 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-200">
-                            <span class="material-symbols-outlined text-[32px] sm:text-[36px]">check_circle</span>
+                            <span class="material-symbols-rounded text-[32px] sm:text-[36px]">check_circle</span>
                         </div>
                         <h4 class="text-lg sm:text-xl font-bold text-text">Subscription Request Received!</h4>
                         <p class="text-xs text-text/70 max-w-sm">
@@ -456,7 +456,7 @@
                         </p>
                         <button
                             onclick={closeModal}
-                            class="mt-3 px-6 py-2 bg-primary hover:bg-primary/90 text-white font-mono text-xs font-bold uppercase tracking-wider rounded-lg shadow-xs cursor-pointer transition"
+                            class="mt-3 px-6 py-2 bg-primary hover:bg-primary/90 text-white font-mono text-xs font-bold uppercase tracking-wider rounded-full shadow-xs cursor-pointer transition"
                         >
                             Done
                         </button>
@@ -465,8 +465,8 @@
                     <!-- Subscription Form -->
                     <form onsubmit={handleSubmit} novalidate class="space-y-3">
                         {#if submitError}
-                            <div class="p-2.5 bg-rose-50 border border-rose-200 rounded-lg text-rose-700 text-xs flex items-center gap-2">
-                                <span class="material-symbols-outlined text-[16px] shrink-0">error</span>
+                            <div class="p-2.5 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 text-xs flex items-center gap-2">
+                                <span class="material-symbols-rounded text-[16px] shrink-0">error</span>
                                 <span>{submitError}</span>
                             </div>
                         {/if}
@@ -483,7 +483,7 @@
                                 oninput={() => { if (touched.name) validateField("name"); }}
                                 onblur={() => { touched.name = true; validateField("name"); }}
                                 placeholder="e.g. Bob Smith"
-                                class="w-full px-3 py-1.5 sm:py-2 text-xs text-text bg-white border {errors.name && touched.name ? 'border-rose-500 ring-1 ring-rose-500/20' : 'border-black/15'} rounded-lg focus:outline-none focus:border-primary"
+                                class="w-full px-3.5 py-2 text-xs text-text bg-white border {errors.name && touched.name ? 'border-rose-500 ring-1 ring-rose-500/20' : 'border-black/15'} rounded-xl focus:outline-none focus:border-primary"
                             />
                             {#if errors.name && touched.name}
                                 <p class="text-[9px] text-rose-600 font-medium mt-0.5">{errors.name}</p>
@@ -502,7 +502,7 @@
                                 oninput={() => { if (touched.email) validateField("email"); }}
                                 onblur={() => { touched.email = true; validateField("email"); }}
                                 placeholder="e.g. name@domain.com"
-                                class="w-full px-3 py-1.5 sm:py-2 text-xs text-text bg-white border {errors.email && touched.email ? 'border-rose-500 ring-1 ring-rose-500/20' : 'border-black/15'} rounded-lg focus:outline-none focus:border-primary"
+                                class="w-full px-3.5 py-2 text-xs text-text bg-white border {errors.email && touched.email ? 'border-rose-500 ring-1 ring-rose-500/20' : 'border-black/15'} rounded-xl focus:outline-none focus:border-primary"
                             />
                             {#if errors.email && touched.email}
                                 <p class="text-[9px] text-rose-600 font-medium mt-0.5">{errors.email}</p>
@@ -521,7 +521,7 @@
                                 oninput={() => { if (touched.phone) validateField("phone"); }}
                                 onblur={() => { touched.phone = true; validateField("phone"); }}
                                 placeholder="e.g. +1-555-0100"
-                                class="w-full px-3 py-1.5 sm:py-2 text-xs text-text bg-white border {errors.phone && touched.phone ? 'border-rose-500 ring-1 ring-rose-500/20' : 'border-black/15'} rounded-lg focus:outline-none focus:border-primary"
+                                class="w-full px-3.5 py-2 text-xs text-text bg-white border {errors.phone && touched.phone ? 'border-rose-500 ring-1 ring-rose-500/20' : 'border-black/15'} rounded-xl focus:outline-none focus:border-primary"
                             />
                             {#if errors.phone && touched.phone}
                                 <p class="text-[9px] text-rose-600 font-medium mt-0.5">{errors.phone}</p>
@@ -537,7 +537,7 @@
                                 id="sub-plan"
                                 bind:value={formData.plan}
                                 onchange={() => { touched.plan = true; validateField("plan"); }}
-                                class="w-full px-3 py-1.5 sm:py-2 text-xs text-text bg-white border border-black/15 rounded-lg focus:outline-none focus:border-primary"
+                                class="w-full px-3.5 py-2 text-xs text-text bg-white border border-black/15 rounded-xl focus:outline-none focus:border-primary"
                             >
                                 <option value="ESSENTIAL">ESSENTIAL ($1,499)</option>
                                 <option value="MOST POPULAR">MOST POPULAR ($2,999)</option>
@@ -557,7 +557,7 @@
                                     min={todayStr}
                                     bind:value={formData.meetingDate}
                                     onchange={() => { touched.meetingDate = true; validateField("meetingDate"); }}
-                                    class="w-full px-3 py-1.5 sm:py-2 text-xs text-text bg-white border {errors.meetingDate && touched.meetingDate ? 'border-rose-500 ring-1 ring-rose-500/20' : 'border-black/15'} rounded-lg focus:outline-none focus:border-primary"
+                                    class="w-full px-3.5 py-2 text-xs text-text bg-white border {errors.meetingDate && touched.meetingDate ? 'border-rose-500 ring-1 ring-rose-500/20' : 'border-black/15'} rounded-xl focus:outline-none focus:border-primary"
                                 />
                                 {#if errors.meetingDate && touched.meetingDate}
                                     <p class="text-[9px] text-rose-600 font-medium mt-0.5">{errors.meetingDate}</p>
@@ -572,7 +572,7 @@
                                     id="sub-time"
                                     bind:value={formData.meetingTime}
                                     onchange={() => { touched.meetingTime = true; validateField("meetingTime"); }}
-                                    class="w-full px-3 py-1.5 sm:py-2 text-xs text-text bg-white border border-black/15 rounded-lg focus:outline-none focus:border-primary"
+                                    class="w-full px-3.5 py-2 text-xs text-text bg-white border border-black/15 rounded-xl focus:outline-none focus:border-primary"
                                 >
                                     {#each timeSlots as slot}
                                         <option value={slot}>{slot}</option>
@@ -586,14 +586,14 @@
                             <button
                                 type="submit"
                                 disabled={isSubmitting}
-                                class="w-full py-2 sm:py-2.5 px-4 bg-primary hover:bg-primary/90 text-white font-mono text-xs font-bold uppercase tracking-wider rounded-lg shadow-sm transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                                class="w-full py-2.5 px-4 bg-primary hover:bg-primary/90 text-white font-mono text-xs font-bold uppercase tracking-wider rounded-full shadow-sm transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {#if isSubmitting}
-                                    <span class="material-symbols-outlined text-[16px] animate-spin">progress_activity</span>
+                                    <span class="material-symbols-rounded text-[16px] animate-spin">progress_activity</span>
                                     <span>Submitting Request...</span>
                                 {:else}
                                     <span>Confirm Subscription Request</span>
-                                    <span class="material-symbols-outlined text-[16px]">send</span>
+                                    <span class="material-symbols-rounded text-[16px]">send</span>
                                 {/if}
                             </button>
                         </div>

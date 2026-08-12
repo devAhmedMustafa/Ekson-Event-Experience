@@ -141,17 +141,17 @@
             <div class="flex items-center gap-1">
                 <button
                     onclick={prevSlide}
-                    class="size-7 sm:size-8 bg-black/5 hover:bg-primary hover:text-white text-text flex items-center justify-center transition-colors active:scale-95 cursor-pointer"
+                    class="size-7 sm:size-8 bg-black/5 hover:bg-primary hover:text-white text-text rounded-full flex items-center justify-center transition-colors active:scale-95 cursor-pointer"
                     aria-label="Previous Slide"
                 >
-                    <span class="material-symbols-outlined text-[15px] sm:text-[16px]">arrow_back</span>
+                    <span class="material-symbols-rounded text-[15px] sm:text-[16px]">arrow_back</span>
                 </button>
                 <button
                     onclick={nextSlide}
-                    class="size-7 sm:size-8 bg-black/5 hover:bg-primary hover:text-white text-text flex items-center justify-center transition-colors active:scale-95 cursor-pointer"
+                    class="size-7 sm:size-8 bg-black/5 hover:bg-primary hover:text-white text-text rounded-full flex items-center justify-center transition-colors active:scale-95 cursor-pointer"
                     aria-label="Next Slide"
                 >
-                    <span class="material-symbols-outlined text-[15px] sm:text-[16px]">arrow_forward</span>
+                    <span class="material-symbols-rounded text-[15px] sm:text-[16px]">arrow_forward</span>
                 </button>
             </div>
         </div>
@@ -160,7 +160,7 @@
     <!-- Main Viewport Surface -->
     <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
     <div
-        class="relative w-full h-[55vh] sm:h-[60vh] md:h-[65vh] max-h-145 bg-white/60 backdrop-blur-md overflow-hidden cursor-grab active:cursor-grabbing shrink-0"
+        class="relative w-full h-[55vh] sm:h-[60vh] md:h-[65vh] max-h-145 bg-white/60 backdrop-blur-md rounded-2xl border border-black/10 shadow-xs overflow-hidden cursor-grab active:cursor-grabbing shrink-0"
         ontouchstart={handleTouchStart}
         ontouchmove={handleTouchMove}
         ontouchend={handleTouchEnd}
@@ -209,10 +209,10 @@
         {#each slides as slide, idx}
             <button
                 onclick={() => goToSlide(idx)}
-                class="flex items-center justify-between px-2.5 sm:px-3 py-1.5 text-left transition-all duration-200 cursor-pointer shrink-0 md:shrink {currentIndex === idx ? 'bg-primary text-white shadow-xs' : 'bg-white/70 text-text/70 hover:bg-white hover:text-text border border-black/5'}"
+                class="flex items-center justify-between px-3 py-1.5 text-left rounded-xl transition-all duration-200 cursor-pointer shrink-0 md:shrink {currentIndex === idx ? 'bg-primary text-white shadow-xs' : 'bg-white/70 text-text/70 hover:bg-white hover:text-text border border-black/5'}"
             >
                 <div class="flex items-center gap-1.5 truncate">
-                    <span class="material-symbols-outlined text-[15px] sm:text-[16px] {currentIndex === idx ? 'text-white' : 'text-primary'} shrink-0">
+                    <span class="material-symbols-rounded text-[15px] sm:text-[16px] {currentIndex === idx ? 'text-white' : 'text-primary'} shrink-0">
                         {slide.icon}
                     </span>
                     <span class="text-[11px] sm:text-xs font-bold tracking-tight truncate">{slide.title}</span>

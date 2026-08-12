@@ -134,21 +134,21 @@
         <div class="pointer-events-auto flex items-center gap-1">
             <button
                 onclick={toggleAutoRotate}
-                class="size-7 sm:size-8 bg-black/40 hover:bg-black/60 backdrop-blur-md text-white flex items-center justify-center border border-white/10 shadow-xs transition cursor-pointer"
+                class="size-7 sm:size-8 bg-black/40 hover:bg-black/60 backdrop-blur-md text-white rounded-full flex items-center justify-center border border-white/10 shadow-xs transition cursor-pointer"
                 title={autoRotate ? "Pause Auto-Rotation" : "Enable Auto-Rotation"}
                 aria-label="Toggle Auto-Rotation"
             >
-                <span class="material-symbols-outlined text-[16px] {autoRotate ? 'text-primary animate-spin' : 'text-white/60'}">
+                <span class="material-symbols-rounded text-[16px] {autoRotate ? 'text-primary animate-spin' : 'text-white/60'}">
                     sync
                 </span>
             </button>
             <button
                 onclick={resetView}
-                class="size-7 sm:size-8 bg-black/40 hover:bg-black/60 backdrop-blur-md text-white flex items-center justify-center border border-white/10 shadow-xs transition cursor-pointer"
+                class="size-7 sm:size-8 bg-black/40 hover:bg-black/60 backdrop-blur-md text-white rounded-full flex items-center justify-center border border-white/10 shadow-xs transition cursor-pointer"
                 title="Reset View"
                 aria-label="Reset View"
             >
-                <span class="material-symbols-outlined text-[16px] text-white/80">
+                <span class="material-symbols-rounded text-[16px] text-white/80">
                     center_focus_strong
                 </span>
             </button>
@@ -176,34 +176,34 @@
     <!-- Bottom HUD Controls & Directional Navigation -->
     <div class="relative z-10 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 pt-2 border-t border-white/10 mt-auto pointer-events-none">
         <!-- Interaction Hint -->
-        <div class="flex items-center gap-1.5 bg-black/50 backdrop-blur-md px-2.5 py-1 border border-white/10 shadow-xs font-mono text-[9px] text-white/80 uppercase pointer-events-auto">
-            <span class="material-symbols-outlined text-[13px] text-primary">touch_app</span>
+        <div class="flex items-center gap-1.5 bg-black/50 backdrop-blur-md px-3 py-1 rounded-full border border-white/10 shadow-xs font-mono text-[9px] text-white/80 uppercase pointer-events-auto">
+            <span class="material-symbols-rounded text-[13px] text-primary">touch_app</span>
             <span>DRAG HORIZONTALLY (360°)</span>
         </div>
 
         <!-- Cardinal Direction Quick Views -->
-        <div class="flex items-center gap-1 bg-black/50 backdrop-blur-md p-1 border border-white/10 shadow-xs pointer-events-auto overflow-x-auto scrollbar-none">
+        <div class="flex items-center gap-1 bg-black/50 backdrop-blur-md p-1 rounded-full border border-white/10 shadow-xs pointer-events-auto overflow-x-auto scrollbar-none">
             <button
                 onclick={() => jumpDirection(0)}
-                class="px-2 py-0.5 text-[9px] font-mono font-bold uppercase tracking-wider transition cursor-pointer border bg-white/10 text-white hover:bg-primary border-white/10"
+                class="px-2.5 py-0.5 text-[9px] font-mono font-bold uppercase tracking-wider rounded-full transition cursor-pointer border bg-white/10 text-white hover:bg-primary border-white/10"
             >
                 NORTH
             </button>
             <button
                 onclick={() => jumpDirection(Math.PI / 2)}
-                class="px-2 py-0.5 text-[9px] font-mono font-bold uppercase tracking-wider transition cursor-pointer border bg-white/10 text-white hover:bg-primary border-white/10"
+                class="px-2.5 py-0.5 text-[9px] font-mono font-bold uppercase tracking-wider rounded-full transition cursor-pointer border bg-white/10 text-white hover:bg-primary border-white/10"
             >
                 EAST
             </button>
             <button
                 onclick={() => jumpDirection(Math.PI)}
-                class="px-2 py-0.5 text-[9px] font-mono font-bold uppercase tracking-wider transition cursor-pointer border bg-white/10 text-white hover:bg-primary border-white/10"
+                class="px-2.5 py-0.5 text-[9px] font-mono font-bold uppercase tracking-wider rounded-full transition cursor-pointer border bg-white/10 text-white hover:bg-primary border-white/10"
             >
                 SOUTH
             </button>
             <button
                 onclick={() => jumpDirection(-Math.PI / 2)}
-                class="px-2 py-0.5 text-[9px] font-mono font-bold uppercase tracking-wider transition cursor-pointer border bg-white/10 text-white hover:bg-primary border-white/10"
+                class="px-2.5 py-0.5 text-[9px] font-mono font-bold uppercase tracking-wider rounded-full transition cursor-pointer border bg-white/10 text-white hover:bg-primary border-white/10"
             >
                 WEST
             </button>

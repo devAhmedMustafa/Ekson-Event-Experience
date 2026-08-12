@@ -37,7 +37,7 @@
     </div>
 
     <!-- Bottom Metrics Banner -->
-    <div class="w-full bg-white/70 backdrop-blur-md rounded-xl border border-black/5 p-2.5 sm:p-3 md:p-4 shadow-xs shrink-0">
+    <div class="w-full bg-white/70 backdrop-blur-md rounded-2xl border border-black/5 p-3 sm:p-4 md:p-5 shadow-xs shrink-0">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 text-center divide-x divide-black/5">
             {#each metrics as m}
                 <div class="flex flex-col items-center px-1 sm:px-2">

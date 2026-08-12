@@ -53,11 +53,11 @@
         <div class="pointer-events-auto flex items-center gap-1">
             <button
                 onclick={toggleAutoRotate}
-                class="size-7 sm:size-8 bg-white/90 hover:bg-white text-text flex items-center justify-center border border-black/10 shadow-xs transition cursor-pointer"
+                class="size-7 sm:size-8 bg-white/80 hover:bg-white text-text rounded-full flex items-center justify-center border border-black/10 shadow-xs transition cursor-pointer"
                 title={autoRotate ? "Pause Auto-Rotation" : "Enable Auto-Rotation"}
                 aria-label="Toggle Auto-Rotation"
             >
-                <span class="material-symbols-outlined text-[16px] {autoRotate ? 'text-primary animate-spin' : 'text-text/60'}">
+                <span class="material-symbols-rounded text-[16px] {autoRotate ? 'text-primary animate-spin' : 'text-text/60'}">
                     sync
                 </span>
             </button>
@@ -104,17 +104,17 @@
     <!-- Bottom HUD Controls & Angle Presets -->
     <div class="relative z-10 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 pt-2 border-t border-black/5 mt-auto">
         <!-- Interaction Hint -->
-        <div class="flex items-center gap-1.5 bg-white/85 backdrop-blur-md px-2.5 py-1 border border-black/10 shadow-xs font-mono text-[9px] text-text/60 uppercase">
-            <span class="material-symbols-outlined text-[13px] text-primary">drag_pan</span>
+        <div class="flex items-center gap-1.5 bg-white/85 backdrop-blur-md px-3 py-1 rounded-full border border-black/10 shadow-xs font-mono text-[9px] text-text/60 uppercase">
+            <span class="material-symbols-rounded text-[13px] text-primary">drag_pan</span>
             <span>DRAG MOUSE TO ORBIT</span>
         </div>
 
         <!-- Camera Angle Preset Buttons -->
-        <div class="flex items-center gap-1 bg-white/85 backdrop-blur-md p-1 border border-black/10 shadow-xs overflow-x-auto scrollbar-none">
+        <div class="flex items-center gap-1 bg-white/85 backdrop-blur-md p-1 rounded-full border border-black/10 shadow-xs overflow-x-auto scrollbar-none">
             {#each presets as preset}
                 <button
                     onclick={() => selectPreset(preset)}
-                    class="px-2 py-0.5 sm:px-2.5 sm:py-1 text-[9px] sm:text-[10px] font-mono font-bold uppercase tracking-wider transition cursor-pointer border shrink-0 {activePreset === preset.id ? 'bg-primary text-white border-primary shadow-xs' : 'bg-black/3 text-text/70 hover:text-text border-black/5'}"
+                    class="px-2.5 py-0.5 sm:px-3 sm:py-1 text-[9px] sm:text-[10px] font-mono font-bold uppercase tracking-wider rounded-full transition cursor-pointer border shrink-0 {activePreset === preset.id ? 'bg-primary text-white border-primary shadow-xs' : 'bg-black/3 text-text/70 hover:text-text border-black/5'}"
                     title={preset.title}
                 >
                     {preset.label}

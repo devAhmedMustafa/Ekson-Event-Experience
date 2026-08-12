@@ -28,14 +28,14 @@
         </div>
 
         <!-- 50/50 Split 3D Viewports Container -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 flex-1 w-full my-auto max-h-[74vh] md:max-h-[78vh] overflow-hidden border border-black/10 shadow-xs">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 flex-1 w-full my-auto max-h-[74vh] md:max-h-[78vh] overflow-hidden">
             <!-- 360 Tour - Left Half -->
-            <div class="w-full h-[38vh] md:h-full relative overflow-hidden border-b md:border-b-0 md:border-r border-black/10 bg-slate-900">
+            <div class="w-full h-[38vh] md:h-full relative overflow-hidden rounded-2xl border border-black/10 shadow-xs bg-slate-900">
                 <Tour360 />
             </div>
 
             <!-- True Scale Demo - Right Half -->
-            <div class="w-full h-[38vh] md:h-full relative overflow-hidden bg-slate-50">
+            <div class="w-full h-[38vh] md:h-full relative overflow-hidden rounded-2xl border border-black/10 shadow-xs bg-slate-50">
                 <TrueScaleDemo />
             </div>
         </div>

@@ -39,10 +39,10 @@
         <!-- Back to Top Button -->
         <button
             onclick={scrollToTop}
-            class="px-3 sm:px-3.5 py-1 sm:py-1.5 bg-white hover:bg-slate-50 text-text text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider border border-black/10 shadow-xs flex items-center gap-1.5 cursor-pointer transition shrink-0"
+            class="px-3.5 sm:px-4 py-1 sm:py-1.5 bg-white hover:bg-slate-50 text-text text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider rounded-full border border-black/10 shadow-xs flex items-center gap-1.5 cursor-pointer transition shrink-0"
         >
             <span>Back to Top</span>
-            <span class="material-symbols-outlined text-[14px] sm:text-[16px] text-primary">arrow_upward</span>
+            <span class="material-symbols-rounded text-[14px] sm:text-[16px] text-primary">arrow_upward</span>
         </button>
     </div>
 
@@ -83,17 +83,17 @@
             </span>
             <div class="space-y-1.5 sm:space-y-2 text-[11px] sm:text-xs text-text/80">
                 <div class="flex items-start gap-1.5">
-                    <span class="material-symbols-outlined text-[14px] sm:text-[16px] text-primary shrink-0 mt-0.5">mail</span>
+                    <span class="material-symbols-rounded text-[14px] sm:text-[16px] text-primary shrink-0 mt-0.5">mail</span>
                     <a href="mailto:events@ekson.com" class="hover:text-primary transition font-mono break-all">
                         events@ekson.com
                     </a>
                 </div>
                 <div class="flex items-start gap-1.5">
-                    <span class="material-symbols-outlined text-[14px] sm:text-[16px] text-primary shrink-0 mt-0.5">call</span>
+                    <span class="material-symbols-rounded text-[14px] sm:text-[16px] text-primary shrink-0 mt-0.5">call</span>
                     <span class="font-mono">+966 11 000 0000</span>
                 </div>
                 <div class="flex items-start gap-1.5">
-                    <span class="material-symbols-outlined text-[14px] sm:text-[16px] text-primary shrink-0 mt-0.5">schedule</span>
+                    <span class="material-symbols-rounded text-[14px] sm:text-[16px] text-primary shrink-0 mt-0.5">schedule</span>
                     <span class="text-[10px] sm:text-[11px] text-text/60">Sun-Thu: 09:00-18:00</span>
                 </div>
             </div>
@@ -109,8 +109,8 @@
             </p>
 
             {#if newsletterSubscribed}
-                <div class="p-2 bg-emerald-50 border border-emerald-200 text-emerald-700 text-[10px] sm:text-[11px] font-medium flex items-center gap-1.5">
-                    <span class="material-symbols-outlined text-[15px]">check_circle</span>
+                <div class="p-2.5 bg-emerald-50 border border-emerald-200 text-emerald-700 text-[10px] sm:text-[11px] font-medium rounded-xl flex items-center gap-1.5">
+                    <span class="material-symbols-rounded text-[15px]">check_circle</span>
                     <span>Subscribed successfully!</span>
                 </div>
             {:else}
@@ -120,11 +120,11 @@
                         bind:value={newsletterEmail}
                         placeholder="your@email.com"
                         required
-                        class="flex-1 min-w-0 px-2.5 py-1 sm:py-1.5 text-[11px] sm:text-xs text-text bg-white border border-black/15 rounded-none focus:outline-none focus:border-primary"
+                        class="flex-1 min-w-0 px-3 py-1.5 text-[11px] sm:text-xs text-text bg-white border border-black/15 rounded-full focus:outline-none focus:border-primary"
                     />
                     <button
                         type="submit"
-                        class="px-3 py-1 sm:py-1.5 bg-primary hover:bg-primary/90 text-white font-mono text-[9px] sm:text-[10px] font-bold uppercase tracking-wider transition cursor-pointer shrink-0"
+                        class="px-3.5 py-1.5 bg-primary hover:bg-primary/90 text-white font-mono text-[9px] sm:text-[10px] font-bold uppercase tracking-wider rounded-full transition cursor-pointer shrink-0"
                     >
                         Join
                     </button>

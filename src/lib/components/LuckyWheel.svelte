@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { onMount } from "svelte";
+
     interface Prize {
         code: string;
         label: string;
@@ -20,6 +22,34 @@
     let currentRotation = $state(0);
     let isSpinning = $state(false);
     let selectedPrize = $state<string | null>(null);
+    let brandLogo = $state<string | null>(null);
+    let brandName = $state<string | null>(null);
+
+    const STORAGE_KEY = "ekson_brand_profile";
+
+    function loadBrandLogo() {
+        try {
+            const saved = sessionStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                brandLogo = parsed.brandLogo || null;
+                brandName = parsed.companyName || null;
+                return;
+            }
+            brandLogo = null;
+            brandName = null;
+        } catch (e) {
+            brandLogo = null;
+            brandName = null;
+        }
+    }
+
+    onMount(() => {
+        loadBrandLogo();
+        const onBrandUpdated = () => loadBrandLogo();
+        window.addEventListener("ekson_brand_updated", onBrandUpdated);
+        return () => window.removeEventListener("ekson_brand_updated", onBrandUpdated);
+    });
 
     const numPrizes = prizes.length;
     const arc = 360 / numPrizes;
@@ -49,7 +79,7 @@
         <!-- Mobile Top Hint -->
         <div class="md:hidden flex items-center justify-between w-full pb-1 text-[10px] font-mono text-text/60">
             <span class="font-bold text-primary">EXP_01 // LUCKY WHEEL</span>
-            <span>TAP SPIN BUTTON</span>
+            <span>TAP CENTER TO SPIN</span>
         </div>
 
         <div class="relative flex items-center justify-center size-56 sm:size-68 md:size-76 my-auto">
@@ -99,19 +129,35 @@
                 </svg>
             </div>
 
-            <!-- Center Hub Spin Trigger Button -->
+            <!-- Center Hub Spin Trigger Button with Brand Logo -->
             <button
                 onclick={spin}
                 disabled={isSpinning}
-                class="absolute size-14 sm:size-16 rounded-full bg-white text-text font-mono text-xs font-bold tracking-widest uppercase flex flex-col items-center justify-center hover:bg-primary hover:text-white transition-colors disabled:opacity-75 disabled:cursor-not-allowed z-10 shadow-lg border border-black/5 cursor-pointer"
+                class="group absolute size-16 sm:size-20 rounded-full bg-white text-text font-mono text-xs font-bold tracking-widest uppercase flex flex-col items-center justify-center hover:scale-105 transition-all duration-200 disabled:opacity-85 disabled:cursor-not-allowed z-10 shadow-xl border-2 border-primary/40 cursor-pointer overflow-hidden p-1"
+                title={brandName ? `${brandName} - Click to Spin` : "Click to Spin"}
             >
-                <span class="material-symbols-outlined text-[16px] {isSpinning ? 'animate-spin text-primary' : ''}">sync</span>
-                <span class="text-[9px] mt-0.5">{isSpinning ? "LOCK" : "SPIN"}</span>
+                {#if brandLogo}
+                    <div class="relative w-full h-full rounded-full overflow-hidden flex items-center justify-center bg-white p-1">
+                        <img
+                            src={brandLogo}
+                            alt={brandName || "Brand Logo"}
+                            class="w-full h-full object-contain"
+                        />
+                        <!-- Spin Hover Overlay -->
+                        <div class="absolute inset-0 bg-primary/85 text-white rounded-full flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 {isSpinning ? 'opacity-100' : ''} transition-opacity duration-200">
+                            <span class="material-symbols-rounded text-[16px] sm:text-[18px] {isSpinning ? 'animate-spin' : ''}">sync</span>
+                            <span class="text-[8px] font-bold tracking-wider">{isSpinning ? "LOCK" : "SPIN"}</span>
+                        </div>
+                    </div>
+                {:else}
+                    <span class="material-symbols-rounded text-[18px] {isSpinning ? 'animate-spin text-primary' : 'text-primary'}">sync</span>
+                    <span class="text-[9px] mt-0.5">{isSpinning ? "LOCK" : "SPIN"}</span>
+                {/if}
             </button>
 
             {#if selectedPrize}
-                <div class="absolute -top-10 z-30 px-3 py-1 bg-white text-emerald-700 font-mono text-[11px] font-bold uppercase tracking-wider shadow-md border border-emerald-500/30 animate-bounce flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[14px] text-emerald-600">verified</span>
+                <div class="absolute -top-10 z-30 px-3.5 py-1 bg-white text-emerald-700 font-mono text-[11px] font-bold uppercase tracking-wider rounded-full shadow-md border border-emerald-500/30 animate-bounce flex items-center gap-1">
+                    <span class="material-symbols-rounded text-[14px] text-emerald-600">verified</span>
                     <span>AWARD: {selectedPrize}</span>
                 </div>
             {/if}
@@ -119,16 +165,15 @@
     </div>
 
     <!-- DESKTOP DESCRIPTION WINDOW (HIDDEN ON MOBILE TO PRIORITIZE GAMEPLAY) -->
-    <div class="hidden md:flex w-68 shrink-0 bg-white p-4 shadow-xs border border-black/5 flex-col justify-between h-full">
+    <div class="hidden md:flex w-68 shrink-0 bg-white p-4 shadow-xs border border-black/5 rounded-2xl flex-col justify-between h-full">
         <div class="flex flex-col gap-2">
             <div class="flex items-center justify-between font-mono text-[9px] text-text/50 uppercase tracking-widest">
-            
                 <span class="text-primary font-bold">READY</span>
             </div>
 
             <h3 class="text-base font-extrabold uppercase tracking-tight text-text flex items-center justify-between">
                 <span>Lucky Wheel</span>
-                <span class="material-symbols-outlined text-[18px] text-primary">rotate_right</span>
+                <span class="material-symbols-rounded text-[18px] text-primary">rotate_right</span>
             </h3>
 
             <p class="text-xs text-text/70 leading-relaxed">
@@ -136,11 +181,11 @@
             </p>
 
             <div class="grid grid-cols-2 gap-2 pt-2 mt-1 border-t border-black/5 font-mono text-[10px]">
-                <div class="p-1.5 bg-black/[0.02] flex flex-col">
+                <div class="p-1.5 bg-black/[0.02] rounded-lg flex flex-col">
                     <span class="text-text/40 text-[8px] uppercase">ODDS</span>
                     <span class="font-bold text-text">WEIGHTED</span>
                 </div>
-                <div class="p-1.5 bg-black/[0.02] flex flex-col">
+                <div class="p-1.5 bg-black/[0.02] rounded-lg flex flex-col">
                     <span class="text-text/40 text-[8px] uppercase">SYNC</span>
                     <span class="font-bold text-primary">REALTIME</span>
                 </div>
@@ -150,9 +195,9 @@
         <button
             onclick={spin}
             disabled={isSpinning}
-            class="mt-3 w-full py-2 bg-primary hover:bg-primary/90 text-white font-mono text-[11px] font-bold uppercase tracking-wider transition disabled:opacity-50 flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
+            class="mt-3 w-full py-2 bg-primary hover:bg-primary/90 text-white font-mono text-[11px] font-bold uppercase tracking-wider rounded-xl transition disabled:opacity-50 flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
         >
-            <span class="material-symbols-outlined text-[14px]">play_arrow</span>
+            <span class="material-symbols-rounded text-[14px]">play_arrow</span>
             <span>{isSpinning ? "Executing..." : "Spin Wheel"}</span>
         </button>
     </div>

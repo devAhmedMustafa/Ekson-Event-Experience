@@ -94,7 +94,7 @@
     <!-- 4 Quarters Grid (2x2 Screen Division) -->
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3.5 my-auto w-full flex-1 max-h-[82vh] py-1">
         {#each arApps as app, idx}
-            <div class="group relative bg-white border border-black/10 hover:border-primary/40 transition-all duration-200 p-2.5 sm:p-3.5 shadow-xs flex flex-row items-stretch justify-between gap-3 sm:gap-4 overflow-hidden">
+            <div class="group relative bg-white border border-black/10 hover:border-primary/40 transition-all duration-200 p-3 sm:p-4 rounded-2xl shadow-xs flex flex-row items-stretch justify-between gap-3 sm:gap-4 overflow-hidden">
                 
                 <!-- Left Details & Big Prominent QR Code Panel -->
                 <div class="flex-1 flex flex-col justify-between overflow-hidden">
@@ -115,18 +115,18 @@
                     <!-- Center Big QR Code & Scan Instructions -->
                     <div class="flex items-center gap-2.5 sm:gap-3 my-auto py-1">
                         <!-- Big High-Resolution QR Container -->
-                        <div class="relative size-20 sm:size-24 md:size-28 lg:size-32 p-1.5 bg-white border border-black/15 shrink-0 shadow-sm flex items-center justify-center">
+                        <div class="relative size-20 sm:size-24 md:size-28 lg:size-32 p-2 bg-white border border-black/15 rounded-xl shrink-0 shadow-sm flex items-center justify-center">
                             <img
                                 src={app.qrImage}
                                 alt="{app.title} QR Code"
-                                class="w-full h-full object-contain"
+                                class="w-full h-full object-contain rounded-md"
                             />
                         </div>
                         <div class="flex flex-col gap-0.5 sm:gap-1 font-mono text-[8px] sm:text-[9px] text-text/70">
                             <span class="font-bold text-text uppercase tracking-wide">SCAN TO LAUNCH</span>
                             <span class="text-[8px] sm:text-[9px] text-text/50">Point phone camera</span>
-                            <div class="flex items-center gap-1 mt-0.5 px-1.5 py-0.5 bg-primary/10 border border-primary/20 text-primary w-fit">
-                                <span class="material-symbols-outlined text-[12px] sm:text-[14px]">qr_code_scanner</span>
+                            <div class="flex items-center gap-1 mt-0.5 px-2 py-0.5 bg-primary/10 border border-primary/20 text-primary rounded-full w-fit">
+                                <span class="material-symbols-rounded text-[12px] sm:text-[14px]">qr_code_scanner</span>
                                 <span class="text-[8px] sm:text-[9px] font-bold uppercase">INSTANT AR</span>
                             </div>
                         </div>
@@ -135,7 +135,7 @@
                     <!-- Tech Tags -->
                     <div class="flex items-center gap-1 font-mono text-[8px] sm:text-[9px] text-text/60 overflow-hidden">
                         {#each app.tech as t}
-                            <span class="px-1.5 py-0.5 bg-black/3 border border-black/5 truncate font-medium">
+                            <span class="px-2 py-0.5 bg-black/3 border border-black/5 rounded-full truncate font-medium">
                                 {t}
                             </span>
                         {/each}
@@ -143,7 +143,7 @@
                 </div>
 
                 <!-- Right Video Preview Stage (Compact & Proportional) -->
-                <div class="w-28 sm:w-36 md:w-44 lg:w-52 h-full min-h-25 relative bg-slate-900 overflow-hidden border border-black/10 shrink-0 group/vid">
+                <div class="w-28 sm:w-36 md:w-44 lg:w-52 h-full min-h-25 relative bg-slate-900 overflow-hidden rounded-xl border border-black/10 shrink-0 group/vid">
                     <!-- svelte-ignore a11y_media_has_caption -->
                     <video
                         bind:this={videoElements[idx]}
@@ -158,10 +158,10 @@
                     <!-- Play / Pause Overlay Toggle -->
                     <button
                         onclick={() => toggleVideo(idx)}
-                        class="absolute bottom-1.5 right-1.5 size-6 bg-black/60 hover:bg-black/80 text-white flex items-center justify-center backdrop-blur-xs transition cursor-pointer"
+                        class="absolute bottom-1.5 right-1.5 size-6 bg-black/60 hover:bg-black/80 text-white rounded-full flex items-center justify-center backdrop-blur-xs transition cursor-pointer"
                         aria-label="Toggle Video Playback"
                     >
-                        <span class="material-symbols-outlined text-[14px]">
+                        <span class="material-symbols-rounded text-[14px]">
                             {videoPlayingStates[idx] ? "pause" : "play_arrow"}
                         </span>
                     </button>

@@ -350,7 +350,7 @@
                 class="relative size-24 sm:size-28 md:size-34 rounded-full bg-white shadow-xl border flex flex-col items-center justify-center transition-all duration-300 cursor-pointer {isRecording ? 'border-rose-500 ring-4 ring-rose-400/30 scale-105 shadow-rose-200 shadow-2xl' : isSpeaking ? 'border-primary ring-4 ring-primary/20 scale-105 shadow-primary/25 shadow-2xl' : 'border-black/5 hover:border-primary/40'}"
                 title={isRecording ? "Click to Stop Recording & Send" : isSpeaking ? "Click to Pause" : "Click to Speak"}
             >
-                <span class="material-symbols-outlined text-[32px] sm:text-[40px] md:text-[48px] transition-all {isRecording ? 'text-rose-600 animate-pulse' : isGenerating ? 'text-primary animate-spin' : isSpeaking ? 'text-primary animate-pulse' : 'text-primary'}">
+                <span class="material-symbols-rounded text-[32px] sm:text-[40px] md:text-[48px] transition-all {isRecording ? 'text-rose-600 animate-pulse' : isGenerating ? 'text-primary animate-spin' : isSpeaking ? 'text-primary animate-pulse' : 'text-primary'}">
                     {isGenerating ? "progress_activity" : isRecording ? "mic" : isSpeaking ? "graphic_eq" : audioSrc ? (isAudioPaused ? "play_arrow" : "pause") : "mic"}
                 </span>
 
@@ -381,7 +381,7 @@
             </p>
 
             {#if lastUserQuery}
-                <div class="flex items-center gap-1.5 px-2.5 py-1 bg-white border border-black/5 text-[10px] sm:text-[11px] text-text/60 max-w-xs sm:max-w-sm truncate shadow-xs">
+                <div class="flex items-center gap-1.5 px-3 py-1 bg-white border border-black/5 text-[10px] sm:text-[11px] text-text/60 max-w-xs sm:max-w-sm truncate shadow-xs rounded-full">
                     <span class="font-bold text-primary font-mono text-[9px] sm:text-[10px]">YOU:</span>
                     <span class="truncate">"{lastUserQuery}"</span>
                 </div>
@@ -393,9 +393,9 @@
                 <button
                     onclick={togglePlayback}
                     disabled={!audioSrc || isGenerating || isRecording}
-                    class="px-2.5 sm:px-3.5 py-1 sm:py-1.5 bg-white hover:bg-slate-50 text-text border border-black/10 shadow-xs text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider flex items-center gap-1 cursor-pointer transition disabled:opacity-40 disabled:cursor-not-allowed"
+                    class="px-3 sm:px-4 py-1 sm:py-1.5 bg-white hover:bg-slate-50 text-text border border-black/10 shadow-xs text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider rounded-full flex items-center gap-1 cursor-pointer transition disabled:opacity-40 disabled:cursor-not-allowed"
                 >
-                    <span class="material-symbols-outlined text-[14px] sm:text-[16px] text-primary">
+                    <span class="material-symbols-rounded text-[14px] sm:text-[16px] text-primary">
                         {isSpeaking ? "pause" : "play_arrow"}
                     </span>
                     <span>{isSpeaking ? "Pause" : "Play"}</span>
@@ -405,10 +405,10 @@
                 <button
                     onclick={replayAudio}
                     disabled={!audioSrc || isGenerating || isRecording}
-                    class="px-2.5 sm:px-3 py-1 sm:py-1.5 bg-white hover:bg-slate-50 text-text border border-black/10 shadow-xs text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider flex items-center gap-1 cursor-pointer transition disabled:opacity-40 disabled:cursor-not-allowed"
+                    class="px-3 sm:px-3.5 py-1 sm:py-1.5 bg-white hover:bg-slate-50 text-text border border-black/10 shadow-xs text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider rounded-full flex items-center gap-1 cursor-pointer transition disabled:opacity-40 disabled:cursor-not-allowed"
                     title="Replay from start"
                 >
-                    <span class="material-symbols-outlined text-[14px] sm:text-[16px] text-secondary">
+                    <span class="material-symbols-rounded text-[14px] sm:text-[16px] text-secondary">
                         replay
                     </span>
                     <span class="hidden sm:inline">Replay</span>
@@ -417,10 +417,10 @@
                 <!-- Mute / Unmute Button -->
                 <button
                     onclick={toggleMute}
-                    class="px-2 sm:px-2.5 py-1 sm:py-1.5 bg-white hover:bg-slate-50 text-text border border-black/10 shadow-xs text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider flex items-center gap-1 cursor-pointer transition {isMuted ? 'bg-rose-50 text-rose-600 border-rose-200' : ''}"
+                    class="px-2.5 sm:px-3 py-1 sm:py-1.5 bg-white hover:bg-slate-50 text-text border border-black/10 shadow-xs text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider rounded-full flex items-center gap-1 cursor-pointer transition {isMuted ? 'bg-rose-50 text-rose-600 border-rose-200' : ''}"
                     title={isMuted ? "Unmute Voice" : "Mute Voice"}
                 >
-                    <span class="material-symbols-outlined text-[14px] sm:text-[16px] {isMuted ? 'text-rose-600' : 'text-text/70'}">
+                    <span class="material-symbols-rounded text-[14px] sm:text-[16px] {isMuted ? 'text-rose-600' : 'text-text/70'}">
                         {isMuted ? "volume_off" : "volume_up"}
                     </span>
                     <span class="hidden sm:inline">{isMuted ? "Muted" : "Mute"}</span>
@@ -437,7 +437,7 @@
                 <button
                     onclick={() => sendTextMessage(prompt)}
                     disabled={isGenerating || isRecording}
-                    class="px-2.5 py-1 bg-white hover:bg-primary/10 hover:text-primary text-text/70 text-[9px] sm:text-[10px] font-mono whitespace-nowrap transition cursor-pointer border border-black/5 shadow-xs disabled:opacity-50 shrink-0"
+                    class="px-3 py-1 bg-white hover:bg-primary/10 hover:text-primary text-text/70 text-[9px] sm:text-[10px] font-mono whitespace-nowrap rounded-full transition cursor-pointer border border-black/5 shadow-xs disabled:opacity-50 shrink-0"
                 >
                     {prompt}
                 </button>
@@ -445,16 +445,16 @@
         </div>
 
         <!-- Clean Input & Mic Control Bar -->
-        <div class="w-full relative flex items-center bg-white border border-black/10 shadow-md p-1 sm:p-1.5 transition-focus-within focus-within:border-primary gap-1">
+        <div class="w-full relative flex items-center bg-white border border-black/10 rounded-2xl shadow-md p-1.5 sm:p-2 transition-focus-within focus-within:border-primary gap-1.5">
             <!-- Dedicated Microphone Button -->
             <button
                 onclick={toggleRecording}
                 disabled={isGenerating}
-                class="size-8 sm:size-9 rounded-none flex items-center justify-center transition cursor-pointer shrink-0 {isRecording ? 'bg-rose-600 text-white animate-pulse shadow-sm' : 'bg-black/5 hover:bg-primary hover:text-white text-text/70'}"
+                class="size-8 sm:size-9 rounded-full flex items-center justify-center transition cursor-pointer shrink-0 {isRecording ? 'bg-rose-600 text-white animate-pulse shadow-sm' : 'bg-black/5 hover:bg-primary hover:text-white text-text/70'}"
                 title={isRecording ? "Stop Recording & Send" : "Click to Speak via Microphone"}
                 aria-label="Microphone Voice Input"
             >
-                <span class="material-symbols-outlined text-[18px] sm:text-[20px]">
+                <span class="material-symbols-rounded text-[18px] sm:text-[20px]">
                     {isRecording ? "stop" : "mic"}
                 </span>
             </button>
@@ -473,10 +473,10 @@
             <button
                 onclick={() => sendTextMessage()}
                 disabled={!inputMessage.trim() || isGenerating || isRecording}
-                class="px-3 sm:px-5 py-1.5 sm:py-2 bg-primary hover:bg-primary/90 text-white font-mono text-[10px] sm:text-xs font-bold uppercase tracking-wider transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1 cursor-pointer shrink-0"
+                class="px-3.5 sm:px-5 py-1.5 sm:py-2 bg-primary hover:bg-primary/90 text-white font-mono text-[10px] sm:text-xs font-bold uppercase tracking-wider rounded-xl transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1 cursor-pointer shrink-0"
             >
                 <span>{isGenerating ? "..." : "Ask"}</span>
-                <span class="material-symbols-outlined text-[12px] sm:text-[14px]">send</span>
+                <span class="material-symbols-rounded text-[12px] sm:text-[14px]">send</span>
             </button>
         </div>
     </div>

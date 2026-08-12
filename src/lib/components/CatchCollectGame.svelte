@@ -26,6 +26,7 @@
     interface Particle {
         x: number;
         y: number;
+        pad?: number;
         vx: number;
         vy: number;
         color: string;
@@ -38,6 +39,43 @@
     let score = $state(0);
     let highScore = $state(0);
     let timeLeft = $state(20);
+
+    let brandLogoData = $state<string | null>(null);
+    let brandName = $state<string | null>(null);
+    let brandLogoImg: HTMLImageElement | null = null;
+    let brandLogoLoaded = false;
+
+    const STORAGE_KEY = "ekson_brand_profile";
+
+    function loadBrandProfile() {
+        try {
+            const saved = sessionStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                brandLogoData = parsed.brandLogo || null;
+                brandName = parsed.companyName || null;
+
+                if (brandLogoData) {
+                    const img = new Image();
+                    img.onload = () => {
+                        brandLogoImg = img;
+                        brandLogoLoaded = true;
+                    };
+                    img.src = brandLogoData;
+                    return;
+                }
+            }
+            brandLogoData = null;
+            brandName = null;
+            brandLogoImg = null;
+            brandLogoLoaded = false;
+        } catch (e) {
+            brandLogoData = null;
+            brandName = null;
+            brandLogoImg = null;
+            brandLogoLoaded = false;
+        }
+    }
 
     let canvasEl: HTMLCanvasElement | null = null;
     let containerEl: HTMLElement | null = null;
@@ -215,19 +253,19 @@
         c.lineWidth = 1.5;
         c.beginPath();
         c.moveTo(0, -size);
-        c.lineTo(size * 0.85, 0);
+        c.lineTo(size, 0);
         c.lineTo(0, size);
-        c.lineTo(-size * 0.85, 0);
+        c.lineTo(-size, 0);
         c.closePath();
         c.fill();
         c.stroke();
 
-        // Facet detail
         c.fillStyle = "rgba(255, 255, 255, 0.4)";
         c.beginPath();
         c.moveTo(0, -size);
-        c.lineTo(size * 0.4, 0);
-        c.lineTo(0, size * 0.6);
+        c.lineTo(size * 0.5, 0);
+        c.lineTo(0, size * 0.5);
+        c.lineTo(-size * 0.5, 0);
         c.closePath();
         c.fill();
         c.restore();
@@ -275,6 +313,73 @@
         c.textAlign = "center";
         c.textBaseline = "middle";
         c.fillText("E", 0, 1);
+        c.restore();
+    }
+
+    function drawBrandCollectable(
+        c: CanvasRenderingContext2D,
+        x: number,
+        y: number,
+        size: number,
+        rot: number,
+        type: "diamond" | "star" | "token"
+    ) {
+        if (!brandLogoImg || !brandLogoLoaded) {
+            if (type === "diamond") {
+                drawDiamond(c, x, y, size);
+            } else if (type === "star") {
+                drawStar(c, x, y, size, rot);
+            } else {
+                drawToken(c, x, y, size);
+            }
+            return;
+        }
+
+        c.save();
+        c.translate(x, y);
+        c.rotate(rot * 0.4); // Controlled rotation so brand logo is clearly visible
+
+        let ringColor = "#009dd6";
+        let badgeRadius = size * 1.35;
+        let ringWidth = 2;
+
+        if (type === "star") {
+            ringColor = "#f59e0b";
+            badgeRadius = size * 1.3;
+        } else if (type === "token") {
+            ringColor = "#10b981";
+            badgeRadius = size * 1.45;
+            ringWidth = 2.5;
+        }
+
+        // Circular background with subtle shadow
+        c.fillStyle = "#ffffff";
+        c.beginPath();
+        c.arc(0, 0, badgeRadius, 0, Math.PI * 2);
+        c.fill();
+
+        // Outer Tier Border
+        c.strokeStyle = ringColor;
+        c.lineWidth = ringWidth;
+        c.stroke();
+
+        // Clip and draw brand logo centered
+        c.save();
+        c.beginPath();
+        c.arc(0, 0, badgeRadius - 1.5, 0, Math.PI * 2);
+        c.clip();
+
+        const imgSize = (badgeRadius - 2) * 2;
+        c.drawImage(brandLogoImg, -imgSize / 2, -imgSize / 2, imgSize, imgSize);
+        c.restore();
+
+        // Top Glass Accent
+        c.beginPath();
+        c.arc(0, 0, badgeRadius - 1, Math.PI * 1.2, Math.PI * 1.8);
+        c.strokeStyle = "rgba(255, 255, 255, 0.85)";
+        c.lineWidth = 1.2;
+        c.stroke();
+
         c.restore();
     }
 
@@ -357,13 +462,13 @@
                     }
                 }
 
-                // Render item
+                // Render item: Diamond, Star, Token use Brand Logo, Hazard uses Red Triangle
                 if (item.type === "diamond") {
-                    drawDiamond(ctx!, item.x, item.y, item.size);
+                    drawBrandCollectable(ctx!, item.x, item.y, item.size, item.rotation, "diamond");
                 } else if (item.type === "star") {
-                    drawStar(ctx!, item.x, item.y, item.size, item.rotation);
+                    drawBrandCollectable(ctx!, item.x, item.y, item.size, item.rotation, "star");
                 } else if (item.type === "token") {
-                    drawToken(ctx!, item.x, item.y, item.size);
+                    drawBrandCollectable(ctx!, item.x, item.y, item.size, item.rotation, "token");
                 } else {
                     drawHazard(ctx!, item.x, item.y, item.size, item.rotation);
                 }
@@ -440,6 +545,10 @@
     }
 
     onMount(() => {
+        loadBrandProfile();
+        const onBrandUpdated = () => loadBrandProfile();
+        window.addEventListener("ekson_brand_updated", onBrandUpdated);
+
         if (canvasEl) {
             ctx = canvasEl.getContext("2d");
             resizeCanvas();
@@ -449,6 +558,7 @@
         }
 
         return () => {
+            window.removeEventListener("ekson_brand_updated", onBrandUpdated);
             window.removeEventListener("resize", resizeCanvas);
             if (gameLoopId) cancelAnimationFrame(gameLoopId);
             if (timerInterval) clearInterval(timerInterval);
@@ -468,17 +578,17 @@
         bind:this={containerEl}
         onmousemove={onMouseMove}
         ontouchmove={onTouchMove}
-        class="flex-1 w-full h-full relative bg-slate-100/90 overflow-hidden flex flex-col justify-between p-2.5 sm:p-3 border border-black/5 font-mono cursor-crosshair"
+        class="flex-1 w-full h-full relative bg-slate-100/90 rounded-2xl overflow-hidden flex flex-col justify-between p-2.5 sm:p-3.5 border border-black/5 font-mono cursor-crosshair shadow-xs"
     >
         <!-- Top HUD -->
         <div class="flex items-center justify-between z-20 text-xs font-bold pointer-events-none">
-            <div class="flex items-center gap-1.5 px-2.5 py-1 bg-white text-text shadow-xs border border-black/5">
+            <div class="flex items-center gap-1.5 px-3 py-1 bg-white text-text shadow-xs border border-black/5 rounded-full">
                 <span class="text-primary font-mono font-bold text-[10px] sm:text-xs">SCORE:</span>
                 <span class="text-xs sm:text-sm font-black font-mono">{score.toString().padStart(4, "0")}</span>
             </div>
 
-            <div class="flex items-center gap-1 px-2.5 py-1 {timeLeft <= 5 ? 'bg-rose-600 text-white animate-pulse' : 'bg-white text-text border border-black/5 shadow-xs'} text-[10px] sm:text-xs">
-                <span class="material-symbols-outlined text-[14px] {timeLeft <= 5 ? 'text-white' : 'text-primary'}">timer</span>
+            <div class="flex items-center gap-1 px-3 py-1 rounded-full {timeLeft <= 5 ? 'bg-rose-600 text-white animate-pulse' : 'bg-white text-text border border-black/5 shadow-xs'} text-[10px] sm:text-xs">
+                <span class="material-symbols-rounded text-[14px] {timeLeft <= 5 ? 'text-white' : 'text-primary'}">timer</span>
                 <span>{timeLeft}S</span>
             </div>
         </div>
@@ -491,13 +601,21 @@
 
         <!-- Overlay: Start Screen -->
         {#if !isPlaying && !isGameOver}
-            <div class="absolute inset-0 z-30 bg-white/92 backdrop-blur-xs flex flex-col items-center justify-center gap-2 sm:gap-2.5 p-4 text-center">
-                <span class="material-symbols-outlined text-[36px] sm:text-[40px] text-primary">
-                    token
-                </span>
-                <h4 class="text-base sm:text-lg font-black text-text uppercase tracking-wider">Catch & Collect</h4>
+            <div class="absolute inset-0 z-30 bg-white/92 backdrop-blur-xs flex flex-col items-center justify-center gap-2 sm:gap-2.5 p-4 text-center rounded-2xl">
+                {#if brandLogoData}
+                    <div class="size-10 sm:size-12 rounded-full bg-white border border-primary/30 p-1 flex items-center justify-center shadow-xs">
+                        <img src={brandLogoData} alt="Brand Logo" class="w-full h-full object-contain" />
+                    </div>
+                {:else}
+                    <span class="material-symbols-rounded text-[36px] sm:text-[40px] text-primary">
+                        token
+                    </span>
+                {/if}
+                <h4 class="text-base sm:text-lg font-black text-text uppercase tracking-wider">
+                    {brandName ? `${brandName} Catch & Collect` : "Catch & Collect"}
+                </h4>
                 <p class="text-[10px] sm:text-xs text-text/60 max-w-xs leading-tight">
-                    INTERCEPT FALLING TOKENS & GEMS. EVADE HAZARDS.
+                    {brandLogoData ? `INTERCEPT FALLING ${brandName ? brandName.toUpperCase() : 'BRAND'} LOGO TOKENS. EVADE HAZARDS.` : "INTERCEPT FALLING TOKENS & GEMS. EVADE HAZARDS."}
                 </p>
                 <div class="flex items-center gap-3 my-1 text-[9px] font-mono text-text/70">
                     <span class="text-primary font-bold">◆ DIAMOND (+150)</span>
@@ -506,15 +624,15 @@
                 </div>
                 <button
                     onclick={startGame}
-                    class="mt-1 px-5 py-2 bg-primary text-white text-[11px] sm:text-xs font-bold uppercase tracking-wider hover:bg-primary/90 transition shadow-md shadow-primary/25 cursor-pointer"
+                    class="mt-1 px-6 py-2 bg-primary text-white text-[11px] sm:text-xs font-bold uppercase tracking-wider rounded-full hover:bg-primary/90 transition shadow-md shadow-primary/25 cursor-pointer"
                 >
                     Start Game (20s)
                 </button>
             </div>
         {:else if isGameOver}
             <!-- Overlay: Game Over Screen -->
-            <div class="absolute inset-0 z-30 bg-white/92 backdrop-blur-xs flex flex-col items-center justify-center gap-1.5 sm:gap-2 p-4 text-center">
-                <span class="material-symbols-outlined text-[28px] sm:text-[32px] text-emerald-600">
+            <div class="absolute inset-0 z-30 bg-white/92 backdrop-blur-xs flex flex-col items-center justify-center gap-1.5 sm:gap-2 p-4 text-center rounded-2xl">
+                <span class="material-symbols-rounded text-[28px] sm:text-[32px] text-emerald-600">
                     verified
                 </span>
                 <h4 class="text-[10px] uppercase tracking-widest text-text/60 font-bold">Session Complete</h4>
@@ -524,7 +642,7 @@
                 {/if}
                 <button
                     onclick={startGame}
-                    class="mt-2 px-5 py-2 bg-primary text-white text-[11px] sm:text-xs font-bold uppercase tracking-wider hover:bg-primary/90 transition cursor-pointer shadow-md"
+                    class="mt-2 px-6 py-2 bg-primary text-white text-[11px] sm:text-xs font-bold uppercase tracking-wider rounded-full hover:bg-primary/90 transition cursor-pointer shadow-md"
                 >
                     Play Again
                 </button>
@@ -537,7 +655,7 @@
     </div>
 
     <!-- DESKTOP DESCRIPTION WINDOW (HIDDEN ON MOBILE) -->
-    <div class="hidden md:flex w-68 shrink-0 bg-white p-4 shadow-xs border border-black/5 flex-col justify-between h-full font-sans">
+    <div class="hidden md:flex w-68 shrink-0 bg-white p-4 shadow-xs border border-black/5 rounded-2xl flex-col justify-between h-full font-sans">
         <div class="flex flex-col gap-2">
             <div class="flex items-center justify-between font-mono text-[9px] text-text/50 uppercase tracking-widest">
                 <div class="flex items-center gap-1">
@@ -549,7 +667,7 @@
 
             <h3 class="text-base font-extrabold uppercase tracking-tight text-text flex items-center justify-between">
                 <span>Catch & Collect</span>
-                <span class="material-symbols-outlined text-[18px] text-primary">token</span>
+                <span class="material-symbols-rounded text-[18px] text-primary">token</span>
             </h3>
 
             <p class="text-xs text-text/70 leading-relaxed">
@@ -557,11 +675,11 @@
             </p>
 
             <div class="grid grid-cols-2 gap-2 pt-2 mt-1 border-t border-black/5 font-mono text-[10px]">
-                <div class="p-1.5 bg-black/[0.02] flex flex-col">
+                <div class="p-1.5 bg-black/[0.02] rounded-lg flex flex-col">
                     <span class="text-text/40 text-[8px] uppercase">RENDER</span>
                     <span class="font-bold text-text">2D CANVAS</span>
                 </div>
-                <div class="p-1.5 bg-black/[0.02] flex flex-col">
+                <div class="p-1.5 bg-black/[0.02] rounded-lg flex flex-col">
                     <span class="text-text/40 text-[8px] uppercase">TIMING</span>
                     <span class="font-bold text-primary">DELTA-TIME</span>
                 </div>
@@ -570,9 +688,9 @@
 
         <button
             onclick={startGame}
-            class="mt-3 w-full py-2 bg-primary hover:bg-primary/90 text-white font-mono text-[11px] font-bold uppercase tracking-wider transition flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
+            class="mt-3 w-full py-2 bg-primary hover:bg-primary/90 text-white font-mono text-[11px] font-bold uppercase tracking-wider rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
         >
-            <span class="material-symbols-outlined text-[14px]">play_arrow</span>
+            <span class="material-symbols-rounded text-[14px]">play_arrow</span>
             <span>{isPlaying ? "Restart Game" : "Launch Arcade"}</span>
         </button>
     </div>

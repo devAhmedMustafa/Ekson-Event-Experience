@@ -1,10 +1,35 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import BackgroundLanding from "./BackgroundLanding.svelte";
+    import BrandCustomizerModal, { type BrandData } from "$lib/components/BrandCustomizerModal.svelte";
 
     let mouseX = $state(0);
     let mouseY = $state(0);
     let isLoaded = $state(false);
+    let isBrandModalOpen = $state(false);
+    let hasBrandProfile = $state(false);
+    let activeBrandName = $state<string | null>(null);
+
+    const STORAGE_KEY = "ekson_brand_profile";
+
+    function checkBrandProfile() {
+        try {
+            const saved = sessionStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                const parsed: BrandData = JSON.parse(saved);
+                if (parsed.companyName) {
+                    hasBrandProfile = true;
+                    activeBrandName = parsed.companyName;
+                    return;
+                }
+            }
+            hasBrandProfile = false;
+            activeBrandName = null;
+        } catch (e) {
+            hasBrandProfile = false;
+            activeBrandName = null;
+        }
+    }
 
     function handleMouseMove(e: MouseEvent) {
         const { innerWidth, innerHeight } = window;
@@ -21,8 +46,16 @@
 
     onMount(() => {
         isLoaded = true;
+        checkBrandProfile();
         window.addEventListener("mousemove", handleMouseMove, { passive: true });
-        return () => window.removeEventListener("mousemove", handleMouseMove);
+        
+        const onBrandUpdated = () => checkBrandProfile();
+        window.addEventListener("ekson_brand_updated", onBrandUpdated);
+
+        return () => {
+            window.removeEventListener("mousemove", handleMouseMove);
+            window.removeEventListener("ekson_brand_updated", onBrandUpdated);
+        };
     });
 </script>
 
@@ -30,7 +63,7 @@
     <!-- Top Spacer for Floating Navbar -->
     <div class="h-6 sm:h-8"></div>
 
-    <!-- Center Kinetic Title & Subtitle -->
+    <!-- Center Kinetic Title & Subtitle & Brand CTA -->
     <div class="relative z-10 flex flex-col items-center justify-center my-auto text-center max-w-5xl px-2">
         <!-- Main Headline with Mix Blend Difference & Staggered Reveal -->
         <h1
@@ -56,6 +89,29 @@
                 <span class="w-4 sm:w-10 h-px bg-primary"></span>
             </p>
         </div>
+
+        <!-- Action Trigger: Try it for your brand -->
+        <div
+            class="mt-5 sm:mt-7 transition-all duration-1000 delay-400 ease-out {isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}"
+        >
+            <button
+                onclick={() => (isBrandModalOpen = true)}
+                class="group relative px-5 sm:px-6 py-2.5 sm:py-3 bg-white/90 hover:bg-white text-text font-mono text-xs sm:text-sm font-bold uppercase tracking-wider rounded-full shadow-lg hover:shadow-xl border border-black/10 hover:border-primary transition-all duration-300 flex items-center gap-2 sm:gap-2.5 cursor-pointer backdrop-blur-md hover:-translate-y-0.5"
+            >
+                <div class="size-6 sm:size-7 rounded-full bg-primary/10 text-primary flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <span class="material-symbols-rounded text-[16px] sm:text-[18px]">auto_awesome</span>
+                </div>
+                <span>Try it for your brand</span>
+                <span class="material-symbols-rounded text-[15px] sm:text-[17px] text-primary group-hover:translate-x-0.5 transition-transform">
+                    arrow_forward
+                </span>
+                {#if hasBrandProfile && activeBrandName}
+                    <span class="px-2 py-0.5 bg-emerald-50 text-emerald-700 text-[9px] sm:text-[10px] rounded-full border border-emerald-300 font-bold ml-1 truncate max-w-[120px]">
+                        {activeBrandName}
+                    </span>
+                {/if}
+            </button>
+        </div>
     </div>
 
     <!-- Bottom Scroll Indicator & Action -->
@@ -70,8 +126,8 @@
             <span class="font-mono text-[9px] uppercase tracking-widest font-bold group-hover:tracking-wider transition-all">
                 Scroll to Explore
             </span>
-            <div class="size-7 bg-white/80 backdrop-blur-md border border-black/10 flex items-center justify-center shadow-xs group-hover:border-primary transition">
-                <span class="material-symbols-outlined text-[16px] text-primary animate-bounce">
+            <div class="size-8 bg-white/80 backdrop-blur-md border border-black/10 rounded-full flex items-center justify-center shadow-xs group-hover:border-primary transition">
+                <span class="material-symbols-rounded text-[16px] text-primary animate-bounce">
                     keyboard_arrow_down
                 </span>
             </div>
@@ -83,3 +139,13 @@
         <BackgroundLanding {mouseX} {mouseY} />
     </div>
 </div>
+
+<!-- Brand Customization Studio Modal -->
+<BrandCustomizerModal
+    isOpen={isBrandModalOpen}
+    onClose={() => (isBrandModalOpen = false)}
+    onSave={(data) => {
+        hasBrandProfile = true;
+        activeBrandName = data.companyName;
+    }}
+/>
