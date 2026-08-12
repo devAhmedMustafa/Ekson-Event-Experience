@@ -291,20 +291,26 @@
     }
 </script>
 
-<div class="relative w-full h-full max-w-6xl mx-auto px-3 sm:px-6 md:px-8 py-3 sm:py-4 select-none font-sans flex flex-col justify-between overflow-hidden">
-    <!-- Top Header -->
-    <div class="shrink-0 mb-1 sm:mb-2 text-center sm:text-left">
-        <div class="flex items-center justify-center sm:justify-start gap-2 font-mono text-[9px] sm:text-[10px] uppercase tracking-widest text-primary font-bold mb-0.5">
-            <span>Ekson Technology</span>
-            <span class="size-1.5 bg-primary"></span>
-            <span>09 / Investment Plans</span>
+<div class="relative w-full h-full min-h-[100dvh] md:h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-4 sm:py-6 select-none font-sans flex flex-col justify-between overflow-hidden">
+    <!-- Top Header (Standardized Alignment) -->
+    <div class="flex items-end justify-between pb-2 border-b border-black/5 shrink-0 w-full mb-2 sm:mb-3">
+        <div>
+            <div class="flex items-center gap-1.5 font-mono text-[9px] sm:text-[10px] uppercase tracking-widest text-primary font-bold mb-0.5">
+                <span class="size-1.5 bg-primary"></span>
+                <span>08 / Investment Plans</span>
+            </div>
+            <h2 class="text-xl sm:text-2xl md:text-3xl font-extrabold text-text tracking-tight uppercase">
+                Investment Plans & Packages
+            </h2>
+            <p class="text-[11px] sm:text-xs text-text/70 mt-0.5 max-w-xl">
+                Flexible turnkey solutions, custom hardware integration, and multi-tier spatial technology packages.
+            </p>
         </div>
-        <h2 class="text-xl sm:text-2xl md:text-3xl font-black text-text tracking-tight uppercase">
-            Investment Plans
-        </h2>
-        <p class="text-[10px] sm:text-xs text-text/70 mt-0.5">
-            Flexible turnkey solutions for every booth scale.
-        </p>
+
+        <div class="hidden sm:flex items-center gap-2 font-mono text-[10px] text-text/50">
+            <span class="size-2 bg-primary rounded-full"></span>
+            <span>CUSTOMIZABLE TIERS</span>
+        </div>
     </div>
 
     <!-- 3 Pricing Cards Grid (Scrollable on mobile, 3-col on desktop) -->

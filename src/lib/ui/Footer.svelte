@@ -21,13 +21,17 @@
         EKSON
     </div>
 
-    <!-- Top Headline Section -->
-    <div class="relative z-10 flex flex-col sm:flex-row items-start sm:items-end justify-between pb-3 sm:pb-4 border-b border-black/5 shrink-0 gap-3 sm:gap-4">
+    <!-- Top Headline Section (Standardized Alignment) -->
+    <div class="relative z-10 flex items-end justify-between pb-2 border-b border-black/5 shrink-0 w-full mb-2 sm:mb-3">
         <div>
-            <h2 class="text-xl sm:text-3xl md:text-4xl font-black text-text tracking-tight uppercase">
+            <div class="flex items-center gap-1.5 font-mono text-[9px] sm:text-[10px] uppercase tracking-widest text-primary font-bold mb-0.5">
+                <span class="size-1.5 bg-primary"></span>
+                <span>09 / Connect With Us</span>
+            </div>
+            <h2 class="text-xl sm:text-2xl md:text-3xl font-extrabold text-text tracking-tight uppercase">
                 Let's Build the Future of Events
             </h2>
-            <p class="text-[11px] sm:text-xs md:text-sm text-text/70 mt-0.5 max-w-xl">
+            <p class="text-[11px] sm:text-xs text-text/70 mt-0.5 max-w-xl">
                 Ready to transform your exhibition booth into an interactive, high-ROI destination?
             </p>
         </div>

@@ -305,16 +305,26 @@
     }}
 ></audio>
 
-<div class="relative w-full h-full max-w-4xl mx-auto px-3 sm:px-6 md:px-8 py-4 sm:py-6 flex flex-col justify-between items-center select-none font-sans overflow-hidden min-h-125">
-    <!-- Top Header -->
-    <div class="text-center shrink-0">
-        <div class="flex items-center justify-center gap-2 font-mono text-[10px] uppercase tracking-widest text-primary font-bold mb-0.5">
-            <span class="size-1.5 bg-primary"></span>
-            <span>07 / Voice Concierge</span>
+<div class="relative w-full h-full min-h-[100dvh] md:h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-4 sm:py-6 flex flex-col justify-between select-none font-sans overflow-hidden">
+    <!-- Top Header (Standardized Alignment) -->
+    <div class="flex items-end justify-between pb-2 border-b border-black/5 shrink-0 w-full mb-2 sm:mb-3">
+        <div>
+            <div class="flex items-center gap-1.5 font-mono text-[9px] sm:text-[10px] uppercase tracking-widest text-primary font-bold mb-0.5">
+                <span class="size-1.5 bg-primary"></span>
+                <span>06 / Voice Concierge</span>
+            </div>
+            <h2 class="text-xl sm:text-2xl md:text-3xl font-extrabold text-text tracking-tight uppercase">
+                Ekson AI Voice Concierge
+            </h2>
+            <p class="text-[11px] sm:text-xs text-text/70 mt-0.5 max-w-xl">
+                Conversational booth guide powered by low-latency neural voice synthesis and interactive voice chat.
+            </p>
         </div>
-        <h2 class="text-xl sm:text-3xl md:text-4xl font-black text-text tracking-tight uppercase">
-            Ekson AI Assistant
-        </h2>
+
+        <div class="hidden sm:flex items-center gap-2 font-mono text-[10px] text-text/50">
+            <span class="size-2 bg-emerald-500 rounded-full animate-pulse"></span>
+            <span>VOICE RECOGNITION READY</span>
+        </div>
     </div>
 
     <!-- Center Interactive Voice Visualizer Stage -->
@@ -419,15 +429,15 @@
         </div>
     </div>
 
-    <!-- Bottom Input & Microphone Section -->
-    <div class="w-full max-w-2xl flex flex-col gap-2 shrink-0">
-        <!-- Quick Prompts Row -->
-        <div class="flex items-center justify-start sm:justify-center gap-1.5 overflow-x-auto pb-1 scrollbar-none max-w-full">
+    <!-- Bottom Input & Microphone Section (Centered) -->
+    <div class="w-full max-w-2xl mx-auto flex flex-col items-center gap-2 shrink-0">
+        <!-- Quick Prompts Row (Centered) -->
+        <div class="w-full flex items-center justify-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
             {#each quickPrompts as prompt}
                 <button
                     onclick={() => sendTextMessage(prompt)}
                     disabled={isGenerating || isRecording}
-                    class="px-2 py-1 bg-white hover:bg-primary/10 hover:text-primary text-text/70 text-[9px] sm:text-[10px] font-mono whitespace-nowrap transition cursor-pointer border border-black/5 shadow-xs disabled:opacity-50 shrink-0"
+                    class="px-2.5 py-1 bg-white hover:bg-primary/10 hover:text-primary text-text/70 text-[9px] sm:text-[10px] font-mono whitespace-nowrap transition cursor-pointer border border-black/5 shadow-xs disabled:opacity-50 shrink-0"
                 >
                     {prompt}
                 </button>
@@ -435,7 +445,7 @@
         </div>
 
         <!-- Clean Input & Mic Control Bar -->
-        <div class="relative flex items-center bg-white border border-black/10 shadow-md p-1 sm:p-1.5 transition-focus-within focus-within:border-primary gap-1">
+        <div class="w-full relative flex items-center bg-white border border-black/10 shadow-md p-1 sm:p-1.5 transition-focus-within focus-within:border-primary gap-1">
             <!-- Dedicated Microphone Button -->
             <button
                 onclick={toggleRecording}

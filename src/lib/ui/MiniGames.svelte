@@ -116,17 +116,20 @@
 
 <svelte:window onkeydown={handleKeyDown} />
 
-<div class="w-full h-full min-h-dvh md:h-screen max-w-6xl mx-auto px-3 sm:px-6 md:px-8 py-3 sm:py-4 flex flex-col justify-between select-none font-sans overflow-hidden">
+<div class="w-full h-full min-h-[100dvh] md:h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-4 sm:py-6 flex flex-col justify-between select-none font-sans overflow-hidden">
     <!-- Clean Minimalist Header -->
-    <div class="flex items-end justify-between mb-2 pb-1.5 border-b border-black/5 shrink-0">
+    <div class="flex items-end justify-between pb-2 border-b border-black/5 shrink-0 w-full mb-2 sm:mb-3">
         <div>
-            <div class="flex items-center gap-2 font-mono text-[9px] sm:text-[10px] uppercase tracking-widest text-primary font-bold mb-0.5">
+            <div class="flex items-center gap-1.5 font-mono text-[9px] sm:text-[10px] uppercase tracking-widest text-primary font-bold mb-0.5">
                 <span class="size-1.5 bg-primary"></span>
-                <span>06 / Interactive Gamification</span>
+                <span>05 / Interactive Gamification</span>
             </div>
             <h2 class="text-xl sm:text-2xl md:text-3xl font-extrabold text-text tracking-tight uppercase">
                 Mini Games Suite
             </h2>
+            <p class="text-[11px] sm:text-xs text-text/70 mt-0.5 max-w-xl">
+                Competitive arcade challenges, real-time leaderboards, and interactive brand knowledge quizzes.
+            </p>
         </div>
 
         <!-- Navigation Status & Controls -->

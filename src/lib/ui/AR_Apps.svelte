@@ -69,17 +69,20 @@
     }
 </script>
 
-<div class="w-full h-full min-h-dvh md:h-screen max-w-7xl mx-auto px-3 sm:px-6 py-2.5 sm:py-3.5 flex flex-col justify-between select-none font-sans overflow-hidden">
-    <!-- Clean Minimal Header -->
-    <div class="flex items-center justify-between pb-1.5 sm:pb-2 border-b border-black/5 shrink-0">
+<div class="w-full h-full min-h-[100dvh] md:h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-4 sm:py-6 flex flex-col justify-between select-none font-sans overflow-hidden">
+    <!-- Clean Minimal Header (Standardized Alignment) -->
+    <div class="flex items-end justify-between pb-2 border-b border-black/5 shrink-0 w-full mb-2 sm:mb-3">
         <div>
             <div class="flex items-center gap-1.5 font-mono text-[9px] sm:text-[10px] uppercase tracking-widest text-primary font-bold mb-0.5">
                 <span class="size-1.5 bg-primary"></span>
-                <span>08 / SPATIAL LENS</span>
+                <span>07 / Spatial Lens</span>
             </div>
-            <h2 class="text-lg sm:text-2xl font-black text-text tracking-tight uppercase">
+            <h2 class="text-xl sm:text-2xl md:text-3xl font-extrabold text-text tracking-tight uppercase">
                 AR Applications Suite
             </h2>
+            <p class="text-[11px] sm:text-xs text-text/70 mt-0.5 max-w-xl">
+                Instant WebAR activations and markerless holographic projections for mobile visitor interaction.
+            </p>
         </div>
 
         <div class="hidden sm:flex items-center gap-2 font-mono text-[10px] text-text/50">
