@@ -1,4 +1,6 @@
 // Centralized reactive brand store using Svelte 5 runes
+import { extractDominantColor, FALLBACK_COLOR, type ExtractedBrandColors } from "./colorExtractor";
+
 const STORAGE_KEY = "ekson_brand_profile";
 export const DEFAULT_BRAND = "Ekson";
 export const DEFAULT_DESCRIPTION =
@@ -10,6 +12,11 @@ class BrandStore {
     logo = $state<string | null>(null);
     logoName = $state("");
     industry = $state("Technology & Innovation");
+    primaryColor = $state(FALLBACK_COLOR.primary);
+    darkColor = $state(FALLBACK_COLOR.darkShade);
+    contrastText = $state(FALLBACK_COLOR.contrastText);
+    lightTint = $state(FALLBACK_COLOR.lightTint);
+    palette = $state<string[]>(FALLBACK_COLOR.palette);
 
     get isCustom(): boolean {
         return this.name.trim().toLowerCase() !== DEFAULT_BRAND.toLowerCase() && this.name.trim() !== "";
@@ -26,6 +33,13 @@ class BrandStore {
                     this.logo = customEvent.detail.brandLogo || null;
                     this.logoName = customEvent.detail.brandLogoName || "";
                     this.industry = customEvent.detail.industry || "Technology & Innovation";
+                    if (customEvent.detail.primaryColor) {
+                        this.primaryColor = customEvent.detail.primaryColor;
+                        this.darkColor = customEvent.detail.darkColor || FALLBACK_COLOR.darkShade;
+                        this.contrastText = customEvent.detail.contrastText || FALLBACK_COLOR.contrastText;
+                        this.lightTint = customEvent.detail.lightTint || FALLBACK_COLOR.lightTint;
+                        this.palette = customEvent.detail.palette || FALLBACK_COLOR.palette;
+                    }
                 } else {
                     this.load();
                 }
@@ -35,6 +49,25 @@ class BrandStore {
                     this.load();
                 }
             });
+        }
+    }
+
+    async updateLogo(dataUrl: string | null, fileName = "") {
+        this.logo = dataUrl;
+        this.logoName = fileName;
+        if (dataUrl) {
+            const colors = await extractDominantColor(dataUrl);
+            this.primaryColor = colors.primary;
+            this.darkColor = colors.darkShade;
+            this.contrastText = colors.contrastText;
+            this.lightTint = colors.lightTint;
+            this.palette = colors.palette;
+        } else {
+            this.primaryColor = FALLBACK_COLOR.primary;
+            this.darkColor = FALLBACK_COLOR.darkShade;
+            this.contrastText = FALLBACK_COLOR.contrastText;
+            this.lightTint = FALLBACK_COLOR.lightTint;
+            this.palette = FALLBACK_COLOR.palette;
         }
     }
 
@@ -49,6 +82,11 @@ class BrandStore {
                 this.logo = parsed.brandLogo || null;
                 this.logoName = parsed.brandLogoName || "";
                 this.industry = parsed.industry || "Technology & Innovation";
+                this.primaryColor = parsed.primaryColor || FALLBACK_COLOR.primary;
+                this.darkColor = parsed.darkColor || FALLBACK_COLOR.darkShade;
+                this.contrastText = parsed.contrastText || FALLBACK_COLOR.contrastText;
+                this.lightTint = parsed.lightTint || FALLBACK_COLOR.lightTint;
+                this.palette = parsed.palette || FALLBACK_COLOR.palette;
                 return;
             }
         } catch (e) {
@@ -59,6 +97,11 @@ class BrandStore {
         this.logo = null;
         this.logoName = "";
         this.industry = "Technology & Innovation";
+        this.primaryColor = FALLBACK_COLOR.primary;
+        this.darkColor = FALLBACK_COLOR.darkShade;
+        this.contrastText = FALLBACK_COLOR.contrastText;
+        this.lightTint = FALLBACK_COLOR.lightTint;
+        this.palette = FALLBACK_COLOR.palette;
     }
 }
 

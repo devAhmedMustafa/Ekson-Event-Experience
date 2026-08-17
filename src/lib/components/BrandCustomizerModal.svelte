@@ -1,5 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
+    import { extractDominantColor, FALLBACK_COLOR, type ExtractedBrandColors } from "$lib/colorExtractor";
 
     interface Props {
         isOpen: boolean;
@@ -13,6 +14,11 @@
         brandLogo: string | null;
         brandLogoName?: string;
         industry?: string;
+        primaryColor?: string;
+        darkColor?: string;
+        contrastText?: string;
+        lightTint?: string;
+        palette?: string[];
         savedAt?: number;
     }
 
@@ -25,6 +31,11 @@
     let brandLogo = $state<string | null>(null);
     let brandLogoName = $state<string>("");
     let industry = $state("Technology & Innovation");
+
+    // Color extraction state
+    let extractedColors = $state<ExtractedBrandColors>(FALLBACK_COLOR);
+    let selectedColor = $state<string>(FALLBACK_COLOR.primary);
+    let isExtractingColor = $state(false);
 
     let isDragging = $state(false);
     let errorMessage = $state<string | null>(null);
@@ -42,7 +53,7 @@
         "Other Enterprise"
     ];
 
-    function loadFromSession() {
+    async function loadFromSession() {
         try {
             const saved = sessionStorage.getItem(STORAGE_KEY);
             if (saved) {
@@ -52,6 +63,17 @@
                 brandLogo = parsed.brandLogo || null;
                 brandLogoName = parsed.brandLogoName || "";
                 industry = parsed.industry || "Technology & AI";
+                selectedColor = parsed.primaryColor || FALLBACK_COLOR.primary;
+
+                if (brandLogo) {
+                    isExtractingColor = true;
+                    extractedColors = await extractDominantColor(brandLogo);
+                    selectedColor = parsed.primaryColor || extractedColors.primary;
+                    isExtractingColor = false;
+                } else {
+                    extractedColors = FALLBACK_COLOR;
+                    selectedColor = FALLBACK_COLOR.primary;
+                }
             }
         } catch (e) {
             console.error("Failed to read brand data from sessionStorage", e);
@@ -70,7 +92,7 @@
         }
     });
 
-    function processImageFile(file: File) {
+    async function processImageFile(file: File) {
         errorMessage = null;
 
         if (!file.type.startsWith("image/")) {
@@ -78,17 +100,29 @@
             return;
         }
 
-        // Keep file size < 3MB to avoid sessionStorage quota issues
         if (file.size > 3 * 1024 * 1024) {
             errorMessage = "Image size exceeds 3MB limit. Please choose a smaller image.";
             return;
         }
 
         const reader = new FileReader();
-        reader.onload = (e) => {
+        reader.onload = async (e) => {
             if (typeof e.target?.result === "string") {
                 brandLogo = e.target.result;
                 brandLogoName = file.name;
+
+                // Extract dominating un-neutral color from logo
+                isExtractingColor = true;
+                try {
+                    extractedColors = await extractDominantColor(brandLogo);
+                    selectedColor = extractedColors.primary;
+                } catch (err) {
+                    console.warn("Color deduction warning:", err);
+                    extractedColors = FALLBACK_COLOR;
+                    selectedColor = FALLBACK_COLOR.primary;
+                } finally {
+                    isExtractingColor = false;
+                }
             }
         };
         reader.onerror = () => {
@@ -125,9 +159,15 @@
     function removeLogo() {
         brandLogo = null;
         brandLogoName = "";
+        extractedColors = FALLBACK_COLOR;
+        selectedColor = FALLBACK_COLOR.primary;
         if (fileInputEl) {
             fileInputEl.value = "";
         }
+    }
+
+    function selectPaletteColor(hex: string) {
+        selectedColor = hex;
     }
 
     function handleSave(e: SubmitEvent) {
@@ -150,6 +190,11 @@
             brandLogo,
             brandLogoName,
             industry,
+            primaryColor: selectedColor,
+            darkColor: extractedColors.darkShade,
+            contrastText: extractedColors.contrastText,
+            lightTint: extractedColors.lightTint,
+            palette: extractedColors.palette,
             savedAt: Date.now()
         };
 
@@ -176,6 +221,8 @@
             companyDescription = "";
             brandLogo = null;
             brandLogoName = "";
+            extractedColors = FALLBACK_COLOR;
+            selectedColor = FALLBACK_COLOR.primary;
             if (fileInputEl) fileInputEl.value = "";
             window.dispatchEvent(new CustomEvent("ekson_brand_updated", { detail: null }));
             errorMessage = null;
@@ -232,7 +279,7 @@
                         </div>
                         <h3 class="text-lg sm:text-xl font-extrabold text-text uppercase">Brand Profile Saved!</h3>
                         <p class="text-xs sm:text-sm text-text/70 max-w-sm">
-                            Your brand asset & brief description have been cached in <strong class="text-primary font-mono font-bold">sessionStorage</strong> for your interactive session.
+                            Your brand asset, brief description, and deducted brand color have been applied.
                         </p>
                     </div>
                 {:else}
@@ -253,7 +300,7 @@
                                 id="brand-name"
                                 type="text"
                                 bind:value={companyName}
-                                placeholder="e.g. Acme Spatial Robotics"
+                                placeholder="e.g. Pacific Surfboards"
                                 class="w-full px-3.5 py-2 text-xs sm:text-sm text-text bg-white border border-black/15 rounded-xl focus:outline-none focus:border-primary shadow-xs transition"
                             />
                         </div>
@@ -281,33 +328,71 @@
                             </label>
 
                             {#if brandLogo}
-                                <!-- Image Preview Card -->
-                                <div class="relative p-3 bg-slate-50 border border-black/10 rounded-2xl flex items-center justify-between gap-3 shadow-xs">
-                                    <div class="flex items-center gap-3 min-w-0">
-                                        <div class="size-14 sm:size-16 rounded-xl bg-white border border-black/10 p-1.5 flex items-center justify-center shrink-0 overflow-hidden shadow-xs">
-                                            <img
-                                                src={brandLogo}
-                                                alt="Uploaded Brand Logo"
-                                                class="w-full h-full object-contain"
-                                            />
+                                <!-- Image Preview Card & Extracted Color -->
+                                <div class="p-3.5 bg-slate-50 border border-black/10 rounded-2xl flex flex-col gap-3 shadow-xs">
+                                    <div class="flex items-center justify-between gap-3">
+                                        <div class="flex items-center gap-3 min-w-0">
+                                            <div class="size-14 sm:size-16 rounded-xl bg-white border border-black/10 p-1.5 flex items-center justify-center shrink-0 overflow-hidden shadow-xs">
+                                                <img
+                                                    src={brandLogo}
+                                                    alt="Uploaded Brand Logo"
+                                                    class="w-full h-full object-contain"
+                                                />
+                                            </div>
+                                            <div class="flex flex-col min-w-0">
+                                                <span class="text-xs font-bold text-text truncate">{brandLogoName || "Brand Logo Asset"}</span>
+                                                <span class="text-[10px] font-mono text-emerald-600 font-bold flex items-center gap-1">
+                                                    <span class="material-symbols-rounded text-[12px]">verified</span>
+                                                    <span>Ready for Extraction</span>
+                                                </span>
+                                            </div>
                                         </div>
-                                        <div class="flex flex-col min-w-0">
-                                            <span class="text-xs font-bold text-text truncate">{brandLogoName || "Brand Logo Asset"}</span>
-                                            <span class="text-[10px] font-mono text-emerald-600 font-bold flex items-center gap-1">
-                                                <span class="material-symbols-rounded text-[12px]">verified</span>
-                                                <span>Ready for Preview</span>
-                                            </span>
-                                        </div>
+
+                                        <button
+                                            type="button"
+                                            onclick={removeLogo}
+                                            class="px-2.5 py-1 text-[11px] font-mono text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 rounded-lg transition cursor-pointer flex items-center gap-1"
+                                        >
+                                            <span class="material-symbols-rounded text-[14px]">delete</span>
+                                            <span>Remove</span>
+                                        </button>
                                     </div>
 
-                                    <button
-                                        type="button"
-                                        onclick={removeLogo}
-                                        class="px-2.5 py-1 text-[11px] font-mono text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 rounded-lg transition cursor-pointer flex items-center gap-1"
-                                    >
-                                        <span class="material-symbols-rounded text-[14px]">delete</span>
-                                        <span>Remove</span>
-                                    </button>
+                                    <!-- Extracted Dominant Un-Neutral Color Section -->
+                                    <div class="pt-2.5 border-t border-black/5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                                        <div class="flex items-center gap-2">
+                                            <div
+                                                class="size-6 rounded-full border-2 border-white shadow-xs shrink-0"
+                                                style="background-color: {selectedColor};"
+                                            ></div>
+                                            <div>
+                                                <div class="flex items-center gap-1 font-mono text-[9px] uppercase font-bold text-text/70">
+                                                    <span>Deducted Color:</span>
+                                                    <span class="text-text font-black">{selectedColor}</span>
+                                                    {#if isExtractingColor}
+                                                        <span class="text-primary animate-pulse ml-1 text-[8px]">(Analyzing...)</span>
+                                                    {/if}
+                                                </div>
+                                                <span class="text-[8px] font-mono text-text/50">Filtered background whites/greys</span>
+                                            </div>
+                                        </div>
+
+                                        <!-- Detected Palette Swatches -->
+                                        {#if extractedColors.palette && extractedColors.palette.length > 0}
+                                            <div class="flex items-center gap-1">
+                                                {#each extractedColors.palette as colorHex}
+                                                    <button
+                                                        type="button"
+                                                        onclick={() => selectPaletteColor(colorHex)}
+                                                        class="size-5 rounded-full border transition cursor-pointer {selectedColor === colorHex ? 'scale-115 border-black/60 shadow-xs' : 'border-black/10 hover:scale-110'}"
+                                                        style="background-color: {colorHex};"
+                                                        title="Select {colorHex}"
+                                                        aria-label="Select color {colorHex}"
+                                                    ></button>
+                                                {/each}
+                                            </div>
+                                        {/if}
+                                    </div>
                                 </div>
                             {:else}
                                 <!-- Dropzone -->
@@ -332,7 +417,7 @@
                                         Drag & drop your logo here, or <span class="text-primary underline">browse</span>
                                     </p>
                                     <p class="text-[10px] text-text/50 font-mono">
-                                        PNG, JPG, SVG, WebP (Max 3MB)
+                                        PNG, JPG, SVG, WebP (Auto-detects dominant brand color)
                                     </p>
                                 </div>
                             {/if}
@@ -347,7 +432,7 @@
                                 id="brand-description"
                                 bind:value={companyDescription}
                                 rows="3"
-                                placeholder="Describe what your brand does, key products you want to feature, and your event booth goals (e.g. Lead capture, 3D product showcase, interactive mini-games)..."
+                                placeholder="Describe what your brand does, key products you want to feature, and your event booth goals..."
                                 class="w-full px-3.5 py-2.5 text-xs text-text bg-white border border-black/15 rounded-xl focus:outline-none focus:border-primary shadow-xs transition leading-relaxed"
                             ></textarea>
                         </div>
