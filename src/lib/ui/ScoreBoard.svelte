@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { brand } from "$lib/brand.svelte";
+
     interface Player {
         rank: string;
         name: string;
@@ -9,19 +11,26 @@
 
     let activeTab = $state<"today" | "allTime">("today");
 
-    let players = $state<Player[]>([
-        { rank: "01", name: "Chen. Alex", score: 9840, company: "TechCorp Global", trend: "up" },
-        { rank: "02", name: "Miller. Sarah", score: 9420, company: "Vertex Labs", trend: "flat" },
-        { rank: "03", name: "Farooq. Omar", score: 9150, company: "Ekson Dynamics", trend: "up" },
-        { rank: "04", name: "Rostova. Elena", score: 8790, company: "Nexus Media", trend: "down" },
-        { rank: "05", name: "Davis. Liam", score: 8320, company: "Apex Digital Systems", trend: "up" },
+    let rawPlayers = $state([
+        { rank: "01", name: "Chen. Alex", score: 9840, company: "TechCorp Global", trend: "up" as const },
+        { rank: "02", name: "Miller. Sarah", score: 9420, company: "Vertex Labs", trend: "flat" as const },
+        { rank: "03", name: "Farooq. Omar", score: 9150, company: "Ekson Dynamics", isHost: true, trend: "up" as const },
+        { rank: "04", name: "Rostova. Elena", score: 8790, company: "Nexus Media", trend: "down" as const },
+        { rank: "05", name: "Davis. Liam", score: 8320, company: "Apex Digital Systems", trend: "up" as const },
     ]);
 
+    const players = $derived(
+        rawPlayers.map((p) => ({
+            ...p,
+            company: p.isHost ? (brand.isCustom ? `${brand.name} Team` : "Ekson Dynamics") : p.company,
+        }))
+    );
+
     function simulateScoreBoost() {
-        const randomIndex = Math.floor(Math.random() * players.length);
-        players[randomIndex].score += Math.floor(Math.random() * 300) + 100;
-        players.sort((a, b) => b.score - a.score);
-        players.forEach((p, idx) => (p.rank = `0${idx + 1}`));
+        const randomIndex = Math.floor(Math.random() * rawPlayers.length);
+        rawPlayers[randomIndex].score += Math.floor(Math.random() * 300) + 100;
+        rawPlayers.sort((a, b) => b.score - a.score);
+        rawPlayers.forEach((p, idx) => (p.rank = `0${idx + 1}`));
     }
 </script>
 

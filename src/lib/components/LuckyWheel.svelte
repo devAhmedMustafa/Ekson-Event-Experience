@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { onMount } from "svelte";
+    import { brand } from "$lib/brand.svelte";
 
     interface Prize {
         code: string;
@@ -22,34 +22,6 @@
     let currentRotation = $state(0);
     let isSpinning = $state(false);
     let selectedPrize = $state<string | null>(null);
-    let brandLogo = $state<string | null>(null);
-    let brandName = $state<string | null>(null);
-
-    const STORAGE_KEY = "ekson_brand_profile";
-
-    function loadBrandLogo() {
-        try {
-            const saved = sessionStorage.getItem(STORAGE_KEY);
-            if (saved) {
-                const parsed = JSON.parse(saved);
-                brandLogo = parsed.brandLogo || null;
-                brandName = parsed.companyName || null;
-                return;
-            }
-            brandLogo = null;
-            brandName = null;
-        } catch (e) {
-            brandLogo = null;
-            brandName = null;
-        }
-    }
-
-    onMount(() => {
-        loadBrandLogo();
-        const onBrandUpdated = () => loadBrandLogo();
-        window.addEventListener("ekson_brand_updated", onBrandUpdated);
-        return () => window.removeEventListener("ekson_brand_updated", onBrandUpdated);
-    });
 
     const numPrizes = prizes.length;
     const arc = 360 / numPrizes;
@@ -134,13 +106,13 @@
                 onclick={spin}
                 disabled={isSpinning}
                 class="group absolute size-16 sm:size-20 rounded-full bg-white text-text font-mono text-xs font-bold tracking-widest uppercase flex flex-col items-center justify-center hover:scale-105 transition-all duration-200 disabled:opacity-85 disabled:cursor-not-allowed z-10 shadow-xl border-2 border-primary/40 cursor-pointer overflow-hidden p-1"
-                title={brandName ? `${brandName} - Click to Spin` : "Click to Spin"}
+                title={brand.name ? `${brand.name} - Click to Spin` : "Click to Spin"}
             >
-                {#if brandLogo}
+                {#if brand.logo}
                     <div class="relative w-full h-full rounded-full overflow-hidden flex items-center justify-center bg-white p-1">
                         <img
-                            src={brandLogo}
-                            alt={brandName || "Brand Logo"}
+                            src={brand.logo}
+                            alt={brand.name || "Brand Logo"}
                             class="w-full h-full object-contain"
                         />
                         <!-- Spin Hover Overlay -->

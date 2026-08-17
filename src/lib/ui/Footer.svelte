@@ -16,7 +16,7 @@
 </script>
 
 <div class="relative w-full h-full min-h-dvh md:h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-4 sm:py-6 flex flex-col justify-between select-none font-sans overflow-hidden">
-    <!-- Huge Watermark Brand Accent in Background -->
+    <!-- Huge Watermark Brand Accent in Background (Ekson Business Identity) -->
     <div class="absolute -bottom-4 -right-4 text-[90px] sm:text-[160px] md:text-[220px] font-black text-black/4 tracking-tighter pointer-events-none select-none z-0">
         EKSON
     </div>
@@ -140,7 +140,7 @@
             <span class="text-[9px] sm:text-[10px] uppercase tracking-wider">ALL SYSTEMS OPERATIONAL</span>
         </div>
 
-        <div class="text-[9px] sm:text-[10px]">
+        <div class="text-[9px] sm:text-[10px] uppercase">
             © {new Date().getFullYear()} EKSON TECHNOLOGY. ALL RIGHTS RESERVED.
         </div>
 

@@ -1,5 +1,6 @@
 <script lang="ts">
     import { onMount, onDestroy } from "svelte";
+    import { brand } from "$lib/brand.svelte";
 
     interface FallingItem {
         id: number;
@@ -40,42 +41,22 @@
     let highScore = $state(0);
     let timeLeft = $state(20);
 
-    let brandLogoData = $state<string | null>(null);
-    let brandName = $state<string | null>(null);
     let brandLogoImg: HTMLImageElement | null = null;
-    let brandLogoLoaded = false;
+    let brandLogoLoaded = $state(false);
 
-    const STORAGE_KEY = "ekson_brand_profile";
-
-    function loadBrandProfile() {
-        try {
-            const saved = sessionStorage.getItem(STORAGE_KEY);
-            if (saved) {
-                const parsed = JSON.parse(saved);
-                brandLogoData = parsed.brandLogo || null;
-                brandName = parsed.companyName || null;
-
-                if (brandLogoData) {
-                    const img = new Image();
-                    img.onload = () => {
-                        brandLogoImg = img;
-                        brandLogoLoaded = true;
-                    };
-                    img.src = brandLogoData;
-                    return;
-                }
-            }
-            brandLogoData = null;
-            brandName = null;
-            brandLogoImg = null;
-            brandLogoLoaded = false;
-        } catch (e) {
-            brandLogoData = null;
-            brandName = null;
+    $effect(() => {
+        if (brand.logo) {
+            const img = new Image();
+            img.onload = () => {
+                brandLogoImg = img;
+                brandLogoLoaded = true;
+            };
+            img.src = brand.logo;
+        } else {
             brandLogoImg = null;
             brandLogoLoaded = false;
         }
-    }
+    });
 
     let canvasEl: HTMLCanvasElement | null = null;
     let containerEl: HTMLElement | null = null;
@@ -545,10 +526,6 @@
     }
 
     onMount(() => {
-        loadBrandProfile();
-        const onBrandUpdated = () => loadBrandProfile();
-        window.addEventListener("ekson_brand_updated", onBrandUpdated);
-
         if (canvasEl) {
             ctx = canvasEl.getContext("2d");
             resizeCanvas();
@@ -558,7 +535,6 @@
         }
 
         return () => {
-            window.removeEventListener("ekson_brand_updated", onBrandUpdated);
             window.removeEventListener("resize", resizeCanvas);
             if (gameLoopId) cancelAnimationFrame(gameLoopId);
             if (timerInterval) clearInterval(timerInterval);
@@ -602,9 +578,9 @@
         <!-- Overlay: Start Screen -->
         {#if !isPlaying && !isGameOver}
             <div class="absolute inset-0 z-30 bg-white/92 backdrop-blur-xs flex flex-col items-center justify-center gap-2 sm:gap-2.5 p-4 text-center rounded-2xl">
-                {#if brandLogoData}
+                {#if brand.logo}
                     <div class="size-10 sm:size-12 rounded-full bg-white border border-primary/30 p-1 flex items-center justify-center shadow-xs">
-                        <img src={brandLogoData} alt="Brand Logo" class="w-full h-full object-contain" />
+                        <img src={brand.logo} alt="Brand Logo" class="w-full h-full object-contain" />
                     </div>
                 {:else}
                     <span class="material-symbols-rounded text-[36px] sm:text-[40px] text-primary">
@@ -612,10 +588,10 @@
                     </span>
                 {/if}
                 <h4 class="text-base sm:text-lg font-black text-text uppercase tracking-wider">
-                    {brandName ? `${brandName} Catch & Collect` : "Catch & Collect"}
+                    {brand.name ? `${brand.name} Catch & Collect` : "Catch & Collect"}
                 </h4>
                 <p class="text-[10px] sm:text-xs text-text/60 max-w-xs leading-tight">
-                    {brandLogoData ? `INTERCEPT FALLING ${brandName ? brandName.toUpperCase() : 'BRAND'} LOGO TOKENS. EVADE HAZARDS.` : "INTERCEPT FALLING TOKENS & GEMS. EVADE HAZARDS."}
+                    {brand.logo ? `INTERCEPT FALLING ${brand.name ? brand.name.toUpperCase() : 'BRAND'} LOGO TOKENS. EVADE HAZARDS.` : "INTERCEPT FALLING TOKENS & GEMS. EVADE HAZARDS."}
                 </p>
                 <div class="flex items-center gap-3 my-1 text-[9px] font-mono text-text/70">
                     <span class="text-primary font-bold">◆ DIAMOND (+150)</span>

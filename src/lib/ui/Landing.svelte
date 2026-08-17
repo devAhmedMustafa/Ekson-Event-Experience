@@ -1,35 +1,13 @@
 <script lang="ts">
     import { onMount } from "svelte";
+    import { brand } from "$lib/brand.svelte";
     import BackgroundLanding from "./BackgroundLanding.svelte";
-    import BrandCustomizerModal, { type BrandData } from "$lib/components/BrandCustomizerModal.svelte";
+    import BrandCustomizerModal from "$lib/components/BrandCustomizerModal.svelte";
 
     let mouseX = $state(0);
     let mouseY = $state(0);
     let isLoaded = $state(false);
     let isBrandModalOpen = $state(false);
-    let hasBrandProfile = $state(false);
-    let activeBrandName = $state<string | null>(null);
-
-    const STORAGE_KEY = "ekson_brand_profile";
-
-    function checkBrandProfile() {
-        try {
-            const saved = sessionStorage.getItem(STORAGE_KEY);
-            if (saved) {
-                const parsed: BrandData = JSON.parse(saved);
-                if (parsed.companyName) {
-                    hasBrandProfile = true;
-                    activeBrandName = parsed.companyName;
-                    return;
-                }
-            }
-            hasBrandProfile = false;
-            activeBrandName = null;
-        } catch (e) {
-            hasBrandProfile = false;
-            activeBrandName = null;
-        }
-    }
 
     function handleMouseMove(e: MouseEvent) {
         const { innerWidth, innerHeight } = window;
@@ -46,15 +24,10 @@
 
     onMount(() => {
         isLoaded = true;
-        checkBrandProfile();
         window.addEventListener("mousemove", handleMouseMove, { passive: true });
-        
-        const onBrandUpdated = () => checkBrandProfile();
-        window.addEventListener("ekson_brand_updated", onBrandUpdated);
 
         return () => {
             window.removeEventListener("mousemove", handleMouseMove);
-            window.removeEventListener("ekson_brand_updated", onBrandUpdated);
         };
     });
 </script>
@@ -71,7 +44,7 @@
             style="transform: translate3d({mouseX * 0.4}px, {mouseY * 0.4}px, 0);"
         >
             <span class="inline-block hover:tracking-wide transition-all duration-300">
-                Ekson Event
+                {brand.name} Event
             </span>
             <br />
             <span class="inline-block hover:tracking-wide transition-all duration-300">
@@ -105,9 +78,9 @@
                 <span class="material-symbols-rounded text-[15px] sm:text-[17px] text-primary group-hover:translate-x-0.5 transition-transform">
                     arrow_forward
                 </span>
-                {#if hasBrandProfile && activeBrandName}
+                {#if brand.isCustom}
                     <span class="px-2 py-0.5 bg-emerald-50 text-emerald-700 text-[9px] sm:text-[10px] rounded-full border border-emerald-300 font-bold ml-1 truncate max-w-[120px]">
-                        {activeBrandName}
+                        {brand.name}
                     </span>
                 {/if}
             </button>
@@ -144,8 +117,4 @@
 <BrandCustomizerModal
     isOpen={isBrandModalOpen}
     onClose={() => (isBrandModalOpen = false)}
-    onSave={(data) => {
-        hasBrandProfile = true;
-        activeBrandName = data.companyName;
-    }}
 />

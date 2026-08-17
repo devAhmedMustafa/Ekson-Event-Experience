@@ -1,5 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
+    import { brand, DEFAULT_BRAND, DEFAULT_DESCRIPTION } from "$lib/brand.svelte";
 
     interface QuizQuestion {
         id: number;
@@ -8,10 +9,6 @@
         correctIndex: number;
         explanation: string;
     }
-
-    const DEFAULT_BRAND = "Ekson";
-    const DEFAULT_DESCRIPTION =
-        "Ekson is an innovative technology company specializing in modern digital platforms, event management and tracking systems, and smart AI workflow automation integrations with scalable cloud backends.";
 
     const FALLBACK_QUESTIONS: QuizQuestion[] = [
         {
@@ -125,8 +122,6 @@
     }
 
     let questions = $state<QuizQuestion[]>(FALLBACK_QUESTIONS);
-    let brandName = $state(DEFAULT_BRAND);
-    let description = $state(DEFAULT_DESCRIPTION);
     let isLoadingQuiz = $state(false);
     let isAiGenerated = $state(false);
     let statusNotice = $state<string | null>(null);
@@ -140,33 +135,7 @@
     const currentQuestion = $derived(questions[currentQIndex] || questions[0]);
     const maxScore = $derived(questions.length * 250);
 
-    const STORAGE_KEY = "ekson_brand_profile";
     let activeAbortController: AbortController | null = null;
-
-    function loadBrandProfile() {
-        try {
-            const saved = sessionStorage.getItem(STORAGE_KEY);
-            if (saved) {
-                const parsed = JSON.parse(saved);
-                if (parsed.companyName && parsed.companyName.trim()) {
-                    brandName = parsed.companyName.trim();
-                } else {
-                    brandName = DEFAULT_BRAND;
-                }
-
-                if (parsed.companyDescription && parsed.companyDescription.trim()) {
-                    description = parsed.companyDescription.trim();
-                } else {
-                    description = DEFAULT_DESCRIPTION;
-                }
-                return;
-            }
-        } catch (e) {
-            // fallback
-        }
-        brandName = DEFAULT_BRAND;
-        description = DEFAULT_DESCRIPTION;
-    }
 
     function cancelGeneration() {
         if (activeAbortController) {
@@ -174,7 +143,7 @@
             activeAbortController = null;
         }
         isLoadingQuiz = false;
-        questions = generateSmartBrandFallback(brandName, description);
+        questions = generateSmartBrandFallback(brand.name, brand.description);
         statusNotice = "Loaded offline brand questions.";
         setTimeout(() => { statusNotice = null; }, 3000);
         restartQuiz();
@@ -287,13 +256,11 @@
     }
 
     onMount(() => {
-        loadBrandProfile();
         // Immediately initialize with smart fallback so quiz is playable without blocking
-        questions = generateSmartBrandFallback(brandName, description);
+        questions = generateSmartBrandFallback(brand.name, brand.description);
 
         const onBrandUpdated = () => {
-            loadBrandProfile();
-            generateDynamicQuiz(brandName, description, true);
+            generateDynamicQuiz(brand.name, brand.description, true);
         };
 
         window.addEventListener("ekson_brand_updated", onBrandUpdated);
@@ -346,11 +313,11 @@
                         GENERATING DYNAMIC AI QUIZ
                     </span>
                     <h4 class="text-sm sm:text-base font-black text-text uppercase tracking-tight">
-                        Analyzing {brandName}
+                        Analyzing {brand.name}
                     </h4>
                 </div>
                 <p class="text-[10px] sm:text-xs text-text/60 max-w-xs line-clamp-2 px-2">
-                    "{description}"
+                    "{brand.description}"
                 </p>
                 <button
                     onclick={cancelGeneration}
@@ -369,7 +336,7 @@
                         Q_0{currentQIndex + 1} / 0{questions.length}
                     </span>
                     <span class="text-text/70 font-mono text-[9px] sm:text-[10px] font-bold px-2 py-0.5 bg-white border border-black/5 rounded-full truncate max-w-[120px] sm:max-w-[180px]">
-                        {brandName}
+                        {brand.name}
                     </span>
                     {#if isAiGenerated}
                         <span class="text-emerald-700 bg-emerald-50 border border-emerald-300 font-mono text-[8px] font-bold px-1.5 py-0.2 rounded-full hidden sm:inline">
@@ -451,7 +418,7 @@
                 <span class="material-symbols-rounded text-[36px] sm:text-[44px] text-primary mb-0.5">
                     psychology
                 </span>
-                <span class="font-mono text-[9px] sm:text-[10px] text-text/50 uppercase tracking-widest">{brandName} ASSESSMENT COMPLETE</span>
+                <span class="font-mono text-[9px] sm:text-[10px] text-text/50 uppercase tracking-widest">{brand.name} ASSESSMENT COMPLETE</span>
                 <h4 class="text-lg sm:text-2xl font-black uppercase text-text tracking-tight mt-0.5">
                     Brand Mastery Score
                 </h4>
@@ -466,7 +433,7 @@
                         <span class="font-bold text-primary">{score >= maxScore * 0.75 ? "HIGH RECALL" : "STANDARD RECALL"}</span>
                     </div>
                     <p class="text-[11px] sm:text-xs text-text/70 leading-relaxed font-sans">
-                        Dynamic interactive quizzes reinforce {brandName}'s core value proposition for exhibition visitors.
+                        Dynamic interactive quizzes reinforce {brand.name}'s core value proposition for exhibition visitors.
                     </p>
                 </div>
 
@@ -479,7 +446,7 @@
                         <span>Retake Quiz</span>
                     </button>
                     <button
-                        onclick={() => generateDynamicQuiz(brandName, description, true)}
+                        onclick={() => generateDynamicQuiz(brand.name, brand.description, true)}
                         disabled={isLoadingQuiz}
                         class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-text font-mono text-xs font-bold uppercase tracking-wider rounded-full transition cursor-pointer flex items-center gap-1.5 border border-black/5"
                     >
@@ -511,10 +478,10 @@
             <div class="p-2 bg-slate-50 border border-black/5 rounded-xl font-mono text-[9px] text-text/70">
                 <div class="flex items-center justify-between font-bold text-text mb-0.5">
                     <span>ACTIVE TARGET</span>
-                    <span class="text-primary truncate max-w-[100px]">{brandName}</span>
+                    <span class="text-primary truncate max-w-[100px]">{brand.name}</span>
                 </div>
                 <p class="text-[8px] text-text/50 line-clamp-2 leading-tight font-sans">
-                    {description}
+                    {brand.description}
                 </p>
             </div>
 
@@ -532,7 +499,7 @@
 
         <div class="flex flex-col gap-1.5 mt-3">
             <button
-                onclick={() => generateDynamicQuiz(brandName, description, true)}
+                onclick={() => generateDynamicQuiz(brand.name, brand.description, true)}
                 disabled={isLoadingQuiz}
                 class="w-full py-2 bg-primary hover:bg-primary/90 text-white font-mono text-[11px] font-bold uppercase tracking-wider rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer shadow-xs disabled:opacity-50"
             >

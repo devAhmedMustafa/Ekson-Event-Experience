@@ -1,5 +1,6 @@
 <script lang="ts">
     import { onDestroy } from "svelte";
+    import { brand } from "$lib/brand.svelte";
 
     let inputMessage = $state("");
     let isGenerating = $state(false);
@@ -12,6 +13,7 @@
     let audioDuration = $state(0);
     let audioSrc = $state<string | null>(null);
     let lastUserQuery = $state<string | null>(null);
+    let aiReplyText = $state<string | null>(null);
     let statusMessage = $state("Type a question or tap the mic to speak.");
 
     let audioElement = $state<HTMLAudioElement | null>(null);
@@ -19,12 +21,12 @@
     let audioChunks: Blob[] = [];
     let recordTimerInterval: any = null;
 
-    const quickPrompts = [
-        "Tell me about Ekson's interactive booth experiences.",
-        "How does the True Scale 3D configurator work?",
-        "What mini-games are available for event booths?",
-        "How can Ekson help our brand engage more visitors?",
-    ];
+    const quickPrompts = $derived([
+        `Tell me about ${brand.name}'s interactive booth experiences.`,
+        `How does the True Scale 3D configurator work for ${brand.name}?`,
+        `What mini-games are available for ${brand.name}'s event booth?`,
+        `How can ${brand.name} engage more event visitors?`,
+    ]);
 
     function togglePlayback() {
         if (!audioElement || !audioSrc) return;
@@ -83,43 +85,86 @@
 
         inputMessage = "";
         lastUserQuery = text;
+        aiReplyText = null;
         isGenerating = true;
-        statusMessage = "Generating voice response...";
+        statusMessage = `Generating voice response for ${brand.name}...`;
 
-        const serverUrl = (import.meta.env.VITE_SERVER_URL || '').replace(/\/+$/, '');
+        const serverUrl = (typeof import.meta !== "undefined" && import.meta.env?.VITE_SERVER_URL)
+            ? import.meta.env.VITE_SERVER_URL.replace(/\/+$/, '')
+            : "http://localhost:3000";
 
         try {
             if (audioElement) {
                 audioElement.pause();
             }
 
-            let response = await fetch(`${serverUrl}/api/chat/speech`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ message: text }),
-            }).catch(() => null);
+            const payload = {
+                message: text,
+                brandName: brand.name,
+                description: brand.description
+            };
 
-            if (!response || !response.ok) {
+            let response: Response | null = null;
+            try {
+                response = await fetch(`${serverUrl}/api/chat/speech`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload),
+                });
+            } catch (err) {
                 response = await fetch("/api/chat/speech", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ message: text }),
+                    body: JSON.stringify(payload),
                 });
             }
 
-            if (!response.ok) {
-                throw new Error(`Server returned status ${response.status}`);
+            if (!response || !response.ok) {
+                throw new Error(`Server returned status ${response?.status || 'unknown'}`);
             }
 
-            const audioBlob = await response.blob();
-            if (audioBlob.size > 100) {
-                triggerAudioPlayback(audioBlob);
+            const rawAssistantReply =
+                response.headers.get("x-assistant-reply") ||
+                response.headers.get("x-reply");
+
+            if (rawAssistantReply) {
+                try {
+                    aiReplyText = decodeURIComponent(rawAssistantReply);
+                    statusMessage = aiReplyText;
+                } catch (e) {
+                    aiReplyText = rawAssistantReply;
+                    statusMessage = rawAssistantReply;
+                }
+            }
+
+            const contentType = response.headers.get("content-type") || "";
+
+            if (contentType.includes("json")) {
+                const json = await response.json();
+                const reply = json.reply || json.text || json.message;
+                if (reply) {
+                    aiReplyText = reply;
+                    statusMessage = reply;
+                }
+                if (json.audioUrl) {
+                    const audioRes = await fetch(json.audioUrl);
+                    triggerAudioPlayback(await audioRes.blob());
+                } else if (json.audioBase64 || json.audio) {
+                    const b64 = json.audioBase64 || json.audio;
+                    const res = await fetch(`data:audio/mp3;base64,${b64}`);
+                    triggerAudioPlayback(await res.blob());
+                }
             } else {
-                statusMessage = "No audio received. Please try again.";
+                const audioBlob = await response.blob();
+                if (audioBlob.size > 100) {
+                    triggerAudioPlayback(audioBlob);
+                } else {
+                    statusMessage = aiReplyText || "Voice response received.";
+                }
             }
         } catch (error) {
             console.error("Speech call error:", error);
-            statusMessage = "Could not connect to voice server. Please verify EksonServer is running.";
+            statusMessage = `Could not connect to voice server. Please verify ${brand.name} voice server is running.`;
         } finally {
             isGenerating = false;
         }
@@ -167,7 +212,7 @@
 
             mediaRecorder.start(150);
             isRecording = true;
-            statusMessage = "Listening... Speak your question now.";
+            statusMessage = `Listening... Speak your question for ${brand.name}.`;
 
             recordTimerInterval = setInterval(() => {
                 recordDuration += 1;
@@ -191,49 +236,80 @@
     async function sendVoiceChat(blob: Blob) {
         isGenerating = true;
         lastUserQuery = "Voice Message 🎙️";
-        statusMessage = "Connecting to Ekson Voice AI...";
+        aiReplyText = null;
+        statusMessage = `Connecting to ${brand.name} Voice AI...`;
 
-        const serverUrl = (import.meta.env.VITE_SERVER_URL || '').replace(/\/+$/, '');
+        const serverUrl = (typeof import.meta !== "undefined" && import.meta.env?.VITE_SERVER_URL)
+            ? import.meta.env.VITE_SERVER_URL.replace(/\/+$/, '')
+            : "http://localhost:3000";
 
         try {
             const formData = new FormData();
-            formData.append("audio", blob, "voice-input.webm");
-            formData.append("file", blob, "voice-input.webm");
-            formData.append("voice", blob, "voice-input.webm");
+            formData.append("voice", blob, "voice.webm");
+            formData.append("audio", blob, "voice.webm");
+            formData.append("brandName", brand.name);
+            formData.append("description", brand.description);
 
-            let response = await fetch(`${serverUrl}/api/voice/chat`, {
-                method: "POST",
-                body: formData,
-            }).catch(() => null);
-
-            if (!response || !response.ok) {
+            let response: Response | null = null;
+            try {
+                response = await fetch(`${serverUrl}/api/voice/chat`, {
+                    method: "POST",
+                    body: formData,
+                });
+            } catch (err) {
                 response = await fetch("/api/voice/chat", {
                     method: "POST",
                     body: formData,
                 });
             }
 
-            if (!response.ok) {
-                throw new Error(`Server returned status ${response.status}`);
+            if (!response || !response.ok) {
+                throw new Error(`Server returned status ${response?.status || 'unknown'}`);
             }
 
-            // Extract transcript if provided
-            const transcriptHeader = response.headers.get("x-user-transcript") || response.headers.get("x-transcript");
-            if (transcriptHeader) {
-                lastUserQuery = decodeURIComponent(transcriptHeader);
+            // Read transcriptions & AI text from headers:
+            const rawUserTranscription =
+                response.headers.get("x-user-transcription") ||
+                response.headers.get("x-user-transcript") ||
+                response.headers.get("x-transcript");
+
+            if (rawUserTranscription) {
+                try {
+                    lastUserQuery = decodeURIComponent(rawUserTranscription);
+                    console.log("You said:", lastUserQuery);
+                } catch (e) {
+                    lastUserQuery = rawUserTranscription;
+                    console.log("You said:", lastUserQuery);
+                }
+            }
+
+            const rawAssistantReply =
+                response.headers.get("x-assistant-reply") ||
+                response.headers.get("x-reply");
+
+            if (rawAssistantReply) {
+                try {
+                    aiReplyText = decodeURIComponent(rawAssistantReply);
+                    statusMessage = aiReplyText;
+                    console.log("AI replied:", aiReplyText);
+                } catch (e) {
+                    aiReplyText = rawAssistantReply;
+                    statusMessage = rawAssistantReply;
+                    console.log("AI replied:", aiReplyText);
+                }
             }
 
             const contentType = response.headers.get("content-type") || "";
 
-            if (contentType.includes("audio") || contentType.includes("octet-stream")) {
-                const audioBlob = await response.blob();
-                if (audioBlob.size > 100) {
-                    triggerAudioPlayback(audioBlob);
-                }
-            } else if (contentType.includes("json")) {
+            if (contentType.includes("json")) {
                 const json = await response.json();
                 if (json.transcript) {
                     lastUserQuery = json.transcript;
+                }
+                const reply = json.reply || json.text || json.message;
+                if (reply) {
+                    aiReplyText = reply;
+                    statusMessage = reply;
                 }
                 if (json.audioUrl) {
                     const audioRes = await fetch(json.audioUrl);
@@ -242,18 +318,20 @@
                     const b64 = json.audioBase64 || json.audio;
                     const res = await fetch(`data:audio/mp3;base64,${b64}`);
                     triggerAudioPlayback(await res.blob());
-                } else if (json.reply || json.text || json.message) {
-                    await sendTextMessage(json.reply || json.text || json.message);
+                } else if (reply) {
+                    await sendTextMessage(reply);
                 }
             } else {
                 const audioBlob = await response.blob();
                 if (audioBlob.size > 100) {
                     triggerAudioPlayback(audioBlob);
+                } else {
+                    statusMessage = aiReplyText || "Voice response received.";
                 }
             }
         } catch (error) {
             console.error("Voice chat error:", error);
-            statusMessage = "Could not process voice request. Please verify EksonServer is running.";
+            statusMessage = `Could not process voice request for ${brand.name}. Please verify voice server is running.`;
         } finally {
             isGenerating = false;
         }
@@ -312,9 +390,14 @@
             <div class="flex items-center gap-1.5 font-mono text-[9px] sm:text-[10px] uppercase tracking-widest text-primary font-bold mb-0.5">
                 <span class="size-1.5 bg-primary"></span>
                 <span>06 / Voice Concierge</span>
+                {#if brand.isCustom}
+                    <span class="px-2 py-0.5 bg-primary/10 text-primary border border-primary/20 rounded-full font-bold text-[8px] sm:text-[9px]">
+                        {brand.name}
+                    </span>
+                {/if}
             </div>
             <h2 class="text-xl sm:text-2xl md:text-3xl font-extrabold text-text tracking-tight uppercase">
-                Ekson AI Voice Concierge
+                {brand.name} AI Voice Concierge
             </h2>
             <p class="text-[11px] sm:text-xs text-text/70 mt-0.5 max-w-xl">
                 Conversational booth guide powered by low-latency neural voice synthesis and interactive voice chat.
@@ -328,7 +411,7 @@
     </div>
 
     <!-- Center Interactive Voice Visualizer Stage -->
-    <div class="flex-1 flex flex-col items-center justify-center my-auto py-3 sm:py-6 gap-4 sm:gap-6">
+    <div class="flex-1 flex flex-col items-center justify-center my-auto py-3 sm:py-6 gap-3 sm:gap-5">
         <!-- Dynamic Pulsing Voice Orb -->
         <div class="relative flex items-center justify-center">
             <!-- Ripple Rings -->
@@ -375,15 +458,22 @@
         </div>
 
         <!-- Dynamic Status & Query Display -->
-        <div class="flex flex-col items-center text-center gap-2 max-w-md px-2">
+        <div class="flex flex-col items-center text-center gap-2 max-w-lg px-2">
             <p class="text-xs sm:text-sm md:text-base font-bold text-text transition-all tracking-tight">
                 {statusMessage}
             </p>
 
             {#if lastUserQuery}
-                <div class="flex items-center gap-1.5 px-3 py-1 bg-white border border-black/5 text-[10px] sm:text-[11px] text-text/60 max-w-xs sm:max-w-sm truncate shadow-xs rounded-full">
+                <div class="flex items-center gap-1.5 px-3 py-1 bg-white border border-black/5 text-[10px] sm:text-[11px] text-text/60 max-w-xs sm:max-w-md truncate shadow-xs rounded-full">
                     <span class="font-bold text-primary font-mono text-[9px] sm:text-[10px]">YOU:</span>
                     <span class="truncate">"{lastUserQuery}"</span>
+                </div>
+            {/if}
+
+            {#if aiReplyText}
+                <div class="flex items-start gap-1.5 px-3.5 py-2 bg-primary/5 border border-primary/15 text-[10px] sm:text-[11px] text-text/80 max-w-sm sm:max-w-lg shadow-xs rounded-2xl text-left animate-fade-in">
+                    <span class="font-bold text-primary font-mono text-[9px] sm:text-[10px] shrink-0 mt-0.5 uppercase">{brand.name} AI:</span>
+                    <span class="leading-relaxed line-clamp-3 font-sans">"{aiReplyText}"</span>
                 </div>
             {/if}
 
@@ -465,7 +555,7 @@
                 bind:value={inputMessage}
                 onkeydown={handleKeydown}
                 disabled={isGenerating || isRecording}
-                placeholder={isRecording ? "Listening..." : "Ask the AI voice assistant..."}
+                placeholder={isRecording ? "Listening..." : `Ask the ${brand.name} voice assistant...`}
                 class="flex-1 min-w-0 px-2 py-1.5 sm:py-2 text-xs sm:text-sm font-sans text-text placeholder:text-text/40 bg-transparent focus:outline-none"
             />
 

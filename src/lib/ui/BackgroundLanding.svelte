@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { brand } from "$lib/brand.svelte";
+
     interface Props {
         mouseX?: number;
         mouseY?: number;
@@ -19,7 +21,7 @@
     >
         <img
             src="land.webp"
-            alt="Ekson Spatial Technology"
+            alt="{brand.name} Spatial Technology"
             class="max-w-[85vw] sm:max-w-[70vw] max-h-[58vh] object-contain drop-shadow-[0_25px_40px_rgba(0,157,214,0.18)] animate-float-gentle"
         />
     </div>
