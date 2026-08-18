@@ -126,21 +126,25 @@ export function extractDominantColorFromImageData(imageData: ImageData): Extract
 
             const max = Math.max(r, g, b);
             const min = Math.min(r, g, b);
-            const chroma = max - min;
+            const chroma = max - min; // 0 (pure grey) to 255 (pure saturated)
 
+            // Filter out neutral whites, blacks, and greys
             if (chroma < minChroma) continue;
 
-            const lightness = (max + min) / 510;
+            const lightness = (max + min) / 510; // 0.0 to 1.0
 
+            // Skip extreme near-white or near-black backgrounds
             if (lightness > 0.94 && chroma < 35) continue;
             if (lightness < 0.08 && chroma < 35) continue;
 
             const [h, s, l] = rgbToHsl(r, g, b);
 
+            // Bucket by Hue (36 segments of 10° each) and Lightness (4 segments)
             const hueBin = Math.floor(h / 10) * 10;
             const lightBin = Math.floor(l * 4);
             const bucketKey = `${hueBin}_${lightBin}`;
 
+            // Vibrant Weighting: prioritize rich, saturated brand colors
             const satWeight = Math.pow(Math.max(0.1, s), 1.3);
             const lightWeight = Math.max(0.2, 1.0 - Math.abs(l - 0.5) * 1.3);
             const alphaWeight = a / 255;
@@ -170,15 +174,21 @@ export function extractDominantColorFromImageData(imageData: ImageData): Extract
         return buckets;
     }
 
+    // Attempt standard chromatic extraction (chroma >= 16)
+    let buckets = runExtraction(16);
+
+    // If logo has lower saturation (pastel/subtle tones), lower threshold
     let buckets = runExtraction(16);
     if (buckets.size === 0) {
         buckets = runExtraction(8);
     }
 
+    // Fallback if logo is 100% grayscale/monochrome
     if (buckets.size === 0) {
         return FALLBACK_COLOR;
     }
 
+    // Build palette of unique vibrant colors
     const sorted = Array.from(buckets.values()).sort((a, b) => b.score - a.score);
 
     const palette: string[] = [];
@@ -201,11 +211,15 @@ export function extractDominantColorFromImageData(imageData: ImageData): Extract
     const primaryHex = rgbToHex(bestR, bestG, bestB);
     const [finalH, finalS, finalL] = rgbToHsl(bestR, bestG, bestB);
 
+    // Contrast text formula (W3C perceived luminance)
     const luminance = (0.299 * bestR + 0.587 * bestG + 0.114 * bestB) / 255;
     const contrastText = luminance > 0.60 ? "#0f172a" : "#ffffff";
 
+    // Dark corporate shade
     const darkShade = rgbToHex(bestR * 0.55, bestG * 0.55, bestB * 0.55);
+    // Soft tint
     const lightTint = `rgba(${bestR}, ${bestG}, ${bestB}, 0.12)`;
+    // Accent shade
     const accent = palette[1] || rgbToHex(Math.min(255, bestR * 1.3), Math.min(255, bestG * 1.3), Math.min(255, bestB * 1.3));
 
     return {
@@ -245,6 +259,7 @@ export async function extractDominantColor(
             if (!ctx) return FALLBACK_COLOR;
             ctx.drawImage(source, 0, 0, w, h);
         } else {
+            // String (data URL, blob URL, or external URL) or Blob
             let imageSourceUrl: string;
             let shouldRevoke = false;
 
@@ -257,6 +272,7 @@ export async function extractDominantColor(
 
             const img = await new Promise<HTMLImageElement>((resolve, reject) => {
                 const imgEl = new Image();
+                // IMPORTANT: Only set crossOrigin for remote HTTP URLs to prevent canvas tainting on data: URIs
                 if (imageSourceUrl.startsWith("http://") || imageSourceUrl.startsWith("https://")) {
                     imgEl.crossOrigin = "anonymous";
                 }

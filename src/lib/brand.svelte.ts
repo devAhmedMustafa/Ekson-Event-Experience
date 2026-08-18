@@ -52,6 +52,25 @@ class BrandStore {
         }
     }
 
+    async updateLogo(dataUrl: string | null, fileName = "") {
+        this.logo = dataUrl;
+        this.logoName = fileName;
+        if (dataUrl) {
+            const colors = await extractDominantColor(dataUrl);
+            this.primaryColor = colors.primary;
+            this.darkColor = colors.darkShade;
+            this.contrastText = colors.contrastText;
+            this.lightTint = colors.lightTint;
+            this.palette = colors.palette;
+        } else {
+            this.primaryColor = FALLBACK_COLOR.primary;
+            this.darkColor = FALLBACK_COLOR.darkShade;
+            this.contrastText = FALLBACK_COLOR.contrastText;
+            this.lightTint = FALLBACK_COLOR.lightTint;
+            this.palette = FALLBACK_COLOR.palette;
+        }
+    }
+
     load() {
         if (typeof window === "undefined") return;
         try {
