@@ -178,7 +178,6 @@ export function extractDominantColorFromImageData(imageData: ImageData): Extract
     let buckets = runExtraction(16);
 
     // If logo has lower saturation (pastel/subtle tones), lower threshold
-    let buckets = runExtraction(16);
     if (buckets.size === 0) {
         buckets = runExtraction(8);
     }
