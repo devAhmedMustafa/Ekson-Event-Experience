@@ -118,7 +118,6 @@ export function extractDominantColorFromImageData(imageData: ImageData): Extract
 
         for (let i = 0; i < len; i += 4) {
             const a = data[i + 3];
-            // Skip transparent / semi-transparent background pixels
             if (a < 60) continue;
 
             const r = data[i];
@@ -179,6 +178,7 @@ export function extractDominantColorFromImageData(imageData: ImageData): Extract
     let buckets = runExtraction(16);
 
     // If logo has lower saturation (pastel/subtle tones), lower threshold
+    let buckets = runExtraction(16);
     if (buckets.size === 0) {
         buckets = runExtraction(8);
     }
@@ -188,10 +188,9 @@ export function extractDominantColorFromImageData(imageData: ImageData): Extract
         return FALLBACK_COLOR;
     }
 
-    // Sort buckets by weighted score descending
+    // Build palette of unique vibrant colors
     const sorted = Array.from(buckets.values()).sort((a, b) => b.score - a.score);
 
-    // Build palette of unique vibrant colors
     const palette: string[] = [];
     for (const b of sorted) {
         const r = Math.round(b.rSum / b.score);
