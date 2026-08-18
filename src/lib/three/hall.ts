@@ -99,12 +99,9 @@ export function makeHall({ accent = '#2f6bff' } = {}) {
     new THREE.PlaneGeometry(W, D),
     new THREE.MeshStandardMaterial({
       map: grid,
-      // Sealed concrete, not a mirror. At 0.55 the ceiling strips smeared
-      // across the whole floor and the hall read as a wet car park.
-      roughness: 0.84,
+      roughness: 1.0,
       metalness: 0,
-      ...surface('concrete', 26),
-      envMapIntensity: 0.3,
+      envMapIntensity: 0,
     })
   )
   floor.rotation.x = -Math.PI / 2
@@ -116,9 +113,9 @@ export function makeHall({ accent = '#2f6bff' } = {}) {
     new THREE.PlaneGeometry(W - 2, HALL.aisleHalf * 2),
     new THREE.MeshStandardMaterial({
       map: aisleTexture(accent),
-      roughness: 0.94,
+      roughness: 1.0,
       metalness: 0,
-      ...surface('carpet', 24),
+      envMapIntensity: 0,
     })
   )
   runner.rotation.x = -Math.PI / 2

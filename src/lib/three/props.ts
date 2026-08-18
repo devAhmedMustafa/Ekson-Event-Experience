@@ -126,6 +126,7 @@ export function makeCarpet(w, d, map, { riser = 0.06, accent = 0x2f6bff, color =
       color,
       roughness: 1,
       metalness: 0,
+      envMapIntensity: 0,
       ...surfaceMaps,
     })
   )
