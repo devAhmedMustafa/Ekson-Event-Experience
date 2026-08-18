@@ -95,6 +95,29 @@ export function backdropGradient(top = '#ffffff', bottom = '#e9ebf0') {
   return tex
 }
 
+export function contactShadow(radius = 1, opacity = 0.32) {
+  const c = document.createElement('canvas')
+  c.width = c.height = 256
+  const ctx = c.getContext('2d')
+  if (ctx) {
+    const g = ctx.createRadialGradient(128, 128, 0, 128, 128, 128)
+    g.addColorStop(0, `rgba(16,19,26,${opacity})`)
+    g.addColorStop(0.45, `rgba(16,19,26,${opacity * 0.5})`)
+    g.addColorStop(1, 'rgba(16,19,26,0)')
+    ctx.fillStyle = g
+    ctx.fillRect(0, 0, 256, 256)
+  }
+  const tex = new THREE.CanvasTexture(c)
+  tex.colorSpace = THREE.SRGBColorSpace
+  const mesh = new THREE.Mesh(
+    new THREE.PlaneGeometry(radius * 2, radius * 2),
+    new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false })
+  )
+  mesh.rotation.x = -Math.PI / 2
+  mesh.renderOrder = -1
+  return mesh
+}
+
 export function disposeObject(root: THREE.Object3D) {
   root.traverse((obj: any) => {
     obj.geometry?.dispose?.()

@@ -320,7 +320,7 @@
         c.translate(x, y);
         c.rotate(rot * 0.4); // Controlled rotation so brand logo is clearly visible
 
-        let ringColor = "#009dd6";
+        let ringColor = brand.primaryColor || "#009dd6";
         let badgeRadius = size * 1.35;
         let ringWidth = 2;
 

@@ -23,8 +23,8 @@
     let isSpinning = $state(false);
     let selectedPrize = $state<string | null>(null);
 
-    const numPrizes = prizes.length;
-    const arc = 360 / numPrizes;
+    const numPrizes = $derived(prizes.length);
+    const arc = $derived(360 / numPrizes);
 
     function spin() {
         if (isSpinning) return;
