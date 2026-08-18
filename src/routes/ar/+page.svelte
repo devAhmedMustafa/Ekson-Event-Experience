@@ -21,7 +21,6 @@
     let activeModelGroup: THREE.Group | null = null;
     let shadowMesh: THREE.Mesh | null = null;
     let reticleMesh: THREE.Mesh | null = null;
-    let animationFrameId: number | null = null;
 
     // Derived or URL parameters
     let displayName = $derived(page.url.searchParams.get("name") || brand.name || "Ekson");
@@ -40,13 +39,14 @@
     let isARActive = $state(false);
     let isCameraFeedActive = $state(false);
     let isPreparingUSDZ = $state(false);
-    let arStatusHint = $state("Tap to place model in your space");
+    let isModelPlaced = $state(false);
+    let arStatusHint = $state("Point camera at a flat surface (table or floor)");
     let cameraStream: MediaStream | null = null;
     let hitTestSource: any = null;
     let hitTestRequested = false;
     let xrPlaced = false;
 
-    // Custom In-Camera AR transform state
+    // In-Camera AR Placement State
     let customARScale = $state(1.0);
     let customARRotationY = $state(0);
     let customARPosX = $state(0);
@@ -55,20 +55,26 @@
     let autoRotate = $state(true);
     let isLoaded = $state(false);
 
-    // Orbit Camera State
-    let isDragging = false;
-    let prevMouseX = 0;
-    let prevMouseY = 0;
-    let cameraTheta = 0.6;
-    let cameraPhi = 0.55;
-    let cameraDistance = 0.35;
-    let targetTheta = 0.6;
-    let targetPhi = 0.55;
-    let targetDistance = 0.35;
+    // Unified 3D Orbit Interaction State (Smooth, rock-solid camera rotation around fixed origin)
+    let spin = -0.5;
+    let targetSpin = -0.5;
+    let tilt = -0.1;
+    let targetTilt = -0.1;
+    let zoomLevel = 1.0;
+    let targetZoom = 1.0;
 
-    // Touch interaction
-    let initialTouchDist = 0;
-    let initialTouchAngle = 0;
+    // Pointer Tracking
+    const activePointers = new Map<number, { x: number; y: number }>();
+    let isDragging = false;
+    let lastSingleX = 0;
+    let lastSingleY = 0;
+
+    // Pinch tracking
+    let pinchStartDist = 0;
+    let pinchStartAngle = 0;
+    let initialZoomOnPinch = 1.0;
+    let initialScaleOnPinch = 1.0;
+    let initialRotOnPinch = 0;
 
     let logoImg: HTMLImageElement | null = null;
     let logoMap: THREE.Texture | null = null;
@@ -108,12 +114,10 @@
         shadowMesh.position.y = -focus.center.y - 0.002;
         pivot.add(shadowMesh);
 
-        // Adjust camera target framing based on model scale
-        const dist = Math.max(0.2, focus.radius * 4.2);
-        targetDistance = dist;
-        cameraDistance = dist;
-        targetTheta = 0.6;
-        targetPhi = 0.55;
+        targetZoom = 1.0;
+        zoomLevel = 1.0;
+        targetTilt = -0.1;
+        tilt = -0.1;
     }
 
     function selectModel(modelId: string) {
@@ -127,11 +131,16 @@
     }
 
     function resetCamera() {
-        const focus = activeModelGroup?.userData.focus || { radius: 0.12 };
-        const dist = Math.max(0.2, focus.radius * 4.2);
-        targetTheta = 0.6;
-        targetPhi = 0.55;
-        targetDistance = dist;
+        targetSpin = -0.5;
+        spin = -0.5;
+        targetTilt = -0.1;
+        tilt = -0.1;
+        targetZoom = 1.0;
+        zoomLevel = 1.0;
+        customARScale = 1.0;
+        customARPosX = 0;
+        customARPosY = 0;
+        customARRotationY = 0;
     }
 
     async function detectARCapabilities() {
@@ -152,7 +161,7 @@
         isQuickLookSupported = isIOS;
     }
 
-    // 1. Launch WebXR Immersive AR (Android Chrome / WebXR)
+    // 1. Launch WebXR Immersive AR (Android Chrome / WebXR with Surface Hit-Testing)
     async function startWebXR() {
         if (!renderer || !(navigator as any).xr) return;
         try {
@@ -164,13 +173,15 @@
 
             isARActive = true;
             xrPlaced = false;
+            isModelPlaced = false;
             hitTestRequested = false;
-            arStatusHint = "Scan the floor / table, then tap to place.";
+            arStatusHint = "Move camera slowly to detect table or floor…";
 
             session.addEventListener("select", onXRSelect);
             session.addEventListener("end", () => {
                 isARActive = false;
                 xrPlaced = false;
+                isModelPlaced = false;
                 hitTestSource = null;
                 hitTestRequested = false;
                 if (reticleMesh) reticleMesh.visible = false;
@@ -194,8 +205,12 @@
         pivot.rotation.y = 0;
         pivot.visible = true;
         xrPlaced = true;
+        isModelPlaced = true;
         reticleMesh.visible = false;
-        arStatusHint = "Placed! Walk around or inspect the model.";
+        arStatusHint = "Model placed in 1:1 scale! Walk around to inspect.";
+        try {
+            if (navigator.vibrate) navigator.vibrate(40);
+        } catch (_) {}
     }
 
     function handleXRFrame(frame: any) {
@@ -220,13 +235,15 @@
                 const pose = hitTestResults[0].getPose(refSpace);
                 reticleMesh.visible = true;
                 reticleMesh.matrix.fromArray(pose.transform.matrix);
+                arStatusHint = "Surface detected! Tap anywhere to place.";
             } else {
                 reticleMesh.visible = false;
+                arStatusHint = "Scanning for surfaces… move camera across table/floor";
             }
         }
     }
 
-    // 2. Launch iOS Quick Look (USDZ Exporter)
+    // 2. Launch iOS Quick Look (Apple Native ARKit LiDAR & Plane Detection via USDZ)
     async function startQuickLook() {
         if (!activeModelGroup) return;
         isPreparingUSDZ = true;
@@ -243,7 +260,8 @@
 
             const anchor = document.createElement("a");
             anchor.setAttribute("rel", "ar");
-            anchor.href = usdzUrl;
+            // #allowsContentScaling=0 locks 1:1 physical real-world scale in Apple ARKit Quick Look
+            anchor.href = `${usdzUrl}#allowsContentScaling=0`;
 
             const img = document.createElement("img");
             img.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
@@ -254,7 +272,7 @@
             setTimeout(() => {
                 anchor.remove();
                 URL.revokeObjectURL(usdzUrl);
-            }, 2500);
+            }, 3000);
         } catch (err) {
             console.error("USDZ export failed:", err);
             startInBrowserCameraAR();
@@ -275,6 +293,7 @@
             }
             isCameraFeedActive = true;
             isARActive = true;
+            isModelPlaced = true;
             if (scene) scene.background = null;
             arStatusHint = "Drag to move · Pinch to scale · 2 fingers to rotate";
         } catch (err) {
@@ -293,6 +312,7 @@
         }
         isCameraFeedActive = false;
         isARActive = false;
+        isModelPlaced = false;
         if (scene) scene.background = new THREE.Color("#0b0f17");
         customARScale = 1.0;
         customARRotationY = 0;
@@ -311,6 +331,106 @@
         }
     }
 
+    /* ── Rock-Solid Unified Pointer Controls ────────────────────────── */
+
+    function getPinchMetrics(): { dist: number; angle: number } | null {
+        if (activePointers.size < 2) return null;
+        const pts = Array.from(activePointers.values());
+        const dx = pts[1].x - pts[0].x;
+        const dy = pts[1].y - pts[0].y;
+        return {
+            dist: Math.hypot(dx, dy),
+            angle: Math.atan2(dy, dx)
+        };
+    }
+
+    function onPointerDown(e: PointerEvent) {
+        if (!containerEl) return;
+        activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+        containerEl.setPointerCapture?.(e.pointerId);
+
+        if (activePointers.size === 1) {
+            isDragging = true;
+            lastSingleX = e.clientX;
+            lastSingleY = e.clientY;
+        } else if (activePointers.size === 2) {
+            // Cancel 1-finger orbit/move when 2 fingers touch
+            isDragging = false;
+            const pinch = getPinchMetrics();
+            if (pinch) {
+                pinchStartDist = pinch.dist;
+                pinchStartAngle = pinch.angle;
+                initialZoomOnPinch = targetZoom;
+                initialScaleOnPinch = customARScale;
+                initialRotOnPinch = customARRotationY;
+            }
+        }
+    }
+
+    function onPointerMove(e: PointerEvent) {
+        if (!activePointers.has(e.pointerId)) return;
+        activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+        if (activePointers.size === 1 && isDragging) {
+            const dx = e.clientX - lastSingleX;
+            const dy = e.clientY - lastSingleY;
+            lastSingleX = e.clientX;
+            lastSingleY = e.clientY;
+
+            if (isCameraFeedActive) {
+                // In Camera AR: 1 finger smoothly translates in screen space
+                customARPosX += dx * 0.0012;
+                customARPosY -= dy * 0.0012;
+            } else {
+                // In 3D Studio: 1 finger smoothly spins and tilts the view around the fixed model
+                targetSpin += dx * 0.012;
+                targetTilt = Math.max(-1.1, Math.min(0.9, targetTilt + dy * 0.008));
+            }
+        } else if (activePointers.size === 2) {
+            const pinch = getPinchMetrics();
+            if (pinch && pinchStartDist > 0) {
+                const scaleRatio = pinch.dist / pinchStartDist;
+                if (isCameraFeedActive) {
+                    // In Camera AR: 2-finger pinch scales and 2-finger twist rotates
+                    customARScale = Math.max(0.2, Math.min(4.0, initialScaleOnPinch * scaleRatio));
+                    const angleDiff = pinch.angle - pinchStartAngle;
+                    customARRotationY = initialRotOnPinch + angleDiff;
+                } else {
+                    // In 3D Studio: 2-finger pinch smoothly zooms without moving or glitching object
+                    targetZoom = Math.max(0.5, Math.min(2.8, initialZoomOnPinch * (pinchStartDist / pinch.dist)));
+                }
+            }
+        }
+    }
+
+    function onPointerUp(e: PointerEvent) {
+        activePointers.delete(e.pointerId);
+        try {
+            containerEl?.releasePointerCapture?.(e.pointerId);
+        } catch (_) {}
+
+        if (activePointers.size === 1) {
+            // Seamlessly resume 1-finger drag from the remaining finger's position
+            isDragging = true;
+            const remaining = Array.from(activePointers.values())[0];
+            lastSingleX = remaining.x;
+            lastSingleY = remaining.y;
+        } else if (activePointers.size === 0) {
+            isDragging = false;
+        }
+    }
+
+    function onWheel(e: WheelEvent) {
+        e.preventDefault();
+        if (isCameraFeedActive) {
+            customARScale = Math.max(0.2, Math.min(4.0, customARScale - Math.sign(e.deltaY) * 0.08));
+        } else {
+            targetZoom = Math.max(0.5, Math.min(2.8, targetZoom + Math.sign(e.deltaY) * 0.08));
+        }
+    }
+
+    /* ── Scene Initialization ────────────────────────────────────────── */
+
     async function initScene() {
         if (typeof window === "undefined" || !canvasEl || !containerEl) return;
         cleanupScene();
@@ -321,7 +441,7 @@
         scene = new THREE.Scene();
         scene.background = new THREE.Color("#0b0f17");
 
-        camera = new THREE.PerspectiveCamera(35, w / h, 0.01, 20);
+        camera = new THREE.PerspectiveCamera(32, w / h, 0.01, 20);
         camera.position.set(0, 0.2, 0.6);
 
         renderer = new THREE.WebGLRenderer({
@@ -372,14 +492,21 @@
         pivot.name = "merch_pivot";
         scene.add(pivot);
 
-        // AR Placement Reticle
-        reticleMesh = new THREE.Mesh(
-            new THREE.RingGeometry(0.04, 0.055, 32).rotateX(-Math.PI / 2),
-            new THREE.MeshBasicMaterial({ color: new THREE.Color(displayColor), side: THREE.DoubleSide })
+        // High-Precision AR Surface Hit-Test Reticle
+        const reticleGroup = new THREE.Group();
+        const outerRing = new THREE.Mesh(
+            new THREE.RingGeometry(0.045, 0.06, 32).rotateX(-Math.PI / 2),
+            new THREE.MeshBasicMaterial({ color: new THREE.Color(displayColor), side: THREE.DoubleSide, transparent: true, opacity: 0.85 })
         );
-        reticleMesh.matrixAutoUpdate = false;
-        reticleMesh.visible = false;
-        scene.add(reticleMesh);
+        const innerDot = new THREE.Mesh(
+            new THREE.CircleGeometry(0.012, 16).rotateX(-Math.PI / 2),
+            new THREE.MeshBasicMaterial({ color: new THREE.Color("#ffffff"), side: THREE.DoubleSide, transparent: true, opacity: 0.9 })
+        );
+        reticleGroup.add(outerRing, innerDot);
+        reticleGroup.matrixAutoUpdate = false;
+        reticleGroup.visible = false;
+        reticleMesh = reticleGroup as any;
+        scene.add(reticleGroup);
 
         // Logo Texture Generation
         try {
@@ -393,19 +520,22 @@
         await loadModel(selectedModelId);
         await detectARCapabilities();
 
-        // Event listeners
+        // Event listeners (Pointer and Wheel on container only - zero duplicate touch events)
         window.addEventListener("resize", handleResize);
-        containerEl.addEventListener("pointerdown", handlePointerDown);
-        window.addEventListener("pointermove", handlePointerMove);
-        window.addEventListener("pointerup", handlePointerUp);
-        containerEl.addEventListener("wheel", handleWheel, { passive: false });
-        containerEl.addEventListener("touchstart", handleTouchStart, { passive: true });
-        containerEl.addEventListener("touchmove", handleTouchMove, { passive: false });
+        containerEl.addEventListener("pointerdown", onPointerDown);
+        containerEl.addEventListener("pointermove", onPointerMove);
+        containerEl.addEventListener("pointerup", onPointerUp);
+        containerEl.addEventListener("pointercancel", onPointerUp);
+        containerEl.addEventListener("wheel", onWheel, { passive: false });
 
         isLoaded = true;
 
+        const clock = new THREE.Clock();
+
         // Render Loop
         renderer.setAnimationLoop((timestamp, frame) => {
+            const dt = Math.min(0.05, clock.getDelta());
+
             if (renderer?.xr.isPresenting) {
                 handleXRFrame(frame);
             } else if (isCameraFeedActive) {
@@ -420,20 +550,24 @@
                     camera.lookAt(0, 0, -1);
                 }
             } else {
-                // Standard 3D Orbit mode
-                cameraTheta += (targetTheta - cameraTheta) * 0.1;
-                cameraPhi += (targetPhi - cameraPhi) * 0.1;
-                cameraDistance += (targetDistance - cameraDistance) * 0.1;
-
-                if (autoRotate && !isDragging) {
-                    targetTheta += 0.005;
+                // Standard 3D Studio mode: smooth orbital camera around firmly anchored model
+                if (!isDragging && autoRotate) {
+                    targetSpin += dt * 0.4;
                 }
+                spin += (targetSpin - spin) * Math.min(1, dt * 8);
+                tilt += (targetTilt - tilt) * Math.min(1, dt * 8);
+                zoomLevel += (targetZoom - zoomLevel) * Math.min(1, dt * 8);
 
+                const focus = activeModelGroup?.userData.focus || { center: new THREE.Vector3(0, 0.05, 0), radius: 0.12 };
+                const dist = focus.radius * 4.4;
+
+                if (pivot) {
+                    pivot.rotation.y = spin;
+                    pivot.position.set(0, 0, 0);
+                    pivot.scale.set(1, 1, 1);
+                }
                 if (camera) {
-                    const x = cameraDistance * Math.sin(cameraPhi) * Math.sin(cameraTheta);
-                    const y = cameraDistance * Math.cos(cameraPhi);
-                    const z = cameraDistance * Math.sin(cameraPhi) * Math.cos(cameraTheta);
-                    camera.position.set(x, y, z);
+                    camera.position.set(0, focus.radius * (1.0 - tilt * 1.3) * zoomLevel, dist * zoomLevel);
                     camera.lookAt(0, 0, 0);
                 }
             }
@@ -453,105 +587,6 @@
         renderer.setSize(w, h);
     }
 
-    function handlePointerDown(e: PointerEvent) {
-        if (e.pointerType === "touch") return;
-        isDragging = true;
-        prevMouseX = e.clientX;
-        prevMouseY = e.clientY;
-    }
-
-    function handlePointerMove(e: PointerEvent) {
-        if (!isDragging) return;
-        const dx = e.clientX - prevMouseX;
-        const dy = e.clientY - prevMouseY;
-        prevMouseX = e.clientX;
-        prevMouseY = e.clientY;
-
-        if (isCameraFeedActive) {
-            customARPosX += dx * 0.001;
-            customARPosY -= dy * 0.001;
-        } else {
-            targetTheta -= dx * 0.007;
-            targetPhi = Math.max(0.12, Math.min(Math.PI / 2 + 0.15, targetPhi - dy * 0.007));
-        }
-    }
-
-    function handlePointerUp() {
-        isDragging = false;
-    }
-
-    function handleWheel(e: WheelEvent) {
-        e.preventDefault();
-        if (isCameraFeedActive) {
-            customARScale = Math.max(0.3, Math.min(3.0, customARScale - Math.sign(e.deltaY) * 0.08));
-        } else {
-            const focus = activeModelGroup?.userData.focus || { radius: 0.12 };
-            const minDist = focus.radius * 1.5;
-            const maxDist = focus.radius * 8.0;
-            targetDistance = Math.max(minDist, Math.min(maxDist, targetDistance + e.deltaY * 0.0006));
-        }
-    }
-
-    function handleTouchStart(e: TouchEvent) {
-        if (e.touches.length === 1) {
-            isDragging = true;
-            prevMouseX = e.touches[0].clientX;
-            prevMouseY = e.touches[0].clientY;
-        } else if (e.touches.length === 2) {
-            initialTouchDist = Math.hypot(
-                e.touches[0].clientX - e.touches[1].clientX,
-                e.touches[0].clientY - e.touches[1].clientY
-            );
-            initialTouchAngle = Math.atan2(
-                e.touches[1].clientY - e.touches[0].clientY,
-                e.touches[1].clientX - e.touches[0].clientX
-            );
-        }
-    }
-
-    function handleTouchMove(e: TouchEvent) {
-        if (e.touches.length === 1 && isDragging) {
-            const dx = e.touches[0].clientX - prevMouseX;
-            const dy = e.touches[0].clientY - prevMouseY;
-            prevMouseX = e.touches[0].clientX;
-            prevMouseY = e.touches[0].clientY;
-
-            if (isCameraFeedActive) {
-                customARPosX += dx * 0.001;
-                customARPosY -= dy * 0.001;
-            } else {
-                targetTheta -= dx * 0.008;
-                targetPhi = Math.max(0.12, Math.min(Math.PI / 2 + 0.15, targetPhi - dy * 0.008));
-            }
-        } else if (e.touches.length === 2) {
-            e.preventDefault();
-            const currentDist = Math.hypot(
-                e.touches[0].clientX - e.touches[1].clientX,
-                e.touches[0].clientY - e.touches[1].clientY
-            );
-            const currentAngle = Math.atan2(
-                e.touches[1].clientY - e.touches[0].clientY,
-                e.touches[1].clientX - e.touches[0].clientX
-            );
-
-            if (isCameraFeedActive) {
-                const scaleDiff = currentDist / initialTouchDist;
-                customARScale = Math.max(0.3, Math.min(3.5, customARScale * scaleDiff));
-                const angleDiff = currentAngle - initialTouchAngle;
-                customARRotationY += angleDiff;
-            } else {
-                const diff = initialTouchDist - currentDist;
-                const focus = activeModelGroup?.userData.focus || { radius: 0.12 };
-                const minDist = focus.radius * 1.5;
-                const maxDist = focus.radius * 8.0;
-                targetDistance = Math.max(minDist, Math.min(maxDist, targetDistance + diff * 0.002));
-            }
-
-            initialTouchDist = currentDist;
-            initialTouchAngle = currentAngle;
-        }
-    }
-
     function cleanupScene() {
         if (typeof window === "undefined") return;
         if (cameraStream) {
@@ -559,8 +594,13 @@
             cameraStream = null;
         }
         window.removeEventListener("resize", handleResize);
-        window.removeEventListener("pointermove", handlePointerMove);
-        window.removeEventListener("pointerup", handlePointerUp);
+        if (containerEl) {
+            containerEl.removeEventListener("pointerdown", onPointerDown);
+            containerEl.removeEventListener("pointermove", onPointerMove);
+            containerEl.removeEventListener("pointerup", onPointerUp);
+            containerEl.removeEventListener("pointercancel", onPointerUp);
+            containerEl.removeEventListener("wheel", onWheel);
+        }
         if (scene) disposeObject(scene);
         renderer?.dispose();
     }
@@ -674,7 +714,7 @@
     <!-- Center 3D & AR Interactive Viewport -->
     <main
         bind:this={containerEl}
-        class="relative flex-1 w-full h-full flex items-center justify-center overflow-hidden touch-none cursor-grab active:cursor-grabbing z-10"
+        class="relative flex-1 w-full h-full flex items-center justify-center overflow-hidden touch-none cursor-grab active:cursor-grabbing z-10 select-none"
     >
         <!-- WebGL Canvas -->
         <canvas bind:this={canvasEl} class="w-full h-full block outline-none"></canvas>
@@ -686,11 +726,11 @@
             </div>
         {/if}
 
-        <!-- Top Hint Overlay -->
+        <!-- Top Status & Surface Detection Hint Overlay -->
         {#if isLoaded}
             <div class="absolute top-3 left-1/2 -translate-x-1/2 pointer-events-none z-10 bg-slate-900/85 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/15 text-[9px] sm:text-[10px] font-mono text-white shadow-lg flex items-center gap-1.5 sm:gap-2">
                 <span class="material-symbols-rounded text-sm" style="color: {displayColor};">
-                    {isARActive ? 'view_in_ar' : 'touch_app'}
+                    {isARActive ? (isModelPlaced ? 'check_circle' : 'search') : 'touch_app'}
                 </span>
                 <span>{isARActive ? arStatusHint : 'Drag to rotate · Pinch/scroll to zoom'}</span>
             </div>
@@ -699,7 +739,7 @@
 
     <!-- Bottom AR Action Bar & Model Specs -->
     <footer class="relative z-20 w-full px-3 sm:px-6 py-3 bg-slate-900/95 backdrop-blur-md border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 font-mono">
-        <!-- Model Info -->
+        <!-- Model Info & Physical Metric Scale -->
         <div class="flex items-center gap-2.5 w-full sm:w-auto">
             <div class="flex items-center gap-1.5">
                 <span class="size-2 rounded-full" style="background-color: {displayColor};"></span>
@@ -708,7 +748,7 @@
             <span class="text-[8px] sm:text-[9px] text-white/60 truncate max-w-[200px] sm:max-w-none">{selectedItem.blurb}</span>
         </div>
 
-        <!-- Big Launch AR Button -->
+        <!-- Big Launch AR Button with Native Surface Detection -->
         <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
             {#if isCameraFeedActive}
                 <button
@@ -736,7 +776,7 @@
                     {:else}
                         <span class="material-symbols-rounded text-base">view_in_ar</span>
                         <span>
-                            {isWebXRSupported ? 'View in your space (WebXR)' : isQuickLookSupported ? 'View in Quick Look (iOS)' : 'Launch Live Camera AR'}
+                            {isWebXRSupported ? 'View in your space (WebXR Surface SLAM)' : isQuickLookSupported ? 'View in Quick Look (iOS ARKit)' : 'Launch Live Camera AR'}
                         </span>
                     {/if}
                 </button>
