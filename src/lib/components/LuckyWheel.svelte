@@ -8,16 +8,16 @@
         textColor: string;
     }
 
-    const prizes: Prize[] = [
-        { code: "01", label: "VIP ACCESS", bg: "#009dd6", textColor: "#ffffff" },
-        { code: "02", label: "50% OFF", bg: "#ffffff", textColor: "#04547c" },
-        { code: "03", label: "MERCH KIT", bg: "#ebe9fc", textColor: "#010104" },
-        { code: "04", label: "EXP PASS", bg: "#04547c", textColor: "#ffffff" },
+    const prizes = $derived<Prize[]>([
+        { code: "01", label: "VIP ACCESS", bg: brand.primaryColor || "#009dd6", textColor: "#ffffff" },
+        { code: "02", label: "50% OFF", bg: "#ffffff", textColor: brand.darkColor || "#04547c" },
+        { code: "03", label: "MERCH KIT", bg: brand.lightTint || "#ebe9fc", textColor: "#010104" },
+        { code: "04", label: "EXP PASS", bg: brand.darkColor || "#04547c", textColor: "#ffffff" },
         { code: "05", label: "GRAND PRIZE", bg: "#f0fdf4", textColor: "#166534" },
-        { code: "06", label: "100 TOKENS", bg: "#e0f2fe", textColor: "#0369a1" },
+        { code: "06", label: "100 TOKENS", bg: brand.lightTint || "#e0f2fe", textColor: brand.primaryColor || "#0369a1" },
         { code: "07", label: "MYSTERY BOX", bg: "#ffffff", textColor: "#010104" },
-        { code: "08", label: "GUEST PASS", bg: "#ebe9fc", textColor: "#010104" },
-    ];
+        { code: "08", label: "GUEST PASS", bg: brand.lightTint || "#ebe9fc", textColor: "#010104" },
+    ]);
 
     let currentRotation = $state(0);
     let isSpinning = $state(false);

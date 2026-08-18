@@ -173,7 +173,7 @@
         const popupText = item.points > 0 ? `+${item.points}` : `${item.points}`;
 
         addPopup(item.x, catchY - 15, popupText, color);
-        createExplosion(item.x, catchY, isHazard ? "#f43f5e" : "#009dd6", isHazard ? 12 : 8);
+        createExplosion(item.x, catchY, isHazard ? "#f43f5e" : (brand.primaryColor || "#009dd6"), isHazard ? 12 : 8);
         basketGlowTimer = 0.2;
     }
 
@@ -229,7 +229,7 @@
     function drawDiamond(c: CanvasRenderingContext2D, x: number, y: number, size: number) {
         c.save();
         c.translate(x, y);
-        c.fillStyle = "#009dd6";
+        c.fillStyle = brand.primaryColor || "#009dd6";
         c.strokeStyle = "#ffffff";
         c.lineWidth = 1.5;
         c.beginPath();
@@ -504,14 +504,14 @@
             const glow = basketGlowTimer > 0;
 
             if (glow) {
-                ctx.shadowColor = "#009dd6";
+                ctx.shadowColor = brand.primaryColor || "#009dd6";
                 ctx.shadowBlur = 15;
             }
 
             const gradient = ctx.createLinearGradient(barX, 0, barX + basketWidth, 0);
-            gradient.addColorStop(0, "#009dd6");
-            gradient.addColorStop(0.5, "#38bdf8");
-            gradient.addColorStop(1, "#009dd6");
+            gradient.addColorStop(0, brand.primaryColor || "#009dd6");
+            gradient.addColorStop(0.5, brand.lightTint ? "#ffffff" : "#38bdf8");
+            gradient.addColorStop(1, brand.darkColor || "#04547c");
 
             ctx.fillStyle = gradient;
             ctx.fillRect(barX, basketY, basketWidth, basketHeight);
