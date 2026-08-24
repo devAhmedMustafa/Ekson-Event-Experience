@@ -5,9 +5,12 @@
     import { brand } from "$lib/brand.svelte";
     import { createBooth } from "$lib/three/booth";
     import { buildBoothTextures, invalidateBoothTextures } from "$lib/three/booth-textures";
-    import { envFor, studioLights, disposeObject } from "$lib/three/env";
+    import { envFor, studioLights, backdropGradient, disposeObject } from "$lib/three/env";
     import { mat, disposeMaterialCache } from "$lib/three/materials";
     import { QUALITY } from "$lib/three/quality";
+    import { createRenderPath } from "$lib/three/render-path";
+
+    let renderPath: any = null;
 
     interface CameraPreset {
         id: string;
@@ -83,6 +86,8 @@
             cancelAnimationFrame(animationFrameId);
             animationFrameId = null;
         }
+        renderPath?.dispose();
+        renderPath = null;
         controls?.dispose();
         renderer?.dispose();
         disposeMaterialCache();
@@ -138,7 +143,7 @@
         if (!studioRig || !scene) return;
 
         if (mode === "studio") {
-            scene.background = new THREE.Color("#f1f4f9");
+            scene.background = backdropGradient("#eef1f6", "#ccd2de");
             studioRig.key.color.setHex(0xfff4e6);
             studioRig.key.intensity = 1.35;
             studioRig.fill.color.setHex(0xd6e4ff);
@@ -285,6 +290,10 @@
             palette: brand.palette || [brand.primaryColor, brand.darkColor],
             detail: "high"
         });
+        boothGroup.updateMatrixWorld(true);
+        boothGroup.traverse((o) => {
+            o.matrixAutoUpdate = false;
+        });
         scene.add(boothGroup);
 
         markersGroup = makeSlotMarkers(boothGroup, brand.primaryColor || "#009dd6");
@@ -321,7 +330,7 @@
         isInitialized = true;
 
         scene = new THREE.Scene();
-        scene.background = new THREE.Color("#f1f4f9");
+        scene.background = backdropGradient("#eef1f6", "#ccd2de");
 
         const w = containerEl.clientWidth;
         const h = containerEl.clientHeight;
@@ -336,7 +345,7 @@
         });
         renderer.setSize(w, h);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, QUALITY.maxPixelRatio));
-        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.enabled = QUALITY.shadows;
         renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         renderer.toneMapping = THREE.ACESFilmicToneMapping;
         renderer.toneMappingExposure = 1.05;
@@ -345,13 +354,13 @@
         controls.target.copy(HOME.target);
         controls.enableDamping = true;
         controls.dampingFactor = 0.06;
-        controls.enablePan = true;
-        controls.minDistance = 4.0;
-        controls.maxDistance = 22;
-        controls.minPolarAngle = 0.15;
-        controls.maxPolarAngle = Math.PI / 2.05;
+        controls.enablePan = false;
+        controls.minDistance = 5.5;
+        controls.maxDistance = 20;
+        controls.minPolarAngle = 0.25;
+        controls.maxPolarAngle = Math.PI / 2.08;
         controls.autoRotate = autoRotate;
-        controls.autoRotateSpeed = 0.55;
+        controls.autoRotateSpeed = 0.42;
 
         controls.addEventListener("start", () => {
             autoRotate = false;
@@ -366,10 +375,10 @@
             }
         });
 
-        studioRig = studioLights(scene, { intensity: 1.0, shadowRadius: 20 });
+        studioRig = studioLights(scene, { intensity: 0.95, shadowRadius: 12 });
 
         // Concrete Ground Plinth
-        const ground = new THREE.Mesh(new THREE.CircleGeometry(26, 64), mat.concrete(0xbfc4cf, 24));
+        const ground = new THREE.Mesh(new THREE.CircleGeometry(28, 72), mat.concrete(0xbfc4cf, 26));
         ground.rotation.x = -Math.PI / 2;
         ground.position.y = -0.002;
         ground.receiveShadow = true;
@@ -378,6 +387,15 @@
         // Assemble Procedural Kubix Stand
         await assembleBoothScene();
 
+        renderPath = createRenderPath(renderer, scene, camera, {
+            aoRadius: 0.35,
+            aoIntensity: 1.0,
+            bloomStrength: 0.1,
+            bloomThreshold: 0.95,
+            vignetteDarkness: 1.0,
+            vignetteOffset: 1.15
+        });
+
         handleResize = () => {
             if (!containerEl || !camera || !renderer) return;
             const nw = containerEl.clientWidth;
@@ -385,6 +403,7 @@
             camera.aspect = nw / nh;
             camera.updateProjectionMatrix();
             renderer.setSize(nw, nh);
+            renderPath?.setSize(nw, nh);
         };
         window.addEventListener("resize", handleResize);
 
@@ -431,7 +450,9 @@
                 }
             }
 
-            if (renderer && scene && camera) {
+            if (renderPath) {
+                renderPath.render();
+            } else if (renderer && scene && camera) {
                 renderer.render(scene, camera);
             }
         };
@@ -449,6 +470,8 @@
         if (handleResize) window.removeEventListener("resize", handleResize);
         if (onBrandUpdated) window.removeEventListener("ekson_brand_updated", onBrandUpdated);
         if (animationFrameId) cancelAnimationFrame(animationFrameId);
+        renderPath?.dispose();
+        renderPath = null;
         controls?.dispose();
         renderer?.dispose();
         disposeMaterialCache();

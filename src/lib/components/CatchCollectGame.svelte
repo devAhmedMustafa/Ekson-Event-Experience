@@ -322,7 +322,7 @@
 
         c.save();
         c.translate(x, y);
-        c.rotate(rot * 0.4); // Controlled rotation so brand logo is clearly visible
+        c.rotate(rot * 0.4);
 
         let ringColor = brand.primaryColor || "#009dd6";
         let badgeRadius = size * 1.35;
@@ -337,18 +337,15 @@
             ringWidth = 2.5;
         }
 
-        // Circular background with subtle shadow
         c.fillStyle = "#ffffff";
         c.beginPath();
         c.arc(0, 0, badgeRadius, 0, Math.PI * 2);
         c.fill();
 
-        // Outer Tier Border
         c.strokeStyle = ringColor;
         c.lineWidth = ringWidth;
         c.stroke();
 
-        // Clip and draw brand logo centered
         c.save();
         c.beginPath();
         c.arc(0, 0, badgeRadius - 1.5, 0, Math.PI * 2);
@@ -358,7 +355,6 @@
         c.drawImage(brandLogoImg, -imgSize / 2, -imgSize / 2, imgSize, imgSize);
         c.restore();
 
-        // Top Glass Accent
         c.beginPath();
         c.arc(0, 0, badgeRadius - 1, Math.PI * 1.2, Math.PI * 1.8);
         c.strokeStyle = "rgba(255, 255, 255, 0.85)";
@@ -394,14 +390,14 @@
     function renderLoop(now: number) {
         if (!ctx) return;
 
-        // Frame-rate independent delta time (clamped to prevent huge jumps on tab switch)
         const dt = Math.min((now - lastTime) / 1000, 0.05);
         lastTime = now;
 
-        // Clear canvas
         ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
-        // Draw subtle background grid
+        ctx.fillStyle = "rgba(248, 250, 252, 0.5)";
+        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
         ctx.strokeStyle = "rgba(0, 0, 0, 0.03)";
         ctx.lineWidth = 1;
         const gridSize = 30;
@@ -419,27 +415,22 @@
         }
 
         if (isPlaying) {
-            // Smoothly interpolate basket position toward mouse/touch target
             basketX += (targetBasketX - basketX) * Math.min(1.0, dt * 25);
 
-            // Time-based spawning (Independent of display refresh rate)
             spawnTimer += dt;
-            const spawnInterval = 0.42; // spawn every 420ms
+            const spawnInterval = 0.42;
             if (spawnTimer >= spawnInterval) {
                 spawnItem();
                 spawnTimer = 0;
             }
 
-            // Basket vertical coordinates
             const basketY = canvasHeight - 28;
             const basketHalf = basketWidth / 2;
 
-            // Update & draw falling items
             items = items.filter((item) => {
                 item.y += item.speed * dt;
                 item.rotation += item.rotSpeed * dt;
 
-                // Collision detection with catcher bar
                 if (item.y >= basketY - 14 && item.y <= basketY + basketHeight + 4) {
                     if (Math.abs(item.x - basketX) <= basketHalf + item.size * 0.8) {
                         triggerCatch(item, basketY);
@@ -447,7 +438,6 @@
                     }
                 }
 
-                // Render item: Diamond, Star, Token use Brand Logo, Hazard uses Red Triangle
                 if (item.type === "diamond") {
                     drawBrandCollectable(ctx!, item.x, item.y, item.size, item.rotation, "diamond");
                 } else if (item.type === "star") {
@@ -461,7 +451,6 @@
                 return item.y < canvasHeight + 30;
             });
 
-            // Update & draw particles
             particles = particles.filter((p) => {
                 p.x += p.vx * dt;
                 p.y += p.vy * dt;
@@ -480,7 +469,6 @@
                 return true;
             });
 
-            // Update & draw floating score popups
             popups = popups.filter((pop) => {
                 pop.y += pop.vy * dt;
                 pop.alpha -= dt * 1.6;
@@ -498,7 +486,6 @@
                 return true;
             });
 
-            // Draw laser catcher bar with glow effect
             if (basketGlowTimer > 0) {
                 basketGlowTimer -= dt;
             }
@@ -520,7 +507,6 @@
             ctx.fillStyle = gradient;
             ctx.fillRect(barX, basketY, basketWidth, basketHeight);
 
-            // Top highlight line
             ctx.fillStyle = "#ffffff";
             ctx.fillRect(barX + 4, basketY, basketWidth - 8, 2);
             ctx.restore();

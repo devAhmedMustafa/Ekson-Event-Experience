@@ -163,7 +163,7 @@
 
         const timeoutId = setTimeout(() => {
             controller.abort("Timeout");
-        }, 8000); // 8-second safety timeout
+        }, 8000);
 
         const serverUrl = (typeof import.meta !== "undefined" && import.meta.env?.VITE_SERVER_URL)
             ? import.meta.env.VITE_SERVER_URL
@@ -172,7 +172,6 @@
         try {
             let res: Response | null = null;
             
-            // Try relative API proxy first (safe for same-origin & Vite proxy)
             try {
                 res = await fetch("/api/quiz/generate", {
                     method: "POST",
@@ -184,7 +183,6 @@
                     signal: controller.signal
                 });
             } catch (proxyErr) {
-                // Try direct serverUrl
                 res = await fetch(`${serverUrl}/api/quiz/generate`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -248,7 +246,6 @@
             isAiGenerated = false;
             statusNotice = "Active offline knowledge questions loaded.";
             setTimeout(() => { statusNotice = null; }, 3500);
-            restartQuiz();
         } finally {
             isLoadingQuiz = false;
             activeAbortController = null;
@@ -256,7 +253,6 @@
     }
 
     onMount(() => {
-        // Immediately initialize with smart fallback so quiz is playable without blocking
         questions = generateSmartBrandFallback(brand.name, brand.description);
 
         const onBrandUpdated = () => {

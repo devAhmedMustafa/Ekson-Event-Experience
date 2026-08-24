@@ -5,28 +5,33 @@
     interface ARCardItem extends MerchItem {
         code: string;
         icon: string;
+        imageSrc?: string;
     }
 
     const arApps: ARCardItem[] = [
         {
             ...MERCH[0], // Mug
             code: "AR_01",
-            icon: "coffee"
+            icon: "coffee",
+            imageSrc: ""
         },
         {
             ...MERCH[1], // Pen
             code: "AR_02",
-            icon: "edit"
+            icon: "edit",
+            imageSrc: ""
         },
         {
             ...MERCH[2], // Notebook
             code: "AR_03",
-            icon: "menu_book"
+            icon: "menu_book",
+            imageSrc: ""
         },
         {
             ...MERCH[3], // Tote Bag
             code: "AR_04",
-            icon: "shopping_bag"
+            icon: "shopping_bag",
+            imageSrc: ""
         }
     ];
 
@@ -110,26 +115,33 @@
                 </div>
 
                 <!-- Right Interactive 3D Teaser Stage -->
-                <div class="w-28 sm:w-36 md:w-44 lg:w-52 h-full min-h-25 relative bg-slate-950 overflow-hidden rounded-xl border border-black/10 shrink-0 group/vid flex flex-col justify-between p-2">
-                    <!-- Visual 3D Merch Teaser Badge -->
-                    <div class="absolute inset-0 bg-linear-to-br from-slate-900 to-slate-950 flex flex-col items-center justify-center p-2 text-center">
-                        <div class="size-11 sm:size-13 rounded-2xl flex items-center justify-center shadow-lg border border-white/10 mb-1" style="background-color: {brand.darkColor};">
-                            <span class="material-symbols-rounded text-[22px] sm:text-[26px] text-white">
-                                {app.icon}
-                            </span>
+                <div class="w-28 sm:w-36 md:w-44 lg:w-52 h-full min-h-25 relative bg-slate-950 overflow-hidden rounded-xl border border-black/10 shrink-0 group/vid flex flex-col justify-end p-2">
+                    
+                    {#if app.imageSrc}
+                        <img
+                            src={app.imageSrc}
+                            alt="{brand.name} {app.name} 3D Preview"
+                            class="absolute inset-0 w-full h-full object-cover"
+                        />
+                    {:else}
+                        <!-- Full Box Image Placeholder -->
+                        <div class="absolute inset-0 bg-linear-to-br from-slate-900 via-slate-950 to-slate-900 flex flex-col items-center justify-center">
+                            
                         </div>
-                        <span class="text-[9px] sm:text-[10px] font-bold text-white uppercase tracking-wider font-mono truncate max-w-full px-1">
-                            {brand.name} {app.name}
-                        </span>
-                        <span class="text-[7px] sm:text-[8px] text-white/60 font-mono truncate max-w-full px-1">
-                            {app.blurb.split(',')[0]}
-                        </span>
-                    </div>
+                    {/if}
+
+                    <!-- Gradient Scrim at Bottom for Title Readability -->
+                    <div class="absolute inset-x-0 bottom-0 h-16 bg-linear-to-t from-slate-950 via-slate-950/60 to-transparent pointer-events-none z-10"></div>
+
+                    <!-- Only Title at Bottom -->
+                    <span class="relative z-10 text-[9px] sm:text-[10px] md:text-xs font-bold text-white uppercase tracking-wider font-mono truncate max-w-full text-center px-1 pb-1">
+                        {brand.name} {app.name}
+                    </span>
 
                     <!-- Hover Launch Overlay linking to /ar?m=... -->
                     <a
                         href={getArUrl(app.id)}
-                        class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition duration-200 flex flex-col items-center justify-center gap-1 text-white cursor-pointer backdrop-blur-xs"
+                        class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition duration-200 flex flex-col items-center justify-center gap-1 text-white cursor-pointer backdrop-blur-xs z-20"
                         aria-label="Open 3D {app.name} Preview"
                     >
                         <span class="material-symbols-rounded text-[22px]" style="color: {brand.primaryColor};">

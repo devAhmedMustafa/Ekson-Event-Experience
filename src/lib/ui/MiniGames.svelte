@@ -1,6 +1,5 @@
 <script lang="ts">
     import LuckyWheel from "$lib/components/LuckyWheel.svelte";
-    import ScoreBoard from "$lib/ui/ScoreBoard.svelte";
     import ReflexChallenge from "$lib/components/ReflexChallenge.svelte";
     import CatchCollectGame from "$lib/components/CatchCollectGame.svelte";
     import ProductQuiz from "$lib/components/ProductQuiz.svelte";
@@ -16,10 +15,9 @@
 
     const slides: GameSlide[] = [
         { id: "lucky-wheel", title: "Lucky Wheel", code: "EXP_01", icon: "rotate_right", imageSrc: "" },
-        { id: "score-board", title: "Leaderboard", code: "EXP_02", icon: "leaderboard", imageSrc: "" },
-        { id: "reflex-challenge", title: "Reflex Speed", code: "EXP_03", icon: "bolt", imageSrc: "" },
-        { id: "catch-collect", title: "Catch & Collect", code: "EXP_04", icon: "token", imageSrc: "" },
-        { id: "product-quiz", title: "Product Quiz", code: "EXP_05", icon: "quiz", imageSrc: "" },
+        { id: "reflex-challenge", title: "Reflex Speed", code: "EXP_02", icon: "bolt", imageSrc: "" },
+        { id: "catch-collect", title: "Catch & Collect", code: "EXP_03", icon: "token", imageSrc: "" },
+        { id: "product-quiz", title: "Product Quiz", code: "EXP_04", icon: "quiz", imageSrc: "" },
     ];
 
     let currentIndex = $state(0);
@@ -147,7 +145,7 @@
                 Mini Games Suite
             </h2>
             <p class="text-[11px] sm:text-xs text-text/70 mt-0.5 max-w-xl">
-                Competitive arcade challenges, real-time leaderboards, and interactive brand knowledge quizzes.
+                Competitive arcade challenges and interactive brand knowledge quizzes.
             </p>
         </div>
 
@@ -249,8 +247,6 @@
                             <div class="relative w-full h-full flex items-center justify-center overflow-hidden">
                                 {#if slide.id === "lucky-wheel"}
                                     <LuckyWheel />
-                                {:else if slide.id === "score-board"}
-                                    <ScoreBoard />
                                 {:else if slide.id === "reflex-challenge"}
                                     <ReflexChallenge />
                                 {:else if slide.id === "catch-collect"}
@@ -276,8 +272,8 @@
         </div>
     </div>
 
-    <!-- Minimal Responsive Tabs Bar (Horizontal scroll on mobile, grid on desktop) -->
-    <div class="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none md:grid md:grid-cols-5 md:gap-2 mt-2 sm:mt-3 shrink-0">
+    <!-- Minimal Responsive Tabs Bar -->
+    <div class="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none md:grid md:grid-cols-4 md:gap-2 mt-2 sm:mt-3 shrink-0">
         {#each slides as slide, idx}
             <button
                 onclick={() => goToSlide(idx)}
