@@ -362,7 +362,6 @@
         is3DActive = true;
         setTimeout(() => {
             initThreeScene();
-            requestCanvasPointerLock();
         }, 60);
     }
 
@@ -839,6 +838,17 @@
         }
     }
 
+    function onWindowResize() {
+        if (!is3DActive || !modalContainerEl || !renderer || !camera) return;
+        const w = modalContainerEl.clientWidth;
+        const h = modalContainerEl.clientHeight;
+        if (w === 0 || h === 0) return;
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+        renderer.setSize(w, h);
+        renderPath?.setSize(w, h);
+    }
+
     function handleBlur() {
         for (const k in keysPressed) {
             keysPressed[k] = false;
@@ -851,6 +861,7 @@
     function cleanupThreeScene() {
         if (typeof window === "undefined") return;
         if (animationFrameId) cancelAnimationFrame(animationFrameId);
+        window.removeEventListener("resize", onWindowResize);
         window.removeEventListener("keydown", handleKeyDown);
         window.removeEventListener("keyup", handleKeyUp);
         window.removeEventListener("mousemove", handleMouseMove);
@@ -872,6 +883,7 @@
     }
 
     onMount(() => {
+        window.addEventListener("resize", onWindowResize);
         if (typeof window !== "undefined" && "IntersectionObserver" in window) {
             const videoObserver = new IntersectionObserver(
                 (entries) => {
@@ -924,52 +936,196 @@
             </div>
         </div>
 
-        <!-- Video Preview Showcase Container with Floating Launch Action -->
-        <div class="relative w-full flex-1 max-h-[74vh] md:max-h-[78vh] my-auto bg-slate-950 rounded-2xl overflow-hidden border border-black/10 shadow-lg group flex items-center justify-center">
-            <!-- svelte-ignore a11y_media_has_caption -->
-            <video
-                bind:this={videoPreviewEl}
-                class="w-full h-full object-cover opacity-80 group-hover:opacity-95 transition duration-500"
-                src={videoPreviewSrc}
-                preload="none"
-                autoplay
-                muted
-                loop
-                playsinline
-            ></video>
+        <!-- Showcase Container Box: Swaps between Video Preview (when inactive) and Bounded Live 3D Walkthrough (when active) -->
+        <div
+            class="relative w-full flex-1 max-h-[74vh] md:max-h-[78vh] h-[52vh] sm:h-[58vh] md:h-[65vh] my-auto bg-slate-950 rounded-2xl overflow-hidden border border-black/10 shadow-lg group flex items-center justify-center"
+            bind:this={modalContainerEl}
+        >
+            {#if !is3DActive}
+                <!-- Video Preview Showcase Container with Floating Launch Action -->
+                <!-- svelte-ignore a11y_media_has_caption -->
+                <video
+                    bind:this={videoPreviewEl}
+                    class="w-full h-full object-cover opacity-80 group-hover:opacity-95 transition duration-500"
+                    src={videoPreviewSrc}
+                    preload="none"
+                    autoplay
+                    muted
+                    loop
+                    playsinline
+                ></video>
 
-            <!-- Center Launch Overlay & Information Badge -->
-            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-black/60 flex flex-col items-center justify-center p-4 text-center">
-                <!-- Venue Badge -->
-                <div class="inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-md rounded-full border border-white/20 text-white font-mono text-[10px] uppercase tracking-widest mb-3">
-                    <span class="size-2 rounded-full animate-pulse" style="background-color: {brand.primaryColor};"></span>
-                    <span>{brand.name} Stand · Slot B-14</span>
+                <!-- Center Launch Overlay & Information Badge -->
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-black/60 flex flex-col items-center justify-center p-4 text-center">
+                    <!-- Venue Badge -->
+                    <div class="inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-md rounded-full border border-white/20 text-white font-mono text-[10px] uppercase tracking-widest mb-3">
+                        <span class="size-2 rounded-full animate-pulse" style="background-color: {brand.primaryColor};"></span>
+                        <span>{brand.name} Stand · Slot B-14</span>
+                    </div>
+
+                    <h3 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white uppercase tracking-tight max-w-lg drop-shadow-md">
+                        Explore Exhibition Hall 3
+                    </h3>
+                    <p class="text-xs sm:text-sm text-white/80 max-w-md mt-1.5 mb-6 font-sans">
+                        Navigate the aisles with free mouse-look, collision physics, and live AR wayfinding beacons.
+                    </p>
+
+                    <!-- Primary Launch Button -->
+                    <button
+                        onclick={open3DWalkthrough}
+                        class="group/btn relative px-7 py-3 text-white font-mono font-bold text-xs sm:text-sm uppercase tracking-widest rounded-2xl shadow-xl transition-all duration-200 transform hover:scale-105 active:scale-95 flex items-center gap-2.5 cursor-pointer border border-white/20"
+                        style="background-color: {brand.primaryColor};"
+                    >
+                        <span class="material-symbols-rounded text-lg">directions_walk</span>
+                        <span>Enter 3D Walkthrough</span>
+                        <span class="material-symbols-rounded text-base opacity-70 group-hover/btn:translate-x-0.5 transition">arrow_forward</span>
+                    </button>
                 </div>
 
-                <h3 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white uppercase tracking-tight max-w-lg drop-shadow-md">
-                    Explore Exhibition Hall 3
-                </h3>
-                <p class="text-xs sm:text-sm text-white/80 max-w-md mt-1.5 mb-6 font-sans">
-                    Navigate the aisles with free mouse-look, collision physics, and live AR wayfinding beacons.
-                </p>
+                <!-- Bottom Left Telemetry Preview -->
+                <div class="absolute bottom-4 left-4 hidden sm:flex items-center gap-2 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10 text-white font-mono text-[10px]">
+                    <span class="material-symbols-rounded text-sm" style="color: {brand.primaryColor};">radar</span>
+                    <span>HALL DIMENSIONS: 52 × 30 METRES</span>
+                </div>
+            {:else}
+                <!-- LIVE 3D WALKTHROUGH (BOUNDED IN THIS CONTAINER BOX) -->
+                <!-- svelte-ignore a11y_click_events_have_key_events -->
+                <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+                <canvas
+                    bind:this={canvasEl}
+                    class="w-full h-full block cursor-crosshair outline-none"
+                ></canvas>
 
-                <!-- Primary Launch Button -->
-                <button
-                    onclick={open3DWalkthrough}
-                    class="group/btn relative px-7 py-3 text-white font-mono font-bold text-xs sm:text-sm uppercase tracking-widest rounded-2xl shadow-xl transition-all duration-200 transform hover:scale-105 active:scale-95 flex items-center gap-2.5 cursor-pointer border border-white/20"
-                    style="background-color: {brand.primaryColor};"
-                >
-                    <span class="material-symbols-rounded text-lg">directions_walk</span>
-                    <span>Enter 3D Walkthrough</span>
-                    <span class="material-symbols-rounded text-base opacity-70 group-hover/btn:translate-x-0.5 transition">arrow_forward</span>
-                </button>
-            </div>
+                <!-- Top HUD Header: Badges & Controls Toolbar -->
+                <div class="absolute top-3 left-3 right-3 flex items-start justify-between pointer-events-none z-20">
+                    <!-- Left Title & Subtitle Badge -->
+                    <div class="bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-black/10 shadow-xs flex flex-col pointer-events-auto">
+                        <div class="flex items-center gap-1.5">
+                            <span class="size-2 rounded-full animate-pulse" style="background-color: {brand.primaryColor};"></span>
+                            <span class="font-mono text-[9px] uppercase tracking-wider font-bold text-text">
+                                Venue Navigation · Hall 3
+                            </span>
+                        </div>
+                        <span class="text-[11px] font-black uppercase text-text tracking-tight mt-0.5">
+                            {brand.name} Island Stand
+                        </span>
+                    </div>
 
-            <!-- Bottom Left Telemetry Preview -->
-            <div class="absolute bottom-4 left-4 hidden sm:flex items-center gap-2 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10 text-white font-mono text-[10px]">
-                <span class="material-symbols-rounded text-sm" style="color: {brand.primaryColor};">radar</span>
-                <span>HALL DIMENSIONS: 52 × 30 METRES</span>
-            </div>
+                    <!-- Center Distance to Stand Meter -->
+                    <div class="bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-black/10 shadow-xs flex items-center gap-2 pointer-events-auto">
+                        <span class="material-symbols-rounded text-[16px]" style="color: {brand.primaryColor};">near_me</span>
+                        <div class="flex flex-col text-left">
+                            <span class="text-[8px] font-mono uppercase tracking-wider text-text/60 font-bold">Distance</span>
+                            <span class="text-[11px] font-mono font-black text-text">{distanceToBooth} m</span>
+                        </div>
+                    </div>
+
+                    <!-- Right Controls Toolbar -->
+                    <div class="flex items-center gap-1.5 pointer-events-auto">
+                        <!-- Autopilot Walk Button -->
+                        <button
+                            onclick={triggerAutoWalk}
+                            class="px-2.5 py-1.5 rounded-xl text-[10px] font-mono font-bold uppercase transition flex items-center gap-1.5 shadow-xs border cursor-pointer {isAutoWalking ? 'bg-primary text-white border-primary' : 'bg-white/90 text-text border-black/10 hover:bg-white'}"
+                            style={isAutoWalking ? `background-color: ${brand.primaryColor}; border-color: ${brand.primaryColor};` : ''}
+                        >
+                            <span class="material-symbols-rounded text-[14px]">
+                                {isAutoWalking ? 'navigation' : 'route'}
+                            </span>
+                            <span class="hidden sm:inline">
+                                {isAutoWalking ? 'Navigating…' : 'Walk Me to Stand'}
+                            </span>
+                        </button>
+
+                        <!-- Respawn Entrance Button -->
+                        <button
+                            onclick={respawnAtEntrance}
+                            class="px-2.5 py-1.5 bg-white/90 hover:bg-white text-text border border-black/10 rounded-xl text-[10px] font-mono font-bold uppercase shadow-xs transition cursor-pointer flex items-center gap-1.5"
+                            title="Back to Entrance (R)"
+                        >
+                            <span class="material-symbols-rounded text-[14px]">replay</span>
+                            <span class="hidden sm:inline">Entrance</span>
+                        </button>
+
+                        <!-- Close / Exit 3D Mode -->
+                        <button
+                            onclick={close3DWalkthrough}
+                            class="p-1.5 bg-white/90 hover:bg-rose-600 hover:text-white text-text border border-black/10 rounded-xl shadow-xs transition cursor-pointer"
+                            title="Exit 3D Mode (ESC)"
+                        >
+                            <span class="material-symbols-rounded text-[16px]">close</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Crosshair Cursor -->
+                <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+                    <div class="relative size-4 flex items-center justify-center">
+                        <span class="size-1 rounded-full bg-white shadow-xs opacity-90"></span>
+                        <span class="absolute w-3 h-0.5 bg-white/50"></span>
+                        <span class="absolute h-3 w-0.5 bg-white/50"></span>
+                    </div>
+                </div>
+
+                <!-- Arrival Celebration Banner -->
+                {#if isArrived}
+                    <div class="absolute top-16 left-1/2 -translate-x-1/2 z-30 bg-white/95 backdrop-blur-md px-4 py-2 rounded-xl border border-emerald-500/40 shadow-lg text-center flex items-center gap-2.5 animate-bounce">
+                        <span class="material-symbols-rounded text-xl text-emerald-500">check_circle</span>
+                        <div class="flex flex-col text-left">
+                            <span class="text-[9px] font-mono uppercase tracking-widest text-emerald-600 font-bold">You Have Arrived</span>
+                            <span class="text-xs font-black uppercase text-text tracking-tight">{brand.name} Exhibition Stand</span>
+                        </div>
+                    </div>
+                {/if}
+
+                <!-- Bottom Left Minimap Radar Card -->
+                <div class="absolute bottom-3 left-3 z-20 bg-white/90 backdrop-blur-md p-2 rounded-xl border border-black/10 shadow-xs flex flex-col gap-1 w-40 sm:w-48 pointer-events-auto">
+                    <div class="flex items-center justify-between font-mono text-[8px] text-text/60 font-bold uppercase">
+                        <span>VENUE RADAR</span>
+                        <span class="font-bold" style="color: {brand.primaryColor};">HALL 3</span>
+                    </div>
+                    <!-- Radar Canvas Container -->
+                    <div class="relative w-full h-20 sm:h-24 bg-slate-950 rounded-lg overflow-hidden border border-black/10">
+                        <!-- Hall Aisle Lines -->
+                        <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-4 bg-white/5 border-y border-white/10"></div>
+                        <!-- 8 Booth Marker Boxes -->
+                        <div class="absolute top-2 left-3 w-6 h-4 bg-white/10 rounded-xs border border-white/15"></div>
+                        <div class="absolute top-2 left-11 w-6 h-4 bg-white/10 rounded-xs border border-white/15"></div>
+                        <div class="absolute top-2 left-19 w-6 h-4 bg-white/10 rounded-xs border border-white/15"></div>
+                        <!-- Destination Stand (Slot 3) -->
+                        <div class="absolute top-2 right-3 w-7 h-5 rounded-xs border animate-pulse" style="background-color: {brand.primaryColor}50; border-color: {brand.primaryColor};">
+                            <span class="absolute inset-0 flex items-center justify-center text-[6px] font-mono font-bold text-white uppercase">YOU</span>
+                        </div>
+
+                        <div class="absolute bottom-2 left-3 w-6 h-4 bg-white/10 rounded-xs border border-white/15"></div>
+                        <div class="absolute bottom-2 left-11 w-6 h-4 bg-white/10 rounded-xs border border-white/15"></div>
+                        <div class="absolute bottom-2 left-19 w-6 h-4 bg-white/10 rounded-xs border border-white/15"></div>
+                        <div class="absolute bottom-2 right-3 w-6 h-4 bg-white/10 rounded-xs border border-white/15"></div>
+
+                        <!-- Player Minimap Dot Indicator -->
+                        <div
+                            class="absolute size-2 bg-rose-500 rounded-full border border-white shadow-md transform -translate-x-1/2 -translate-y-1/2 transition-all duration-100 z-10"
+                            style="left: {((playerPos.x + HALL.width / 2) / HALL.width) * 100}%; top: {((playerPos.z + HALL.depth / 2) / HALL.depth) * 100}%;"
+                        ></div>
+                    </div>
+                </div>
+
+                <!-- Bottom Right Controls Help Box -->
+                <div class="absolute bottom-3 right-3 hidden sm:flex flex-col gap-0.5 bg-black/75 backdrop-blur-md p-2 rounded-xl border border-white/10 text-white font-mono text-[8.5px] pointer-events-auto">
+                    <span class="font-bold text-[7.5px] uppercase text-white/50 mb-0.5">CONTROLS GUIDE</span>
+                    <div class="flex items-center justify-between gap-3">
+                        <span class="text-white/70">Movement:</span>
+                        <span class="font-bold">WASD / Arrows</span>
+                    </div>
+                    <div class="flex items-center justify-between gap-3">
+                        <span class="text-white/70">Look Around:</span>
+                        <span class="font-bold">Mouse Drag / Lock</span>
+                    </div>
+                    <div class="flex items-center justify-between gap-3">
+                        <span class="text-white/70">Sprint:</span>
+                        <span class="font-bold">Shift</span>
+                    </div>
+                </div>
+            {/if}
         </div>
 
         <!-- Bottom Status Bar -->
@@ -979,156 +1135,3 @@
         </div>
     </div>
 </div>
-
-<!-- Full Interactive 3D Exhibition Hall Modal -->
-{#if is3DActive}
-    <div
-        class="fixed inset-0 z-50 bg-slate-950 flex flex-col items-center justify-center select-none overflow-hidden font-sans"
-        bind:this={modalContainerEl}
-    >
-        <!-- 3D WebGL Canvas -->
-        <!-- svelte-ignore a11y_click_events_have_key_events -->
-        <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-        <canvas
-            bind:this={canvasEl}
-            class="w-full h-full block cursor-crosshair outline-none"
-        ></canvas>
-
-        <!-- Top HUD Header: Badges & Controls Toolbar -->
-        <div class="absolute top-3 left-3 right-3 flex items-start justify-between pointer-events-none z-20">
-            <!-- Left Title & Subtitle Badge -->
-            <div class="bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-black/10 shadow-xs flex flex-col pointer-events-auto">
-                <div class="flex items-center gap-1.5">
-                    <span class="size-2 rounded-full animate-pulse" style="background-color: {brand.primaryColor};"></span>
-                    <span class="font-mono text-[9px] uppercase tracking-wider font-bold text-text">
-                        Venue Navigation · Hall 3
-                    </span>
-                </div>
-                <span class="text-[11px] font-black uppercase text-text tracking-tight mt-0.5">
-                    {brand.name} Island Stand
-                </span>
-            </div>
-
-            <!-- Center Distance to Stand Meter -->
-            <div class="bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-black/10 shadow-xs flex items-center gap-2 pointer-events-auto">
-                <span class="material-symbols-rounded text-[16px]" style="color: {brand.primaryColor};">near_me</span>
-                <div class="flex flex-col text-left">
-                    <span class="text-[8px] font-mono uppercase tracking-wider text-text/60 font-bold">Distance</span>
-                    <span class="text-[11px] font-mono font-black text-text">{distanceToBooth} m</span>
-                </div>
-            </div>
-
-            <!-- Right Controls Toolbar -->
-            <div class="flex items-center gap-1.5 pointer-events-auto">
-                <!-- Autopilot Walk Button -->
-                <button
-                    onclick={triggerAutoWalk}
-                    class="px-2.5 py-1.5 rounded-xl text-[10px] font-mono font-bold uppercase transition flex items-center gap-1.5 shadow-xs border cursor-pointer {isAutoWalking ? 'bg-primary text-white border-primary' : 'bg-white/90 text-text border-black/10 hover:bg-white'}"
-                    style={isAutoWalking ? `background-color: ${brand.primaryColor}; border-color: ${brand.primaryColor};` : ''}
-                >
-                    <span class="material-symbols-rounded text-[14px]">
-                        {isAutoWalking ? 'navigation' : 'route'}
-                    </span>
-                    <span class="hidden sm:inline">
-                        {isAutoWalking ? 'Navigating…' : 'Walk Me to Stand'}
-                    </span>
-                </button>
-
-                <!-- Respawn Entrance Button -->
-                <button
-                    onclick={respawnAtEntrance}
-                    class="px-2.5 py-1.5 bg-white/90 hover:bg-white text-text border border-black/10 rounded-xl text-[10px] font-mono font-bold uppercase shadow-xs transition cursor-pointer flex items-center gap-1.5"
-                    title="Back to Entrance (R)"
-                >
-                    <span class="material-symbols-rounded text-[14px]">replay</span>
-                    <span class="hidden sm:inline">Entrance</span>
-                </button>
-
-                <!-- Close / Exit 3D Mode -->
-                <button
-                    onclick={close3DWalkthrough}
-                    class="p-1.5 bg-white/90 hover:bg-rose-600 hover:text-white text-text border border-black/10 rounded-xl shadow-xs transition cursor-pointer"
-                    title="Exit 3D Mode (ESC)"
-                >
-                    <span class="material-symbols-rounded text-[16px]">close</span>
-                </button>
-            </div>
-        </div>
-
-        <!-- Crosshair Cursor -->
-        <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
-            <div class="relative size-4 flex items-center justify-center">
-                <span class="size-1 rounded-full bg-white shadow-xs opacity-90"></span>
-                <span class="absolute w-3 h-0.5 bg-white/50"></span>
-                <span class="absolute h-3 w-0.5 bg-white/50"></span>
-            </div>
-        </div>
-
-        <!-- Arrival Celebration Banner -->
-        {#if isArrived}
-            <div class="absolute top-16 left-1/2 -translate-x-1/2 z-30 bg-white/95 backdrop-blur-md px-4 py-2 rounded-xl border border-emerald-500/40 shadow-lg text-center flex items-center gap-2.5 animate-bounce">
-                <span class="material-symbols-rounded text-xl text-emerald-500">check_circle</span>
-                <div class="flex flex-col text-left">
-                    <span class="text-[9px] font-mono uppercase tracking-widest text-emerald-600 font-bold">You Have Arrived</span>
-                    <span class="text-xs font-black uppercase text-text tracking-tight">{brand.name} Exhibition Stand</span>
-                </div>
-            </div>
-        {/if}
-
-        <!-- Bottom Left Minimap Radar Card -->
-        <div class="absolute bottom-3 left-3 z-20 bg-white/90 backdrop-blur-md p-2 rounded-xl border border-black/10 shadow-xs flex flex-col gap-1 w-44 sm:w-52 pointer-events-auto">
-            <div class="flex items-center justify-between font-mono text-[8px] text-text/60 font-bold uppercase">
-                <span>VENUE RADAR</span>
-                <span class="font-bold" style="color: {brand.primaryColor};">HALL 3</span>
-            </div>
-            <!-- Radar Canvas Container -->
-            <div class="relative w-full h-24 sm:h-28 bg-slate-950 rounded-lg overflow-hidden border border-black/10">
-                <!-- Hall Aisle Lines -->
-                <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-4 bg-white/5 border-y border-white/10"></div>
-                <!-- 8 Booth Marker Boxes -->
-                <div class="absolute top-2 left-3 w-7 h-5 bg-white/10 rounded-xs border border-white/15"></div>
-                <div class="absolute top-2 left-13 w-7 h-5 bg-white/10 rounded-xs border border-white/15"></div>
-                <div class="absolute top-2 left-23 w-7 h-5 bg-white/10 rounded-xs border border-white/15"></div>
-                <!-- Destination Stand (Slot 3) -->
-                <div class="absolute top-2 right-3 w-8 h-6 rounded-xs border animate-pulse" style="background-color: {brand.primaryColor}50; border-color: {brand.primaryColor};">
-                    <span class="absolute inset-0 flex items-center justify-center text-[7px] font-mono font-bold text-white uppercase">YOU</span>
-                </div>
-
-                <div class="absolute bottom-2 left-3 w-7 h-5 bg-white/10 rounded-xs border border-white/15"></div>
-                <div class="absolute bottom-2 left-13 w-7 h-5 bg-white/10 rounded-xs border border-white/15"></div>
-                <div class="absolute bottom-2 left-23 w-7 h-5 bg-white/10 rounded-xs border border-white/15"></div>
-                <div class="absolute bottom-2 right-3 w-7 h-5 bg-white/10 rounded-xs border border-white/15"></div>
-
-                <!-- Player Blip & Heading Cone -->
-                <div
-                    class="absolute size-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full shadow-lg"
-                    style="left: {radarX}%; top: {radarY}%; background-color: {brand.primaryColor};"
-                >
-                    <div
-                        class="absolute size-6 -left-1.75 -top-1.75 border-t-2 border-primary/80 rounded-full"
-                        style="transform: rotate({radarAngle}deg); border-color: {brand.primaryColor};"
-                    ></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Bottom Right Controls Hint -->
-        <div class="absolute bottom-3 right-3 z-20 hidden md:flex items-center gap-1.5 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-black/10 text-text font-mono text-[9px] shadow-xs">
-            <span class="text-text/60 font-bold">CONTROLS:</span>
-            <span class="px-1.5 py-0.5 bg-black/5 text-text rounded font-bold border border-black/10">W A S D</span>
-            <span class="text-text/60">MOVE</span>
-            <span class="px-1.5 py-0.5 bg-black/5 text-text rounded font-bold border border-black/10">SHIFT</span>
-            <span class="text-text/60">RUN</span>
-            <span class="px-1.5 py-0.5 bg-black/5 text-text rounded font-bold border border-black/10">MOUSE</span>
-            <span class="text-text/60">LOOK</span>
-        </div>
-
-        <!-- Gesture Hint Overlay (Initial) -->
-        {#if showGestureHint && !isPointerLocked}
-            <div class="absolute bottom-16 left-1/2 -translate-x-1/2 z-20 bg-white/90 backdrop-blur-md px-3.5 py-1.5 rounded-xl border border-black/10 text-text text-[10px] font-mono text-center flex items-center gap-2 shadow-xs pointer-events-none animate-pulse">
-                <span class="material-symbols-rounded text-[14px]" style="color: {brand.primaryColor};">ads_click</span>
-                <span>Click canvas to lock mouse look · Press ESC to unlock</span>
-            </div>
-        {/if}
-    </div>
-{/if}
