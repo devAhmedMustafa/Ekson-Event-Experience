@@ -4,20 +4,22 @@
     import ReflexChallenge from "$lib/components/ReflexChallenge.svelte";
     import CatchCollectGame from "$lib/components/CatchCollectGame.svelte";
     import ProductQuiz from "$lib/components/ProductQuiz.svelte";
+    import { brand } from "$lib/brand.svelte";
 
     interface GameSlide {
         id: string;
         title: string;
         code: string;
         icon: string;
+        imageSrc?: string;
     }
 
     const slides: GameSlide[] = [
-        { id: "lucky-wheel", title: "Lucky Wheel", code: "EXP_01", icon: "rotate_right" },
-        { id: "score-board", title: "Leaderboard", code: "EXP_02", icon: "leaderboard" },
-        { id: "reflex-challenge", title: "Reflex Speed", code: "EXP_03", icon: "bolt" },
-        { id: "catch-collect", title: "Catch & Collect", code: "EXP_04", icon: "token" },
-        { id: "product-quiz", title: "Product Quiz", code: "EXP_05", icon: "quiz" },
+        { id: "lucky-wheel", title: "Lucky Wheel", code: "EXP_01", icon: "rotate_right", imageSrc: "" },
+        { id: "score-board", title: "Leaderboard", code: "EXP_02", icon: "leaderboard", imageSrc: "" },
+        { id: "reflex-challenge", title: "Reflex Speed", code: "EXP_03", icon: "bolt", imageSrc: "" },
+        { id: "catch-collect", title: "Catch & Collect", code: "EXP_04", icon: "token", imageSrc: "" },
+        { id: "product-quiz", title: "Product Quiz", code: "EXP_05", icon: "quiz", imageSrc: "" },
     ];
 
     let currentIndex = $state(0);
@@ -25,8 +27,23 @@
     let startX = $state(0);
     let dragOffset = $state(0);
     let sliderTrack = $state<HTMLElement | null>(null);
+    let liveGames = $state<Record<string, boolean>>({});
 
     const totalSlides = slides.length;
+
+    function toggleLive(id: string, state: boolean) {
+        liveGames[id] = state;
+    }
+
+    function handleTryLive(id: string) {
+        if (!brand.isCustom) {
+            if (typeof window !== "undefined") {
+                window.dispatchEvent(new CustomEvent("ekson_open_brand_modal"));
+            }
+            return;
+        }
+        toggleLive(id, true);
+    }
 
     function nextSlide() {
         if (currentIndex < totalSlides - 1) {
@@ -50,6 +67,8 @@
 
     // Touch & Mouse Drag Handlers
     function handleTouchStart(e: TouchEvent) {
+        const target = e.target as HTMLElement;
+        if (target.closest("button, input, select, a")) return;
         isDragging = true;
         startX = e.touches[0].clientX;
         dragOffset = 0;
@@ -177,30 +196,83 @@
             class="flex h-full w-full will-change-transform"
             style="transform: translateX(calc(-{currentIndex * 100}% + {dragOffset}px)); transition: {isDragging ? 'none' : 'transform 0.45s cubic-bezier(0.2, 0.9, 0.3, 1)'};"
         >
-            <!-- Slide 1: Lucky Wheel -->
-            <div class="w-full h-full shrink-0 flex items-center justify-center p-2">
-                <LuckyWheel />
-            </div>
+            {#each slides as slide (slide.id)}
+                <div class="w-full h-full shrink-0 flex items-center justify-center p-2">
+                    <div class="relative w-full h-full flex items-center justify-center rounded-xl overflow-hidden group/game-card bg-slate-900/90 text-white">
+                        {#if !liveGames[slide.id]}
+                            {#if slide.imageSrc}
+                                <img src={slide.imageSrc} alt={slide.title} class="w-full h-full object-cover" />
+                            {:else}
+                                <!-- Image Placeholder: Ready for src attribute -->
+                                <div class="w-full h-full flex flex-col items-center justify-center p-6 text-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+                                    <div class="size-16 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center mb-3 border border-white/10 shadow-lg">
+                                        <span class="material-symbols-rounded text-3xl text-primary" style="color: {brand.primaryColor || '#009dd6'};">
+                                            {slide.icon}
+                                        </span>
+                                    </div>
+                                    <h3 class="text-lg font-extrabold tracking-tight uppercase mb-1">{slide.title}</h3>
+                                    <p class="text-xs text-white/60 font-mono mb-3">Interactive Mini-Game ({slide.code})</p>
+                                    <span class="text-[10px] font-mono text-white/40 bg-black/40 px-3 py-1 rounded-full border border-white/10">
+                                        Image Preview Placeholder (src="{slide.imageSrc || ''}")
+                                    </span>
+                                </div>
+                            {/if}
 
-            <!-- Slide 2: Live Leaderboard -->
-            <div class="w-full h-full shrink-0 flex items-center justify-center p-2">
-                <ScoreBoard />
-            </div>
+                            <!-- Hover Overlay with 'Try it live' button -->
+                            <div class="absolute inset-0 bg-slate-950/50 backdrop-blur-xs opacity-0 hover:opacity-100 transition-all duration-300 flex flex-col items-center justify-center p-4">
+                                {#if !brand.isCustom}
+                                    <div class="mb-3 px-3 py-1 bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider flex items-center gap-1.5">
+                                        <span class="material-symbols-rounded text-sm">lock</span>
+                                        <span>Provide Brand Details To Unlock Live Game</span>
+                                    </div>
+                                    <button
+                                        onclick={() => handleTryLive(slide.id)}
+                                        class="px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider text-white shadow-xl transition-all duration-200 hover:scale-105 active:scale-95 flex items-center gap-2 cursor-pointer border border-white/20"
+                                        style="background-color: {brand.primaryColor || '#009dd6'};"
+                                    >
+                                        <span class="material-symbols-rounded text-base">auto_awesome</span>
+                                        <span>Try it for your brand</span>
+                                    </button>
+                                {:else}
+                                    <button
+                                        onclick={() => handleTryLive(slide.id)}
+                                        class="px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider text-white shadow-xl transition-all duration-200 hover:scale-105 active:scale-95 flex items-center gap-2 cursor-pointer border border-white/20"
+                                        style="background-color: {brand.primaryColor || '#009dd6'};"
+                                    >
+                                        <span class="material-symbols-rounded text-base">play_arrow</span>
+                                        <span>Try it live</span>
+                                    </button>
+                                {/if}
+                            </div>
+                        {:else}
+                            <!-- Live Component View -->
+                            <div class="relative w-full h-full flex items-center justify-center overflow-hidden">
+                                {#if slide.id === "lucky-wheel"}
+                                    <LuckyWheel />
+                                {:else if slide.id === "score-board"}
+                                    <ScoreBoard />
+                                {:else if slide.id === "reflex-challenge"}
+                                    <ReflexChallenge />
+                                {:else if slide.id === "catch-collect"}
+                                    <CatchCollectGame />
+                                {:else if slide.id === "product-quiz"}
+                                    <ProductQuiz />
+                                {/if}
 
-            <!-- Slide 3: Reflex Challenge -->
-            <div class="w-full h-full shrink-0 flex items-center justify-center p-2">
-                <ReflexChallenge />
-            </div>
-
-            <!-- Slide 4: Catch & Collect -->
-            <div class="w-full h-full shrink-0 flex items-center justify-center p-2">
-                <CatchCollectGame />
-            </div>
-
-            <!-- Slide 5: Product Quiz -->
-            <div class="w-full h-full shrink-0 flex items-center justify-center p-2">
-                <ProductQuiz />
-            </div>
+                                <!-- Exit Live View Button -->
+                                <button
+                                    onclick={() => toggleLive(slide.id, false)}
+                                    class="absolute top-3 right-3 z-30 px-2.5 py-1.5 rounded-xl text-[10px] font-mono font-bold uppercase transition flex items-center gap-1 shadow-md border cursor-pointer bg-red-500/90 hover:bg-red-600 text-white border-red-400"
+                                    title="Exit Live Game Preview"
+                                >
+                                    <span class="material-symbols-rounded text-[14px]">close</span>
+                                    <span class="hidden sm:inline">Exit Live</span>
+                                </button>
+                            </div>
+                        {/if}
+                    </div>
+                </div>
+            {/each}
         </div>
     </div>
 

@@ -2,6 +2,19 @@
     import { onDestroy } from "svelte";
     import { brand } from "$lib/brand.svelte";
 
+    let { imageSrc = "" } = $props();
+    let isLive = $state(false);
+
+    function handleTryLive() {
+        if (!brand.isCustom) {
+            if (typeof window !== "undefined") {
+                window.dispatchEvent(new CustomEvent("ekson_open_brand_modal"));
+            }
+            return;
+        }
+        isLive = true;
+    }
+
     let inputMessage = $state("");
     let isGenerating = $state(false);
     let isSpeaking = $state(false);
@@ -404,170 +417,234 @@
             </p>
         </div>
 
-        <div class="hidden sm:flex items-center gap-2 font-mono text-[10px] text-text/50">
-            <span class="size-2 bg-emerald-500 rounded-full animate-pulse"></span>
-            <span>VOICE RECOGNITION READY</span>
+        <div class="flex items-center gap-2 font-mono text-[10px] text-text/50">
+            {#if isLive}
+                <button
+                    onclick={() => isLive = false}
+                    class="px-2.5 py-1.5 rounded-xl text-[10px] font-mono font-bold uppercase transition flex items-center gap-1 shadow-md border cursor-pointer bg-red-500/90 hover:bg-red-600 text-white border-red-400"
+                    title="Exit Live Assistant Preview"
+                >
+                    <span class="material-symbols-rounded text-[14px]">close</span>
+                    <span class="hidden sm:inline">Exit Live</span>
+                </button>
+            {/if}
+            <span class="hidden sm:inline-flex items-center gap-2">
+                <span class="size-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                <span>VOICE RECOGNITION READY</span>
+            </span>
         </div>
     </div>
 
-    <!-- Center Interactive Voice Visualizer Stage -->
-    <div class="flex-1 flex flex-col items-center justify-center my-auto py-3 sm:py-6 gap-3 sm:gap-5">
-        <!-- Dynamic Pulsing Voice Orb -->
-        <div class="relative flex items-center justify-center">
-            <!-- Ripple Rings -->
-            <div class="absolute size-36 sm:size-44 md:size-52 rounded-full border transition-all duration-700 {isRecording ? 'border-rose-400 scale-125 opacity-90 animate-ping' : isSpeaking ? 'border-primary/20 scale-120 opacity-100 animate-ping' : isGenerating ? 'border-primary/20 scale-110 opacity-70 animate-pulse' : 'border-primary/20 scale-100 opacity-40'}"></div>
-            <div class="absolute size-28 sm:size-36 md:size-44 rounded-full border transition-all duration-500 {isRecording ? 'border-rose-500 scale-115 opacity-80' : isSpeaking ? 'border-primary/30 scale-110 opacity-80' : 'border-primary/30 scale-100 opacity-20'}"></div>
-
-            <!-- Central Voice Core (Clickable for Play/Pause or Voice Recording) -->
-            <button
-                onclick={() => {
-                    if (isRecording) {
-                        stopRecording();
-                    } else if (audioSrc && !isAudioPaused) {
-                        togglePlayback();
-                    } else {
-                        toggleRecording();
-                    }
-                }}
-                disabled={isGenerating}
-                class="relative size-24 sm:size-28 md:size-34 rounded-full bg-white shadow-xl border flex flex-col items-center justify-center transition-all duration-300 cursor-pointer {isRecording ? 'border-rose-500 ring-4 ring-rose-400/30 scale-105 shadow-rose-200 shadow-2xl' : isSpeaking ? 'border-primary ring-4 ring-primary/20 scale-105 shadow-primary/25 shadow-2xl' : 'border-black/5 hover:border-primary/40'}"
-                title={isRecording ? "Click to Stop Recording & Send" : isSpeaking ? "Click to Pause" : "Click to Speak"}
-            >
-                <span class="material-symbols-rounded text-[32px] sm:text-[40px] md:text-[48px] transition-all {isRecording ? 'text-rose-600 animate-pulse' : isGenerating ? 'text-primary animate-spin' : isSpeaking ? 'text-primary animate-pulse' : 'text-primary'}">
-                    {isGenerating ? "progress_activity" : isRecording ? "mic" : isSpeaking ? "graphic_eq" : audioSrc ? (isAudioPaused ? "play_arrow" : "pause") : "mic"}
-                </span>
-
-                {#if isRecording}
-                    <span class="text-[8px] sm:text-[9px] font-mono font-bold text-rose-600 tracking-widest uppercase mt-0.5 animate-pulse">
-                        REC {recordDuration}s
-                    </span>
-                {:else if isSpeaking}
-                    <span class="text-[8px] sm:text-[9px] font-mono font-bold text-primary tracking-widest uppercase mt-0.5 animate-pulse">
-                        SPEAKING
-                    </span>
-                {:else if audioSrc && isAudioPaused}
-                    <span class="text-[8px] sm:text-[9px] font-mono font-bold text-text/40 tracking-widest uppercase mt-0.5">
-                        PAUSED
-                    </span>
+    {#if !isLive}
+        <!-- Image Preview Card & Hover 'Try it live' Overlay -->
+        <div class="flex-1 w-full my-auto py-3 sm:py-6 flex items-center justify-center">
+            <div class="relative w-full h-[55vh] sm:h-[60vh] md:h-[65vh] max-h-145 rounded-2xl border border-black/10 shadow-xs overflow-hidden bg-slate-900 text-white group/ai-card">
+                {#if imageSrc}
+                    <img src={imageSrc} alt="{brand.name} AI Voice Assistant" class="w-full h-full object-cover" />
                 {:else}
-                    <span class="text-[8px] sm:text-[9px] font-mono font-bold text-text/40 tracking-widest uppercase mt-0.5">
-                        TAP TO SPEAK
-                    </span>
+                    <!-- Image Placeholder: Ready for src attribute -->
+                    <div class="w-full h-full flex flex-col items-center justify-center p-6 text-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+                        <div class="size-20 rounded-3xl bg-white/10 backdrop-blur-md flex items-center justify-center mb-4 border border-white/10 shadow-xl">
+                            <span class="material-symbols-rounded text-4xl text-primary" style="color: {brand.primaryColor || '#009dd6'};">
+                                smart_toy
+                            </span>
+                        </div>
+                        <h3 class="text-xl font-extrabold tracking-tight uppercase mb-1">{brand.name} AI Voice Concierge</h3>
+                        <p class="text-xs text-white/60 max-w-md font-mono mb-4">Neural Voice Assistant & Interactive Event Concierge</p>
+                        <span class="text-[10px] font-mono text-white/40 bg-black/40 px-3.5 py-1.5 rounded-full border border-white/10">
+                            Image Preview Placeholder (src="{imageSrc}")
+                        </span>
+                    </div>
                 {/if}
-            </button>
+
+                <!-- Hover Overlay with 'Try it live' button -->
+                <div class="absolute inset-0 bg-slate-950/50 backdrop-blur-xs opacity-0 hover:opacity-100 transition-all duration-300 flex flex-col items-center justify-center p-4">
+                    {#if !brand.isCustom}
+                        <div class="mb-3 px-3 py-1 bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider flex items-center gap-1.5">
+                            <span class="material-symbols-rounded text-sm">lock</span>
+                            <span>Provide Brand Details To Unlock Live Assistant</span>
+                        </div>
+                        <button
+                            onclick={handleTryLive}
+                            class="px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider text-white shadow-2xl transition-all duration-200 hover:scale-105 active:scale-95 flex items-center gap-2 cursor-pointer border border-white/20"
+                            style="background-color: {brand.primaryColor || '#009dd6'};"
+                        >
+                            <span class="material-symbols-rounded text-lg">auto_awesome</span>
+                            <span>Try it for your brand</span>
+                        </button>
+                    {:else}
+                        <button
+                            onclick={handleTryLive}
+                            class="px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider text-white shadow-2xl transition-all duration-200 hover:scale-105 active:scale-95 flex items-center gap-2 cursor-pointer border border-white/20"
+                            style="background-color: {brand.primaryColor || '#009dd6'};"
+                        >
+                            <span class="material-symbols-rounded text-lg">play_arrow</span>
+                            <span>Try it live</span>
+                        </button>
+                    {/if}
+                </div>
+            </div>
+        </div>
+    {:else}
+        <!-- Center Interactive Voice Visualizer Stage -->
+        <div class="flex-1 flex flex-col items-center justify-center my-auto py-3 sm:py-6 gap-3 sm:gap-5">
+            <!-- Dynamic Pulsing Voice Orb -->
+            <div class="relative flex items-center justify-center">
+                <!-- Ripple Rings -->
+                <div class="absolute size-36 sm:size-44 md:size-52 rounded-full border transition-all duration-700 {isRecording ? 'border-rose-400 scale-125 opacity-90 animate-ping' : isSpeaking ? 'border-primary/20 scale-120 opacity-100 animate-ping' : isGenerating ? 'border-primary/20 scale-110 opacity-70 animate-pulse' : 'border-primary/20 scale-100 opacity-40'}"></div>
+                <div class="absolute size-28 sm:size-36 md:size-44 rounded-full border transition-all duration-500 {isRecording ? 'border-rose-500 scale-115 opacity-80' : isSpeaking ? 'border-primary/30 scale-110 opacity-80' : 'border-primary/30 scale-100 opacity-20'}"></div>
+
+                <!-- Central Voice Core (Clickable for Play/Pause or Voice Recording) -->
+                <button
+                    onclick={() => {
+                        if (isRecording) {
+                            stopRecording();
+                        } else if (audioSrc && !isAudioPaused) {
+                            togglePlayback();
+                        } else {
+                            toggleRecording();
+                        }
+                    }}
+                    disabled={isGenerating}
+                    class="relative size-24 sm:size-28 md:size-34 rounded-full bg-white shadow-xl border flex flex-col items-center justify-center transition-all duration-300 cursor-pointer {isRecording ? 'border-rose-500 ring-4 ring-rose-400/30 scale-105 shadow-rose-200 shadow-2xl' : isSpeaking ? 'border-primary ring-4 ring-primary/20 scale-105 shadow-primary/25 shadow-2xl' : 'border-black/5 hover:border-primary/40'}"
+                    title={isRecording ? "Click to Stop Recording & Send" : isSpeaking ? "Click to Pause" : "Click to Speak"}
+                >
+                    <span class="material-symbols-rounded text-[32px] sm:text-[40px] md:text-[48px] transition-all {isRecording ? 'text-rose-600 animate-pulse' : isGenerating ? 'text-primary animate-spin' : isSpeaking ? 'text-primary animate-pulse' : 'text-primary'}">
+                        {isGenerating ? "progress_activity" : isRecording ? "mic" : isSpeaking ? "graphic_eq" : audioSrc ? (isAudioPaused ? "play_arrow" : "pause") : "mic"}
+                    </span>
+
+                    {#if isRecording}
+                        <span class="text-[8px] sm:text-[9px] font-mono font-bold text-rose-600 tracking-widest uppercase mt-0.5 animate-pulse">
+                            REC {recordDuration}s
+                        </span>
+                    {:else if isSpeaking}
+                        <span class="text-[8px] sm:text-[9px] font-mono font-bold text-primary tracking-widest uppercase mt-0.5 animate-pulse">
+                            SPEAKING
+                        </span>
+                    {:else if audioSrc && isAudioPaused}
+                        <span class="text-[8px] sm:text-[9px] font-mono font-bold text-text/40 tracking-widest uppercase mt-0.5">
+                            PAUSED
+                        </span>
+                    {:else}
+                        <span class="text-[8px] sm:text-[9px] font-mono font-bold text-text/40 tracking-widest uppercase mt-0.5">
+                            TAP TO SPEAK
+                        </span>
+                    {/if}
+                </button>
+            </div>
+
+            <!-- Dynamic Status & Query Display -->
+            <div class="flex flex-col items-center text-center gap-2 max-w-lg px-2">
+                <p class="text-xs sm:text-sm md:text-base font-bold text-text transition-all tracking-tight">
+                    {statusMessage}
+                </p>
+
+                {#if lastUserQuery}
+                    <div class="flex items-center gap-1.5 px-3 py-1 bg-white border border-black/5 text-[10px] sm:text-[11px] text-text/60 max-w-xs sm:max-w-md truncate shadow-xs rounded-full">
+                        <span class="font-bold text-primary font-mono text-[9px] sm:text-[10px]">YOU:</span>
+                        <span class="truncate">"{lastUserQuery}"</span>
+                    </div>
+                {/if}
+
+                {#if aiReplyText}
+                    <div class="flex items-start gap-1.5 px-3.5 py-2 bg-primary/5 border border-primary/15 text-[10px] sm:text-[11px] text-text/80 max-w-sm sm:max-w-lg shadow-xs rounded-2xl text-left animate-fade-in">
+                        <span class="font-bold text-primary font-mono text-[9px] sm:text-[10px] shrink-0 mt-0.5 uppercase">{brand.name} AI:</span>
+                        <span class="leading-relaxed line-clamp-3 font-sans">"{aiReplyText}"</span>
+                    </div>
+                {/if}
+
+                <!-- Dedicated Voice Control Bar -->
+                <div class="flex items-center gap-1.5 sm:gap-2 mt-1">
+                    <!-- Play / Pause Button -->
+                    <button
+                        onclick={togglePlayback}
+                        disabled={!audioSrc || isGenerating || isRecording}
+                        class="px-3 sm:px-4 py-1 sm:py-1.5 bg-white hover:bg-slate-50 text-text border border-black/10 shadow-xs text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider rounded-full flex items-center gap-1 cursor-pointer transition disabled:opacity-40 disabled:cursor-not-allowed"
+                    >
+                        <span class="material-symbols-rounded text-[14px] sm:text-[16px] text-primary">
+                            {isSpeaking ? "pause" : "play_arrow"}
+                        </span>
+                        <span>{isSpeaking ? "Pause" : "Play"}</span>
+                    </button>
+
+                    <!-- Replay Button -->
+                    <button
+                        onclick={replayAudio}
+                        disabled={!audioSrc || isGenerating || isRecording}
+                        class="px-3 sm:px-3.5 py-1 sm:py-1.5 bg-white hover:bg-slate-50 text-text border border-black/10 shadow-xs text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider rounded-full flex items-center gap-1 cursor-pointer transition disabled:opacity-40 disabled:cursor-not-allowed"
+                        title="Replay from start"
+                    >
+                        <span class="material-symbols-rounded text-[14px] sm:text-[16px] text-secondary">
+                            replay
+                        </span>
+                        <span class="hidden sm:inline">Replay</span>
+                    </button>
+
+                    <!-- Mute / Unmute Button -->
+                    <button
+                        onclick={toggleMute}
+                        class="px-2.5 sm:px-3 py-1 sm:py-1.5 bg-white hover:bg-slate-50 text-text border border-black/10 shadow-xs text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider rounded-full flex items-center gap-1 cursor-pointer transition {isMuted ? 'bg-rose-50 text-rose-600 border-rose-200' : ''}"
+                        title={isMuted ? "Unmute Voice" : "Mute Voice"}
+                    >
+                        <span class="material-symbols-rounded text-[14px] sm:text-[16px] {isMuted ? 'text-rose-600' : 'text-text/70'}">
+                            {isMuted ? "volume_off" : "volume_up"}
+                        </span>
+                        <span class="hidden sm:inline">{isMuted ? "Muted" : "Mute"}</span>
+                    </button>
+                </div>
+            </div>
         </div>
 
-        <!-- Dynamic Status & Query Display -->
-        <div class="flex flex-col items-center text-center gap-2 max-w-lg px-2">
-            <p class="text-xs sm:text-sm md:text-base font-bold text-text transition-all tracking-tight">
-                {statusMessage}
-            </p>
+        <!-- Bottom Input & Microphone Section (Centered) -->
+        <div class="w-full max-w-2xl mx-auto flex flex-col items-center gap-2 shrink-0">
+            <!-- Quick Prompts Row (Centered) -->
+            <div class="w-full flex items-center justify-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+                {#each quickPrompts as prompt}
+                    <button
+                        onclick={() => sendTextMessage(prompt)}
+                        disabled={isGenerating || isRecording}
+                        class="px-3 py-1 bg-white hover:bg-primary/10 hover:text-primary text-text/70 text-[9px] sm:text-[10px] font-mono whitespace-nowrap rounded-full transition cursor-pointer border border-black/5 shadow-xs disabled:opacity-50 shrink-0"
+                    >
+                        {prompt}
+                    </button>
+                {/each}
+            </div>
 
-            {#if lastUserQuery}
-                <div class="flex items-center gap-1.5 px-3 py-1 bg-white border border-black/5 text-[10px] sm:text-[11px] text-text/60 max-w-xs sm:max-w-md truncate shadow-xs rounded-full">
-                    <span class="font-bold text-primary font-mono text-[9px] sm:text-[10px]">YOU:</span>
-                    <span class="truncate">"{lastUserQuery}"</span>
-                </div>
-            {/if}
-
-            {#if aiReplyText}
-                <div class="flex items-start gap-1.5 px-3.5 py-2 bg-primary/5 border border-primary/15 text-[10px] sm:text-[11px] text-text/80 max-w-sm sm:max-w-lg shadow-xs rounded-2xl text-left animate-fade-in">
-                    <span class="font-bold text-primary font-mono text-[9px] sm:text-[10px] shrink-0 mt-0.5 uppercase">{brand.name} AI:</span>
-                    <span class="leading-relaxed line-clamp-3 font-sans">"{aiReplyText}"</span>
-                </div>
-            {/if}
-
-            <!-- Dedicated Voice Control Bar -->
-            <div class="flex items-center gap-1.5 sm:gap-2 mt-1">
-                <!-- Play / Pause Button -->
+            <!-- Clean Input & Mic Control Bar -->
+            <div class="w-full relative flex items-center bg-white border border-black/10 rounded-2xl shadow-md p-1.5 sm:p-2 transition-focus-within focus-within:border-primary gap-1.5">
+                <!-- Dedicated Microphone Button -->
                 <button
-                    onclick={togglePlayback}
-                    disabled={!audioSrc || isGenerating || isRecording}
-                    class="px-3 sm:px-4 py-1 sm:py-1.5 bg-white hover:bg-slate-50 text-text border border-black/10 shadow-xs text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider rounded-full flex items-center gap-1 cursor-pointer transition disabled:opacity-40 disabled:cursor-not-allowed"
+                    onclick={toggleRecording}
+                    disabled={isGenerating}
+                    class="size-8 sm:size-9 rounded-full flex items-center justify-center transition cursor-pointer shrink-0 {isRecording ? 'bg-rose-600 text-white animate-pulse shadow-sm' : 'bg-black/5 hover:bg-primary hover:text-white text-text/70'}"
+                    title={isRecording ? "Stop Recording & Send" : "Click to Speak via Microphone"}
+                    aria-label="Microphone Voice Input"
                 >
-                    <span class="material-symbols-rounded text-[14px] sm:text-[16px] text-primary">
-                        {isSpeaking ? "pause" : "play_arrow"}
+                    <span class="material-symbols-rounded text-[18px] sm:text-[20px]">
+                        {isRecording ? "stop" : "mic"}
                     </span>
-                    <span>{isSpeaking ? "Pause" : "Play"}</span>
                 </button>
 
-                <!-- Replay Button -->
-                <button
-                    onclick={replayAudio}
-                    disabled={!audioSrc || isGenerating || isRecording}
-                    class="px-3 sm:px-3.5 py-1 sm:py-1.5 bg-white hover:bg-slate-50 text-text border border-black/10 shadow-xs text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider rounded-full flex items-center gap-1 cursor-pointer transition disabled:opacity-40 disabled:cursor-not-allowed"
-                    title="Replay from start"
-                >
-                    <span class="material-symbols-rounded text-[14px] sm:text-[16px] text-secondary">
-                        replay
-                    </span>
-                    <span class="hidden sm:inline">Replay</span>
-                </button>
+                <!-- Text Input Field -->
+                <input
+                    type="text"
+                    bind:value={inputMessage}
+                    onkeydown={handleKeydown}
+                    disabled={isGenerating || isRecording}
+                    placeholder={isRecording ? "Listening..." : `Ask the ${brand.name} voice assistant...`}
+                    class="flex-1 min-w-0 px-2 py-1.5 sm:py-2 text-xs sm:text-sm font-sans text-text placeholder:text-text/40 bg-transparent focus:outline-none"
+                />
 
-                <!-- Mute / Unmute Button -->
+                <!-- Send Text Button -->
                 <button
-                    onclick={toggleMute}
-                    class="px-2.5 sm:px-3 py-1 sm:py-1.5 bg-white hover:bg-slate-50 text-text border border-black/10 shadow-xs text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider rounded-full flex items-center gap-1 cursor-pointer transition {isMuted ? 'bg-rose-50 text-rose-600 border-rose-200' : ''}"
-                    title={isMuted ? "Unmute Voice" : "Mute Voice"}
+                    onclick={() => sendTextMessage()}
+                    disabled={!inputMessage.trim() || isGenerating || isRecording}
+                    class="px-3.5 sm:px-5 py-1.5 sm:py-2 bg-primary hover:bg-primary/90 text-white font-mono text-[10px] sm:text-xs font-bold uppercase tracking-wider rounded-xl transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1 cursor-pointer shrink-0"
                 >
-                    <span class="material-symbols-rounded text-[14px] sm:text-[16px] {isMuted ? 'text-rose-600' : 'text-text/70'}">
-                        {isMuted ? "volume_off" : "volume_up"}
-                    </span>
-                    <span class="hidden sm:inline">{isMuted ? "Muted" : "Mute"}</span>
+                    <span>{isGenerating ? "..." : "Ask"}</span>
+                    <span class="material-symbols-rounded text-[12px] sm:text-[14px]">send</span>
                 </button>
             </div>
         </div>
-    </div>
-
-    <!-- Bottom Input & Microphone Section (Centered) -->
-    <div class="w-full max-w-2xl mx-auto flex flex-col items-center gap-2 shrink-0">
-        <!-- Quick Prompts Row (Centered) -->
-        <div class="w-full flex items-center justify-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-            {#each quickPrompts as prompt}
-                <button
-                    onclick={() => sendTextMessage(prompt)}
-                    disabled={isGenerating || isRecording}
-                    class="px-3 py-1 bg-white hover:bg-primary/10 hover:text-primary text-text/70 text-[9px] sm:text-[10px] font-mono whitespace-nowrap rounded-full transition cursor-pointer border border-black/5 shadow-xs disabled:opacity-50 shrink-0"
-                >
-                    {prompt}
-                </button>
-            {/each}
-        </div>
-
-        <!-- Clean Input & Mic Control Bar -->
-        <div class="w-full relative flex items-center bg-white border border-black/10 rounded-2xl shadow-md p-1.5 sm:p-2 transition-focus-within focus-within:border-primary gap-1.5">
-            <!-- Dedicated Microphone Button -->
-            <button
-                onclick={toggleRecording}
-                disabled={isGenerating}
-                class="size-8 sm:size-9 rounded-full flex items-center justify-center transition cursor-pointer shrink-0 {isRecording ? 'bg-rose-600 text-white animate-pulse shadow-sm' : 'bg-black/5 hover:bg-primary hover:text-white text-text/70'}"
-                title={isRecording ? "Stop Recording & Send" : "Click to Speak via Microphone"}
-                aria-label="Microphone Voice Input"
-            >
-                <span class="material-symbols-rounded text-[18px] sm:text-[20px]">
-                    {isRecording ? "stop" : "mic"}
-                </span>
-            </button>
-
-            <!-- Text Input Field -->
-            <input
-                type="text"
-                bind:value={inputMessage}
-                onkeydown={handleKeydown}
-                disabled={isGenerating || isRecording}
-                placeholder={isRecording ? "Listening..." : `Ask the ${brand.name} voice assistant...`}
-                class="flex-1 min-w-0 px-2 py-1.5 sm:py-2 text-xs sm:text-sm font-sans text-text placeholder:text-text/40 bg-transparent focus:outline-none"
-            />
-
-            <!-- Send Text Button -->
-            <button
-                onclick={() => sendTextMessage()}
-                disabled={!inputMessage.trim() || isGenerating || isRecording}
-                class="px-3.5 sm:px-5 py-1.5 sm:py-2 bg-primary hover:bg-primary/90 text-white font-mono text-[10px] sm:text-xs font-bold uppercase tracking-wider rounded-xl transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1 cursor-pointer shrink-0"
-            >
-                <span>{isGenerating ? "..." : "Ask"}</span>
-                <span class="material-symbols-rounded text-[12px] sm:text-[14px]">send</span>
-            </button>
-        </div>
-    </div>
+    {/if}
 </div>

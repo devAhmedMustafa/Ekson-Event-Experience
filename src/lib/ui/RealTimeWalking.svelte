@@ -14,6 +14,9 @@
     } from "$lib/three/hall";
     import { envFor, disposeObject } from "$lib/three/env";
     import { QUALITY } from "$lib/three/quality";
+    import { createRenderPath } from "$lib/three/render-path";
+    import { roundedBox } from "$lib/three/props";
+    import { mat } from "$lib/three/materials";
 
     let is3DActive = $state(false);
     let isPointerLocked = $state(false);
@@ -32,6 +35,16 @@
     let scene: THREE.Scene | null = null;
     let camera: THREE.PerspectiveCamera | null = null;
     let animationFrameId: number | null = null;
+    let renderPath: any = null;
+    let budgetClock = 0;
+
+    let phoneInstance: any = null;
+    let screenClock = 0;
+
+    const PHONE_SCALE = 1.4;
+    const PHONE_X = 0.16;
+    const PHONE_Y = -0.136;
+    const PHONE_ASPECT = 1112 / 626;
 
     // Movement & Collision Physics
     const EYE_HEIGHT = 1.66;
@@ -55,6 +68,271 @@
     let targetBoothPos = new THREE.Vector3(16.5, 0, -7.6 + 3.6);
     let autoWalkLegs: THREE.Vector3[] = [];
     let autoWalkStall = 0;
+
+    function freeze(root: THREE.Object3D) {
+        root.updateMatrixWorld(true);
+        root.traverse((o) => {
+            o.matrixAutoUpdate = false;
+        });
+    }
+
+    function resolveCollisions(
+        pos: THREE.Vector3,
+        boxes: { minX: number; maxX: number; minZ: number; maxZ: number }[],
+        radius: number
+    ) {
+        for (let pass = 0; pass < 3; pass++) {
+            let hit = false;
+            for (const b of boxes) {
+                const minX = b.minX - radius;
+                const maxX = b.maxX + radius;
+                const minZ = b.minZ - radius;
+                const maxZ = b.maxZ + radius;
+                if (pos.x <= minX || pos.x >= maxX || pos.z <= minZ || pos.z >= maxZ) continue;
+
+                const dLeft = pos.x - minX;
+                const dRight = maxX - pos.x;
+                const dBack = pos.z - minZ;
+                const dFront = maxZ - pos.z;
+                const min = Math.min(dLeft, dRight, dBack, dFront);
+                if (min === dLeft) pos.x = minX;
+                else if (min === dRight) pos.x = maxX;
+                else if (min === dBack) pos.z = minZ;
+                else pos.z = maxZ;
+                hit = true;
+            }
+            if (!hit) return;
+        }
+    }
+
+    function makePhone() {
+        const group = new THREE.Group();
+        group.position.set(PHONE_X, PHONE_Y, -0.42);
+        group.rotation.set(-0.42, -0.28, 0.12);
+        group.scale.setScalar(PHONE_SCALE);
+
+        // Body chassis
+        const body = roundedBox(0.082, 0.168, 0.011, 0.012, mat.dark(0x14171d));
+        group.add(body);
+
+        // Metallic Rim
+        const rim = roundedBox(0.086, 0.172, 0.008, 0.013, mat.metal(0x9aa0aa));
+        rim.position.z = -0.002;
+        group.add(rim);
+
+        // Screen texture canvas
+        const canvas = document.createElement("canvas");
+        canvas.width = 360;
+        canvas.height = 740;
+        const ctx = canvas.getContext("2d")!;
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.colorSpace = THREE.SRGBColorSpace;
+
+        const screen = new THREE.Mesh(
+            new THREE.PlaneGeometry(0.072, 0.152),
+            new THREE.MeshBasicMaterial({ map: texture, toneMapped: false })
+        );
+        screen.position.z = 0.0062;
+        group.add(screen);
+
+        group.traverse((o) => {
+            if ((o as THREE.Mesh).isMesh) o.renderOrder = 20;
+        });
+
+        return {
+            group,
+            ctx,
+            texture,
+            dispose() {
+                texture.dispose();
+            }
+        };
+    }
+
+    function drawPhoneScreen(
+        phone: any,
+        playerP: THREE.Vector3,
+        playerYaw: number,
+        targetP: THREE.Vector3,
+        slots: any[],
+        visitorIndex: number,
+        dist: number
+    ) {
+        const { ctx, texture } = phone;
+        const W = 360;
+        const H = 740;
+        const accent = brand.primaryColor || "#009dd6";
+        const companyName = brand.name || "EXHIBITOR";
+
+        ctx.fillStyle = "#0d1017";
+        ctx.fillRect(0, 0, W, H);
+
+        /* status bar */
+        ctx.fillStyle = "rgba(255,255,255,.55)";
+        ctx.font = "600 17px 'Inter', sans-serif";
+        ctx.textAlign = "left";
+        ctx.textBaseline = "middle";
+        ctx.fillText("9:41", 20, 26);
+        ctx.textAlign = "right";
+        ctx.fillText("EXPO ▾ 5G ▮", W - 20, 26);
+
+        /* header */
+        ctx.fillStyle = accent;
+        ctx.fillRect(0, 46, W, 96);
+        ctx.fillStyle = "rgba(255,255,255,.78)";
+        ctx.font = "600 14px 'Inter', sans-serif";
+        ctx.textAlign = "left";
+        ctx.fillText("NAVIGATING TO", 20, 74);
+        ctx.fillStyle = "#fff";
+        let px = 30;
+        do {
+            ctx.font = `700 ${px}px 'Space Grotesk', Inter, sans-serif`;
+            if (ctx.measureText(companyName).width <= W - 40) break;
+            px -= 1;
+        } while (px > 14);
+        ctx.fillText(companyName, 20, 108);
+
+        /* map */
+        const mapY = 158;
+        const mapH = 330;
+        ctx.fillStyle = "#151a24";
+        ctx.fillRect(0, mapY, W, mapH);
+
+        const pad = 18;
+        const scale = Math.min((W - pad * 2) / HALL.width, (mapH - pad * 2) / HALL.depth);
+        const toMapX = (x: number) => W / 2 + x * scale;
+        const toMapY = (z: number) => mapY + mapH / 2 + z * scale;
+
+        // hall outline + aisle
+        ctx.strokeStyle = "rgba(255,255,255,.16)";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(
+            toMapX(-HALL.width / 2),
+            toMapY(-HALL.depth / 2),
+            HALL.width * scale,
+            HALL.depth * scale
+        );
+        ctx.fillStyle = "rgba(255,255,255,.05)";
+        ctx.fillRect(
+            toMapX(-HALL.width / 2),
+            toMapY(-HALL.aisleHalf),
+            HALL.width * scale,
+            HALL.aisleHalf * 2 * scale
+        );
+
+        // stands
+        slots.forEach((slot, i) => {
+            const isTarget = i === visitorIndex;
+            const sw = 7 * scale;
+            const sd = 6 * scale;
+            ctx.fillStyle = isTarget ? accent : "rgba(255,255,255,.14)";
+            ctx.fillRect(toMapX(slot.x) - sw / 2, toMapY(slot.z) - sd / 2, sw, sd);
+            if (isTarget) {
+                ctx.strokeStyle = "#fff";
+                ctx.lineWidth = 2;
+                ctx.strokeRect(toMapX(slot.x) - sw / 2, toMapY(slot.z) - sd / 2, sw, sd);
+            }
+        });
+
+        // route
+        ctx.strokeStyle = accent;
+        ctx.lineWidth = 3;
+        ctx.setLineDash([6, 5]);
+        ctx.beginPath();
+        ctx.moveTo(toMapX(playerP.x), toMapY(playerP.z));
+        ctx.lineTo(toMapX(targetP.x), toMapY(targetP.z));
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // player arrow
+        const pxx = toMapX(playerP.x);
+        const pyy = toMapY(playerP.z);
+        ctx.save();
+        ctx.translate(pxx, pyy);
+        ctx.rotate(-playerYaw + Math.PI);
+        ctx.fillStyle = "#ffffff";
+        ctx.beginPath();
+        ctx.moveTo(0, -11);
+        ctx.lineTo(8, 9);
+        ctx.lineTo(0, 4);
+        ctx.lineTo(-8, 9);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+
+        /* direction card */
+        const cardY = mapY + mapH + 16;
+        ctx.fillStyle = "#161b25";
+        roundRect(ctx, 16, cardY, W - 32, 150, 20);
+        ctx.fill();
+
+        const bearing = Math.atan2(targetP.x - playerP.x, targetP.z - playerP.z);
+        const rel = ((playerYaw - bearing + Math.PI * 3) % (Math.PI * 2)) - Math.PI;
+
+        const COMPASS_R = 50;
+        ctx.save();
+        ctx.translate(72, cardY + 74);
+        ctx.rotate(rel);
+        ctx.fillStyle = accent;
+        ctx.beginPath();
+        ctx.moveTo(0, -COMPASS_R);
+        ctx.lineTo(COMPASS_R * 0.733, COMPASS_R * 0.733);
+        ctx.lineTo(0, COMPASS_R / 3);
+        ctx.lineTo(-COMPASS_R * 0.733, COMPASS_R * 0.733);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+
+        ctx.textAlign = "left";
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "700 40px 'Space Grotesk', Inter, sans-serif";
+        ctx.fillText(`${dist.toFixed(0)} m`, 140, cardY + 62);
+        ctx.fillStyle = "rgba(255,255,255,.55)";
+        ctx.font = "500 17px 'Inter', sans-serif";
+        ctx.fillText(turnHint(rel, dist), 140, cardY + 96);
+        ctx.fillStyle = "rgba(255,255,255,.35)";
+        ctx.font = "500 14px 'Inter', sans-serif";
+        ctx.fillText(`Stand B-14 · Hall 3`, 140, cardY + 120);
+
+        /* arrival banner */
+        if (dist < ARRIVE_RADIUS) {
+            ctx.fillStyle = "#10b981";
+            roundRect(ctx, 16, cardY, W - 32, 150, 20);
+            ctx.fill();
+            ctx.fillStyle = "#fff";
+            ctx.textAlign = "center";
+            ctx.font = "700 30px 'Space Grotesk', Inter, sans-serif";
+            ctx.fillText("You have arrived", W / 2, cardY + 62);
+            ctx.font = "500 17px 'Inter', sans-serif";
+            ctx.fillText(`Welcome to ${companyName}`, W / 2, cardY + 96);
+        }
+
+        /* home bar */
+        ctx.fillStyle = "rgba(255,255,255,.3)";
+        roundRect(ctx, W / 2 - 60, H - 22, 120, 6, 3);
+        ctx.fill();
+
+        texture.needsUpdate = true;
+    }
+
+    function turnHint(rel: number, dist: number) {
+        if (dist < ARRIVE_RADIUS) return "You have arrived";
+        const deg = (rel * 180) / Math.PI;
+        if (Math.abs(deg) < 18) return "Straight ahead";
+        if (deg > 140 || deg < -140) return "Turn around";
+        return deg > 0 ? "Bear right" : "Bear left";
+    }
+
+    function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
+        const rr = Math.min(r, w / 2, h / 2);
+        ctx.beginPath();
+        ctx.moveTo(x + rr, y);
+        ctx.arcTo(x + w, y, x + w, y + h, rr);
+        ctx.arcTo(x + w, y + h, x, y + h, rr);
+        ctx.arcTo(x, y + h, x, y, rr);
+        ctx.arcTo(x, y, x + w, y, rr);
+        ctx.closePath();
+    }
 
     // Minimap Radar
     let radarX = $state(15);
@@ -206,9 +484,9 @@
 
         scene = new THREE.Scene();
         scene.background = new THREE.Color("#252b34");
-        scene.fog = new THREE.Fog("#252b34", 30, 85);
+        scene.fog = new THREE.Fog("#252b34", 30, 78);
 
-        camera = new THREE.PerspectiveCamera(72, w / h, 0.05, 140);
+        camera = new THREE.PerspectiveCamera(72, w / h, 0.15, 140);
         camera.rotation.order = "YXZ";
 
         renderer = new THREE.WebGLRenderer({
@@ -217,13 +495,13 @@
             powerPreference: "high-performance"
         });
         renderer.setSize(w, h);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.25));
-        renderer.shadowMap.enabled = true;
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.6));
+        renderer.shadowMap.enabled = QUALITY.shadows;
         renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         renderer.shadowMap.autoUpdate = false; // Static Shadow Caching Optimization
         renderer.shadowMap.needsUpdate = true;
         renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        renderer.toneMappingExposure = 1.15;
+        renderer.toneMappingExposure = 1.25;
 
         // Lighting Rig
         const ambient = new THREE.HemisphereLight("#dde6f8", "#4a5260", 0.95);
@@ -231,15 +509,18 @@
 
         const overhead = new THREE.DirectionalLight("#fff2df", 1.3);
         overhead.position.set(10, 22, 6);
-        overhead.castShadow = true;
-        overhead.shadow.mapSize.set(2048, 2048);
-        overhead.shadow.camera.near = 4;
-        overhead.shadow.camera.far = 50;
-        overhead.shadow.camera.left = -26;
-        overhead.shadow.camera.right = 26;
-        overhead.shadow.camera.top = 18;
-        overhead.shadow.camera.bottom = -18;
-        overhead.shadow.bias = -0.0008;
+        overhead.castShadow = QUALITY.shadows;
+        const hallShadowMap = Math.min(QUALITY.shadowMapSize, 2048);
+        overhead.shadow.mapSize.set(hallShadowMap, hallShadowMap);
+        overhead.shadow.camera.near = 2;
+        overhead.shadow.camera.far = 70;
+        overhead.shadow.camera.left = -30;
+        overhead.shadow.camera.right = 30;
+        overhead.shadow.camera.top = 22;
+        overhead.shadow.camera.bottom = -22;
+        overhead.shadow.bias = -0.0009;
+        overhead.shadow.normalBias = 0.045;
+        overhead.shadow.radius = QUALITY.softShadows ? 3 : 1;
         scene.add(overhead);
 
         const bounce = new THREE.DirectionalLight("#c9d8ff", 0.42);
@@ -254,6 +535,7 @@
         // Build Entire Exhibition Hall
         const hall = makeHall({ accent: accentHex });
         scene.add(hall);
+        freeze(hall);
 
         // Build All 8 Stands (Visitor's Branded Stand at Slot 3)
         const slots = boothSlots();
@@ -274,12 +556,13 @@
                           darkAccent: darkAccentHex,
                           lightAccent: brand.lightTint,
                           palette: brand.palette,
-                          detail: "low"
+                          detail: "high"
                       })
                     : makeGenericBooth(neighbours[n++ % neighbours.length]);
             group.position.set(slot.x, 0, slot.z);
             group.rotation.y = slot.rotation;
             if (scene) scene.add(group);
+            freeze(group);
 
             const halfW = 3.5;
             const backDepth = 4.0;
@@ -309,6 +592,26 @@
         // Floor Wayfinding Breadcrumb Path Line
         pathLineMesh = makePathLine(accentColor);
         scene.add(pathLineMesh);
+
+        // Hand holding Phone in First Person view
+        phoneInstance = makePhone();
+        if (camera) {
+            camera.add(phoneInstance.group);
+            scene.add(camera);
+        }
+
+        // Render Path / Post Processing
+        renderPath = createRenderPath(renderer, scene, camera, {
+            aoRadius: 0.7,
+            aoIntensity: 0.9,
+            aoThickness: 1.0,
+            aoSamples: 6,
+            bloomStrength: 0.16,
+            bloomThreshold: 0.92,
+            bloomRadius: 0.6,
+            vignetteDarkness: 1.12,
+            vignetteOffset: 0.98
+        });
 
         // Env reflection
         envFor(renderer).then((env) => {
@@ -368,6 +671,7 @@
                 prev.copy(playerPos);
                 playerPos.x += Math.sin(yaw) * WALK_SPEED * dt;
                 playerPos.z += Math.cos(yaw) * WALK_SPEED * dt;
+                resolveCollisions(playerPos, colliders, PLAYER_RADIUS);
 
                 if (prev.distanceTo(playerPos) < WALK_SPEED * dt * 0.25) {
                     autoWalkStall += dt;
@@ -400,37 +704,9 @@
                     const currentSpeed = isRunning ? RUN_SPEED : WALK_SPEED;
                     move.multiplyScalar(currentSpeed * dt);
 
-                    // X-axis collision slide
-                    const nextX = playerPos.x + move.x;
-                    let blockedX = false;
-                    for (const c of colliders) {
-                        if (
-                            nextX + PLAYER_RADIUS > c.minX &&
-                            nextX - PLAYER_RADIUS < c.maxX &&
-                            playerPos.z + PLAYER_RADIUS > c.minZ &&
-                            playerPos.z - PLAYER_RADIUS < c.maxZ
-                        ) {
-                            blockedX = true;
-                            break;
-                        }
-                    }
-                    if (!blockedX) playerPos.x = nextX;
-
-                    // Z-axis collision slide
-                    const nextZ = playerPos.z + move.z;
-                    let blockedZ = false;
-                    for (const c of colliders) {
-                        if (
-                            playerPos.x + PLAYER_RADIUS > c.minX &&
-                            playerPos.x - PLAYER_RADIUS < c.maxX &&
-                            nextZ + PLAYER_RADIUS > c.minZ &&
-                            nextZ - PLAYER_RADIUS < c.maxZ
-                        ) {
-                            blockedZ = true;
-                            break;
-                        }
-                    }
-                    if (!blockedZ) playerPos.z = nextZ;
+                    playerPos.x += move.x;
+                    playerPos.z += move.z;
+                    resolveCollisions(playerPos, colliders, PLAYER_RADIUS);
 
                     isMoving = true;
                     stepCycle += dt * (isRunning ? 14 : 9);
@@ -477,7 +753,29 @@
                 updatePathLine(pathLineMesh, playerPos, route, t);
             }
 
-            if (renderer && scene && camera) {
+            // Phone in hand sway & live navigation screen
+            if (phoneInstance) {
+                phoneInstance.group.rotation.z = 0.12 + Math.sin(stepCycle * 0.5) * 0.02;
+                phoneInstance.group.position.y = PHONE_Y + Math.sin(stepCycle) * 0.006;
+
+                screenClock += dt;
+                if (screenClock > 1 / 12) {
+                    screenClock = 0;
+                    drawPhoneScreen(phoneInstance, playerPos, yaw, targetBoothPos, slots, VISITOR_SLOT_INDEX, distanceToBooth);
+                }
+            }
+
+            // Frame budget guard for post processing
+            budgetClock += dt;
+            if (budgetClock > 2 && renderPath?.enabled) {
+                budgetClock = 0;
+                const dropped = renderPath.degrade();
+                if (dropped) console.info(`[walkthrough] dropped ${dropped} to hold frame rate`);
+            }
+
+            if (renderPath) {
+                renderPath.render();
+            } else if (renderer && scene && camera) {
                 renderer.render(scene, camera);
             }
         };
@@ -565,6 +863,10 @@
             document.removeEventListener("pointerlockchange", onPointerLockChange);
             document.removeEventListener("visibilitychange", handleBlur);
         }
+        phoneInstance?.dispose();
+        phoneInstance = null;
+        renderPath?.dispose();
+        renderPath = null;
         renderer?.dispose();
         if (scene) disposeObject(scene);
     }

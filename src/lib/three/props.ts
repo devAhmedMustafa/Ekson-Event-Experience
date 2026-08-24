@@ -2,8 +2,8 @@
 import * as THREE from 'three'
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js'
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
-import { mat, surface, tileBySize } from './materials'
-import { seg, bevel, bevelSegments, count, IS_HIGH } from './quality'
+import { mat, env, surface, tileBySize } from './materials'
+import { seg, bevel, bevelSegments, count, IS_HIGH, QUALITY } from './quality'
 import { fbm } from './noise'
 
 /**
@@ -99,7 +99,7 @@ export function graphicPanel(w, h, map, { emissive = 0.05, backing = true, doubl
   group.add(face)
   if (backing) {
     const back = roundedBox(fw, fh, 0.03, 0.004, mat.panel(0xe7e9ee, 0.66, 2))
-    back.position.z = -0.02
+    back.position.z = -0.028
     group.add(back)
   }
   group.userData.size = { w: fw, h: fh }
@@ -124,31 +124,28 @@ export function makeCarpet(w, d, map, { riser = 0.06, accent = 0x2f6bff, color =
       // tile of a square weave 17 % along one axis.
       map: map ? tileBySize(map, w - 0.02, d - 0.02, 1) : null,
       color,
-      roughness: 1,
       metalness: 0,
-      envMapIntensity: 0,
       ...surfaceMaps,
+      normalScale: new THREE.Vector2(0.18, 0.18),
+      roughnessMap: null,
+      roughness: 1,
+      envMapIntensity: QUALITY.envMapIntensity * 0.06,
+      polygonOffset: true,
+      polygonOffsetFactor: -4,
+      polygonOffsetUnits: -4,
     })
   )
   top.rotation.x = -Math.PI / 2
-  top.position.y = riser + 0.001
+  top.position.y = riser + 0.002
   top.receiveShadow = true
   group.add(top)
 
-  /*
-   * Accent nosing around the platform edge — a 12 mm lip that sits *under* the
-   * carpet surface and protrudes past it, so from above you see a thin accent
-   * line around the perimeter and from the side you see the trim on the riser.
-   *
-   * This used to sit at `riser + 0.006`, which put a full-footprint slab of
-   * accent colour on top of the carpet plane at `riser + 0.001` and hid the
-   * flooring completely.
-   */
+  const trimH = Math.min(0.014, riser * 0.42)
   const edge = new THREE.Mesh(
-    new THREE.BoxGeometry(w + 0.024, 0.014, d + 0.024),
-    new THREE.MeshStandardMaterial({ color: accent, roughness: 0.6, metalness: 0.04 })
+    new THREE.BoxGeometry(w + 0.024, trimH, d + 0.024),
+    new THREE.MeshStandardMaterial({ color: accent, roughness: 0.6, metalness: 0.04, envMapIntensity: env(0.5) })
   )
-  edge.position.y = riser - 0.007
+  edge.position.y = riser * 0.45
   edge.castShadow = true
   group.add(edge)
 
@@ -636,7 +633,7 @@ export function makePlanter({ w = 1.2, d = 0.36, h = 0.42, accent = 0x2f6bff } =
   g.add(band)
 
   const soil = box(w - 0.06, 0.02, d - 0.06, new THREE.MeshStandardMaterial({ color: 0x342821, roughness: 1 }))
-  soil.position.y = h - 0.012
+  soil.position.y = h - 0.004
   g.add(soil)
 
   const bushes = count(Math.max(2, Math.round(w / 0.45)))
@@ -645,6 +642,10 @@ export function makePlanter({ w = 1.2, d = 0.36, h = 0.42, accent = 0x2f6bff } =
     shrub.position.set(-w / 2 + (w / bushes) * (i + 0.5), h - 0.01, (Math.random() - 0.5) * d * 0.3)
     g.add(shrub)
   }
+
+  const bounds = new THREE.Box3().setFromObject(g)
+  g.userData.halfW = Math.max(w / 2, bounds.max.x, -bounds.min.x)
+  g.userData.halfD = Math.max(d / 2, bounds.max.z, -bounds.min.z)
   return g
 }
 

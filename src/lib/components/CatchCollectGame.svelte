@@ -190,6 +190,10 @@
         targetBasketX = canvasWidth / 2;
         lastTime = performance.now();
 
+        if (!gameLoopId) {
+            gameLoopId = requestAnimationFrame(renderLoop);
+        }
+
         if (timerInterval) clearInterval(timerInterval);
         timerInterval = window.setInterval(() => {
             if (!isPlaying) return;
@@ -522,7 +526,11 @@
             ctx.restore();
         }
 
-        gameLoopId = requestAnimationFrame(renderLoop);
+        if (isPlaying) {
+            gameLoopId = requestAnimationFrame(renderLoop);
+        } else {
+            gameLoopId = null;
+        }
     }
 
     onMount(() => {
@@ -531,7 +539,7 @@
             resizeCanvas();
             window.addEventListener("resize", resizeCanvas);
             lastTime = performance.now();
-            gameLoopId = requestAnimationFrame(renderLoop);
+            renderLoop(lastTime);
         }
 
         return () => {

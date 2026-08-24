@@ -1,7 +1,7 @@
 // @ts-nocheck
 import * as THREE from 'three'
 import { brand } from '$lib/brand.svelte'
-import { mat } from './materials'
+import { mat, env } from './materials'
 import {
   makeCarpet,
   makeCounter,
@@ -66,7 +66,7 @@ export function createBooth(tex, {
   const W = 7
   const D = 6
   const WALL_H = 3.4
-  const RISER = 0.08
+  const RISER = 0.02
 
   const HALF_W = W / 2 // 3.5
   const HALF_D = D / 2 // 3.0
@@ -85,9 +85,11 @@ export function createBooth(tex, {
         map: tex.logo,
         transparent: true,
         roughness: 0.95,
+        envMapIntensity: env(0.2),
         depthWrite: false,
         polygonOffset: true,
-        polygonOffsetFactor: -2,
+        polygonOffsetFactor: -6,
+        polygonOffsetUnits: -6,
       })
     )
     decal.rotation.x = -Math.PI / 2
@@ -276,10 +278,18 @@ export function createBooth(tex, {
 
   const rug = new THREE.Mesh(
     new THREE.PlaneGeometry(2.9, 1.7),
-    new THREE.MeshStandardMaterial({ color: 0xf4f6fa, roughness: 0.99, metalness: 0 })
+    new THREE.MeshStandardMaterial({
+      color: 0xf6f5f1,
+      roughness: 0.99,
+      metalness: 0,
+      envMapIntensity: env(0.2),
+      polygonOffset: true,
+      polygonOffsetFactor: -6,
+      polygonOffsetUnits: -6,
+    })
   )
   rug.rotation.x = -Math.PI / 2
-  rug.position.set(LOUNGE.x, RISER + 0.003, LOUNGE.z)
+  rug.position.set(LOUNGE.x, RISER + 0.006, LOUNGE.z)
   rug.receiveShadow = true
   booth.add(rug)
 
@@ -316,11 +326,11 @@ export function createBooth(tex, {
 
   if (rich) {
     const planterL = makePlanter({ w: 1.3, accent: accentColor })
-    planterL.position.set(-1.55, RISER, 2.58)
+    planterL.position.set(-1.55, RISER, HALF_D - (planterL.userData.halfD || 0.18) - 0.02)
     booth.add(planterL)
 
     const planterR = makePlanter({ w: 1.1, accent: secondaryColor })
-    planterR.position.set(1.35, RISER, 2.58)
+    planterR.position.set(1.35, RISER, HALF_D - (planterR.userData.halfD || 0.18) - 0.02)
     booth.add(planterR)
 
     const postA = makeRopePost({ accent: accentColor })

@@ -128,6 +128,10 @@ function keyed<T extends THREE.Material>(key: string, make: () => T): T {
   return m
 }
 
+export function env(factor = 0.5) {
+  return QUALITY.envMapIntensity * factor
+}
+
 /* ── the palette ─────────────────────────────────────────────────────────── */
 
 export const mat = {

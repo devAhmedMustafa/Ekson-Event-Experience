@@ -2,8 +2,21 @@
 	import './layout.css';
 	import favicon from '$lib/assets/favicon.svg';
 	import { brand } from '$lib/brand.svelte';
+	import BrandCustomizerModal from '$lib/components/BrandCustomizerModal.svelte';
+	import { onMount } from 'svelte';
 
 	let { children } = $props();
+	let isBrandModalOpen = $state(false);
+
+	onMount(() => {
+		const handleOpenModal = () => {
+			isBrandModalOpen = true;
+		};
+		window.addEventListener('ekson_open_brand_modal', handleOpenModal);
+		return () => {
+			window.removeEventListener('ekson_open_brand_modal', handleOpenModal);
+		};
+	});
 
 	$effect(() => {
 		if (typeof document !== 'undefined') {
@@ -26,4 +39,10 @@
 <svelte:head>
 	<link rel="icon" href={favicon} />
 </svelte:head>
+
 {@render children()}
+
+<BrandCustomizerModal
+	isOpen={isBrandModalOpen}
+	onClose={() => (isBrandModalOpen = false)}
+/>

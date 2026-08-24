@@ -11,6 +11,7 @@
     let scene: THREE.Scene | null = null;
     let camera: THREE.PerspectiveCamera | null = null;
     let animationFrameId: number | null = null;
+    let clock: THREE.Clock | null = null;
 
     let autoRotate = $state(true);
     let isLoaded = $state(false);
@@ -129,10 +130,17 @@
         containerEl.addEventListener("pointercancel", handlePointerUp);
         containerEl.addEventListener("wheel", handleWheel, { passive: false });
 
-        const clock = new THREE.Clock();
+        clock = new THREE.Clock();
+        startLoop();
+    }
+
+    function startLoop() {
+        if (animationFrameId) return;
+        if (!clock) clock = new THREE.Clock();
+        else clock.start();
 
         const loop = () => {
-            const dt = Math.min(0.05, clock.getDelta());
+            const dt = Math.min(0.05, clock ? clock.getDelta() : 0.016);
 
             if (autoRotate && !isDragging) {
                 targetYaw += dt * 0.08;
@@ -190,8 +198,35 @@
         renderer?.dispose();
     }
 
+    let isInitialized = false;
+
     onMount(() => {
-        initPano();
+        if (typeof window !== "undefined" && "IntersectionObserver" in window && containerEl) {
+            const observer = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            if (!isInitialized) {
+                                isInitialized = true;
+                                initPano();
+                            } else {
+                                startLoop();
+                            }
+                        } else {
+                            if (animationFrameId) {
+                                cancelAnimationFrame(animationFrameId);
+                                animationFrameId = null;
+                            }
+                        }
+                    });
+                },
+                { rootMargin: "150px" }
+            );
+            observer.observe(containerEl);
+            return () => observer.disconnect();
+        } else {
+            initPano();
+        }
     });
 
     onDestroy(() => {
