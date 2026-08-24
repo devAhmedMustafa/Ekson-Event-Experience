@@ -580,7 +580,7 @@
             <div class="absolute inset-0 z-30 bg-white/92 backdrop-blur-xs flex flex-col items-center justify-center gap-2 sm:gap-2.5 p-4 text-center rounded-2xl">
                 {#if brand.logo}
                     <div class="size-10 sm:size-12 rounded-full bg-white border border-primary/30 p-1 flex items-center justify-center shadow-xs">
-                        <img src={brand.logo} alt="Brand Logo" class="w-full h-full object-contain" />
+                        <img src={brand.logo} alt="Brand Logo" class="w-full h-full object-contain" loading="lazy" decoding="async" />
                     </div>
                 {:else}
                     <span class="material-symbols-rounded text-[36px] sm:text-[40px] text-primary">

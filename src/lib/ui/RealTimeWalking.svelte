@@ -23,6 +23,8 @@
     let distanceToBooth = $state(0);
     let isMoving = $state(false);
     let showGestureHint = $state(true);
+    let videoPreviewEl = $state<HTMLVideoElement | null>(null);
+    let videoPreviewSrc = $state<string>("");
 
     let modalContainerEl = $state<HTMLElement | null>(null);
     let canvasEl = $state<HTMLCanvasElement | null>(null);
@@ -567,6 +569,30 @@
         if (scene) disposeObject(scene);
     }
 
+    onMount(() => {
+        if (typeof window !== "undefined" && "IntersectionObserver" in window) {
+            const videoObserver = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            if (!videoPreviewSrc) {
+                                videoPreviewSrc = "/Walkthrough-demo.mp4";
+                            }
+                            videoPreviewEl?.play().catch(() => {});
+                        } else {
+                            videoPreviewEl?.pause();
+                        }
+                    });
+                },
+                { threshold: 0.1 }
+            );
+            if (videoPreviewEl) videoObserver.observe(videoPreviewEl);
+            return () => videoObserver.disconnect();
+        } else {
+            videoPreviewSrc = "/Walkthrough-demo.mp4";
+        }
+    });
+
     onDestroy(() => {
         cleanupThreeScene();
     });
@@ -600,8 +626,10 @@
         <div class="relative w-full flex-1 max-h-[74vh] md:max-h-[78vh] my-auto bg-slate-950 rounded-2xl overflow-hidden border border-black/10 shadow-lg group flex items-center justify-center">
             <!-- svelte-ignore a11y_media_has_caption -->
             <video
+                bind:this={videoPreviewEl}
                 class="w-full h-full object-cover opacity-80 group-hover:opacity-95 transition duration-500"
-                src="/Walkthrough-demo.mp4"
+                src={videoPreviewSrc}
+                preload="none"
                 autoplay
                 muted
                 loop

@@ -212,12 +212,7 @@
     <div class="absolute top-3 left-3 right-3 flex items-start justify-between pointer-events-none z-10">
         <!-- Title & Subtitle Badge (Matches TrueScale Styling) -->
         <div class="bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-black/10 shadow-xs flex flex-col pointer-events-auto">
-            <div class="flex items-center gap-1.5">
-                <span class="size-2 rounded-full animate-pulse" style="background-color: {brand.primaryColor};"></span>
-                <span class="font-mono text-[9px] uppercase tracking-wider font-bold text-text">
-                    03 / Spatial Tour
-                </span>
-            </div>
+             
             <span class="text-[11px] font-black uppercase text-text tracking-tight mt-0.5">
                 360° Environment
             </span>

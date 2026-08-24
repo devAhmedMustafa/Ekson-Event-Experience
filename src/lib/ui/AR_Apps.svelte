@@ -101,6 +101,8 @@
                                 src={getQrCodeUrl(app.id)}
                                 alt="{app.name} QR Code"
                                 class="w-full h-full object-contain rounded-md"
+                                loading="lazy"
+                                decoding="async"
                             />
                         </div>
                     </div>

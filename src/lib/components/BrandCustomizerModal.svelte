@@ -337,6 +337,8 @@
                                                     src={brandLogo}
                                                     alt="Uploaded Brand Logo"
                                                     class="w-full h-full object-contain"
+                                                    loading="lazy"
+                                                    decoding="async"
                                                 />
                                             </div>
                                             <div class="flex flex-col min-w-0">

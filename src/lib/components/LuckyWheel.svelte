@@ -114,6 +114,8 @@
                             src={brand.logo}
                             alt={brand.name || "Brand Logo"}
                             class="w-full h-full object-contain"
+                            loading="lazy"
+                            decoding="async"
                         />
                         <!-- Spin Hover Overlay -->
                         <div class="absolute inset-0 bg-primary/85 text-white rounded-full flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 {isSpinning ? 'opacity-100' : ''} transition-opacity duration-200">
