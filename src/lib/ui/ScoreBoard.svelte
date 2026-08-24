@@ -43,7 +43,7 @@
                 <span class="size-2 bg-emerald-500 rounded-full animate-pulse"></span>
                 <span>TOURNAMENT RANKINGS</span>
             </div>
-            <div class="flex bg-black/[0.04] p-0.5 rounded-full text-[9px] sm:text-[10px] font-bold">
+            <div class="flex bg-black/4 p-0.5 rounded-full text-[9px] sm:text-[10px] font-bold">
                 <button
                     onclick={() => (activeTab = "today")}
                     class="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full transition cursor-pointer {activeTab === 'today' ? 'bg-white text-text shadow-xs font-black' : 'text-text/60 hover:text-text'}"
@@ -60,14 +60,14 @@
         </div>
 
         <!-- Leaderboard Rows -->
-        <div class="space-y-1.5 overflow-y-auto max-h-[280px] sm:max-h-[300px] my-auto pr-1">
+        <div class="space-y-1.5 overflow-y-auto max-h-70 sm:max-h-75 my-auto pr-1">
             {#each players as player (player.name)}
-                <div class="flex items-center justify-between px-3 py-1.5 sm:py-2 bg-white hover:bg-slate-50 rounded-xl transition text-xs shadow-xs border border-black/[0.03]">
+                <div class="flex items-center justify-between px-3 py-1.5 sm:py-2 bg-white hover:bg-slate-50 rounded-xl transition text-xs shadow-xs border border-black/3">
                     <div class="flex items-center gap-2 sm:gap-3">
                         <span class="text-xs font-black text-text/40">{player.rank}</span>
                         <div class="flex flex-col">
-                            <span class="font-bold text-text truncate max-w-[120px] sm:max-w-[180px] md:max-w-[220px] tracking-tight">{player.name}</span>
-                            <span class="text-[8px] sm:text-[9px] text-text/40 uppercase truncate max-w-[100px] sm:max-w-none">{player.company}</span>
+                            <span class="font-bold text-text truncate max-w-30 sm:max-w-45 md:max-w-55 tracking-tight">{player.name}</span>
+                            <span class="text-[8px] sm:text-[9px] text-text/40 uppercase truncate max-w-25 sm:max-w-none">{player.company}</span>
                         </div>
                     </div>
                     <div class="flex items-center gap-1.5 sm:gap-2 text-right">
@@ -113,11 +113,11 @@
             </p>
 
             <div class="grid grid-cols-2 gap-2 pt-2 mt-1 border-t border-black/5 font-mono text-[10px]">
-                <div class="p-1.5 bg-black/[0.02] rounded-lg flex flex-col">
+                <div class="p-1.5 bg-black/2 rounded-lg flex flex-col">
                     <span class="text-text/40 text-[8px] uppercase">PROTOCOL</span>
                     <span class="font-bold text-text">WEBSOCKET</span>
                 </div>
-                <div class="p-1.5 bg-black/[0.02] rounded-lg flex flex-col">
+                <div class="p-1.5 bg-blwack/2 rounded-lg flex flex-col">
                     <span class="text-text/40 text-[8px] uppercase">DISPLAYS</span>
                     <span class="font-bold text-primary">UNLIMITED</span>
                 </div>

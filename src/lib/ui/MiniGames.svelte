@@ -116,7 +116,7 @@
 
 <svelte:window onkeydown={handleKeyDown} />
 
-<div class="w-full h-full min-h-[100dvh] md:h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-4 sm:py-6 flex flex-col justify-between select-none font-sans overflow-hidden">
+<div class="w-full h-full min-h-dvh md:h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-4 sm:py-6 flex flex-col justify-between select-none font-sans overflow-hidden">
     <!-- Clean Minimalist Header -->
     <div class="flex items-end justify-between pb-2 border-b border-black/5 shrink-0 w-full mb-2 sm:mb-3">
         <div>
@@ -217,7 +217,6 @@
                     </span>
                     <span class="text-[11px] sm:text-xs font-bold tracking-tight truncate">{slide.title}</span>
                 </div>
-                <span class="font-mono text-[9px] sm:text-[10px] {currentIndex === idx ? 'text-white/80' : 'text-text/40'} ml-1.5 shrink-0 hidden sm:inline">{slide.code}</span>
             </button>
         {/each}
     </div>
