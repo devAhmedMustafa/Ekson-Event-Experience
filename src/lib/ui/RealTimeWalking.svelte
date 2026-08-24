@@ -215,9 +215,11 @@
             powerPreference: "high-performance"
         });
         renderer.setSize(w, h);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.25));
         renderer.shadowMap.enabled = true;
         renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        renderer.shadowMap.autoUpdate = false; // Static Shadow Caching Optimization
+        renderer.shadowMap.needsUpdate = true;
         renderer.toneMapping = THREE.ACESFilmicToneMapping;
         renderer.toneMappingExposure = 1.15;
 
@@ -229,13 +231,13 @@
         overhead.position.set(10, 22, 6);
         overhead.castShadow = true;
         overhead.shadow.mapSize.set(2048, 2048);
-        overhead.shadow.camera.near = 2;
-        overhead.shadow.camera.far = 70;
-        overhead.shadow.camera.left = -30;
-        overhead.shadow.camera.right = 30;
-        overhead.shadow.camera.top = 22;
-        overhead.shadow.camera.bottom = -22;
-        overhead.shadow.bias = -0.0009;
+        overhead.shadow.camera.near = 4;
+        overhead.shadow.camera.far = 50;
+        overhead.shadow.camera.left = -26;
+        overhead.shadow.camera.right = 26;
+        overhead.shadow.camera.top = 18;
+        overhead.shadow.camera.bottom = -18;
+        overhead.shadow.bias = -0.0008;
         scene.add(overhead);
 
         const bounce = new THREE.DirectionalLight("#c9d8ff", 0.42);
@@ -312,6 +314,7 @@
                 scene.environment = env;
                 scene.environmentIntensity = QUALITY.envMapIntensity * 0.35;
             }
+            if (renderer) renderer.shadowMap.needsUpdate = true;
         });
 
         // Event Listeners
@@ -661,42 +664,39 @@
             class="w-full h-full block cursor-crosshair outline-none"
         ></canvas>
 
-        <!-- Top HUD Header -->
-        <div class="absolute top-4 left-4 right-4 flex items-center justify-between pointer-events-none z-20">
-            <!-- Destination & Venue Info -->
-            <div class="bg-slate-900/90 backdrop-blur-md px-3.5 py-2 rounded-2xl border border-white/15 shadow-xl flex items-center gap-3 pointer-events-auto">
-                <div class="size-2 rounded-full animate-pulse" style="background-color: {brand.primaryColor};"></div>
-                <div class="flex flex-col">
-                    <span class="text-[9px] font-mono uppercase tracking-wider text-white/60">
+        <!-- Top HUD Header: Badges & Controls Toolbar -->
+        <div class="absolute top-3 left-3 right-3 flex items-start justify-between pointer-events-none z-20">
+            <!-- Left Title & Subtitle Badge -->
+            <div class="bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-black/10 shadow-xs flex flex-col pointer-events-auto">
+                <div class="flex items-center gap-1.5">
+                    <span class="size-2 rounded-full animate-pulse" style="background-color: {brand.primaryColor};"></span>
+                    <span class="font-mono text-[9px] uppercase tracking-wider font-bold text-text">
                         Venue Navigation · Hall 3
                     </span>
-                    <span class="text-xs sm:text-sm font-black uppercase text-white tracking-tight">
-                        {brand.name} Island Stand
-                    </span>
                 </div>
-            </div>
-
-            <!-- Distance to Booth Meter -->
-            <div class="bg-slate-900/90 backdrop-blur-md px-4 py-2 rounded-2xl border border-white/15 shadow-xl flex items-center gap-2.5 pointer-events-auto">
-                <span class="material-symbols-rounded text-[18px]" style="color: {brand.primaryColor};">
-                    near_me
+                <span class="text-[11px] font-black uppercase text-text tracking-tight mt-0.5">
+                    {brand.name} Island Stand
                 </span>
-                <div class="flex flex-col text-right">
-                    <span class="text-[8px] font-mono uppercase tracking-wider text-white/60">Distance to Stand</span>
-                    <span class="text-xs sm:text-sm font-mono font-black text-white">
-                        {distanceToBooth} m
-                    </span>
+            </div>
+
+            <!-- Center Distance to Stand Meter -->
+            <div class="bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-black/10 shadow-xs flex items-center gap-2 pointer-events-auto">
+                <span class="material-symbols-rounded text-[16px]" style="color: {brand.primaryColor};">near_me</span>
+                <div class="flex flex-col text-left">
+                    <span class="text-[8px] font-mono uppercase tracking-wider text-text/60 font-bold">Distance</span>
+                    <span class="text-[11px] font-mono font-black text-text">{distanceToBooth} m</span>
                 </div>
             </div>
 
-            <!-- Controls Toolbar -->
-            <div class="flex items-center gap-2 pointer-events-auto">
+            <!-- Right Controls Toolbar -->
+            <div class="flex items-center gap-1.5 pointer-events-auto">
                 <!-- Autopilot Walk Button -->
                 <button
                     onclick={triggerAutoWalk}
-                    class="px-3 py-2 rounded-2xl text-[10px] font-mono font-bold uppercase transition flex items-center gap-1.5 shadow-lg border cursor-pointer {isAutoWalking ? 'bg-emerald-600 text-white border-emerald-500' : 'bg-slate-900/90 text-white border-white/15 hover:bg-slate-800'}"
+                    class="px-2.5 py-1.5 rounded-xl text-[10px] font-mono font-bold uppercase transition flex items-center gap-1.5 shadow-xs border cursor-pointer {isAutoWalking ? 'bg-primary text-white border-primary' : 'bg-white/90 text-text border-black/10 hover:bg-white'}"
+                    style={isAutoWalking ? `background-color: ${brand.primaryColor}; border-color: ${brand.primaryColor};` : ''}
                 >
-                    <span class="material-symbols-rounded text-sm">
+                    <span class="material-symbols-rounded text-[14px]">
                         {isAutoWalking ? 'navigation' : 'route'}
                     </span>
                     <span class="hidden sm:inline">
@@ -704,23 +704,23 @@
                     </span>
                 </button>
 
-                <!-- Respawn at Entrance Button -->
+                <!-- Respawn Entrance Button -->
                 <button
                     onclick={respawnAtEntrance}
-                    class="px-3 py-2 bg-slate-900/90 hover:bg-slate-800 text-white border border-white/15 rounded-2xl text-[10px] font-mono font-bold uppercase shadow-lg transition cursor-pointer flex items-center gap-1.5"
+                    class="px-2.5 py-1.5 bg-white/90 hover:bg-white text-text border border-black/10 rounded-xl text-[10px] font-mono font-bold uppercase shadow-xs transition cursor-pointer flex items-center gap-1.5"
                     title="Back to Entrance (R)"
                 >
-                    <span class="material-symbols-rounded text-sm">replay</span>
+                    <span class="material-symbols-rounded text-[14px]">replay</span>
                     <span class="hidden sm:inline">Entrance</span>
                 </button>
 
                 <!-- Close / Exit 3D Mode -->
                 <button
                     onclick={close3DWalkthrough}
-                    class="size-9 bg-slate-900/90 hover:bg-red-600 text-white border border-white/15 hover:border-red-500 rounded-2xl flex items-center justify-center shadow-lg transition cursor-pointer"
+                    class="p-1.5 bg-white/90 hover:bg-rose-600 hover:text-white text-text border border-black/10 rounded-xl shadow-xs transition cursor-pointer"
                     title="Exit 3D Mode (ESC)"
                 >
-                    <span class="material-symbols-rounded text-base">close</span>
+                    <span class="material-symbols-rounded text-[16px]">close</span>
                 </button>
             </div>
         </div>
@@ -728,31 +728,31 @@
         <!-- Crosshair Cursor -->
         <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
             <div class="relative size-4 flex items-center justify-center">
-                <span class="size-1 rounded-full bg-white shadow-sm opacity-80"></span>
-                <span class="absolute w-3 h-0.5 bg-white/40"></span>
-                <span class="absolute h-3 w-0.5 bg-white/40"></span>
+                <span class="size-1 rounded-full bg-white shadow-xs opacity-90"></span>
+                <span class="absolute w-3 h-0.5 bg-white/50"></span>
+                <span class="absolute h-3 w-0.5 bg-white/50"></span>
             </div>
         </div>
 
         <!-- Arrival Celebration Banner -->
         {#if isArrived}
-            <div class="absolute top-20 left-1/2 -translate-x-1/2 z-30 bg-emerald-950/90 backdrop-blur-md px-5 py-2.5 rounded-2xl border border-emerald-500/40 shadow-2xl text-center flex items-center gap-3 animate-bounce">
-                <span class="material-symbols-rounded text-2xl text-emerald-400">check_circle</span>
+            <div class="absolute top-16 left-1/2 -translate-x-1/2 z-30 bg-white/95 backdrop-blur-md px-4 py-2 rounded-xl border border-emerald-500/40 shadow-lg text-center flex items-center gap-2.5 animate-bounce">
+                <span class="material-symbols-rounded text-xl text-emerald-500">check_circle</span>
                 <div class="flex flex-col text-left">
-                    <span class="text-[9px] font-mono uppercase tracking-widest text-emerald-400 font-bold">You Have Arrived</span>
-                    <span class="text-sm font-black uppercase text-white tracking-tight">{brand.name} Exhibition Stand</span>
+                    <span class="text-[9px] font-mono uppercase tracking-widest text-emerald-600 font-bold">You Have Arrived</span>
+                    <span class="text-xs font-black uppercase text-text tracking-tight">{brand.name} Exhibition Stand</span>
                 </div>
             </div>
         {/if}
 
-        <!-- Bottom Left Minimap Radar -->
-        <div class="absolute bottom-4 left-4 z-20 bg-slate-900/90 backdrop-blur-md p-2.5 rounded-2xl border border-white/15 shadow-2xl flex flex-col gap-1.5 w-44 sm:w-52 pointer-events-auto">
-            <div class="flex items-center justify-between font-mono text-[8px] text-white/60 uppercase">
+        <!-- Bottom Left Minimap Radar Card -->
+        <div class="absolute bottom-3 left-3 z-20 bg-white/90 backdrop-blur-md p-2 rounded-xl border border-black/10 shadow-xs flex flex-col gap-1 w-44 sm:w-52 pointer-events-auto">
+            <div class="flex items-center justify-between font-mono text-[8px] text-text/60 font-bold uppercase">
                 <span>VENUE RADAR</span>
-                <span class="text-emerald-400 font-bold">HALL 3</span>
+                <span class="font-bold" style="color: {brand.primaryColor};">HALL 3</span>
             </div>
             <!-- Radar Canvas Container -->
-            <div class="relative w-full h-24 sm:h-28 bg-slate-950 rounded-xl overflow-hidden border border-white/10">
+            <div class="relative w-full h-24 sm:h-28 bg-slate-950 rounded-lg overflow-hidden border border-black/10">
                 <!-- Hall Aisle Lines -->
                 <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-4 bg-white/5 border-y border-white/10"></div>
                 <!-- 8 Booth Marker Boxes -->
@@ -782,22 +782,22 @@
             </div>
         </div>
 
-        <!-- Bottom Controls Hint -->
-        <div class="absolute bottom-4 right-4 z-20 hidden md:flex items-center gap-2 bg-slate-900/90 backdrop-blur-md px-3.5 py-2 rounded-2xl border border-white/15 text-white font-mono text-[9px] shadow-xl">
-            <span class="text-white/60">CONTROLS:</span>
-            <span class="px-1.5 py-0.5 bg-white/10 rounded border border-white/20">W A S D</span>
-            <span class="text-white/60">MOVE</span>
-            <span class="px-1.5 py-0.5 bg-white/10 rounded border border-white/20">SHIFT</span>
-            <span class="text-white/60">RUN</span>
-            <span class="px-1.5 py-0.5 bg-white/10 rounded border border-white/20">MOUSE</span>
-            <span class="text-white/60">LOOK</span>
+        <!-- Bottom Right Controls Hint -->
+        <div class="absolute bottom-3 right-3 z-20 hidden md:flex items-center gap-1.5 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-black/10 text-text font-mono text-[9px] shadow-xs">
+            <span class="text-text/60 font-bold">CONTROLS:</span>
+            <span class="px-1.5 py-0.5 bg-black/5 text-text rounded font-bold border border-black/10">W A S D</span>
+            <span class="text-text/60">MOVE</span>
+            <span class="px-1.5 py-0.5 bg-black/5 text-text rounded font-bold border border-black/10">SHIFT</span>
+            <span class="text-text/60">RUN</span>
+            <span class="px-1.5 py-0.5 bg-black/5 text-text rounded font-bold border border-black/10">MOUSE</span>
+            <span class="text-text/60">LOOK</span>
         </div>
 
         <!-- Gesture Hint Overlay (Initial) -->
         {#if showGestureHint && !isPointerLocked}
-            <div class="absolute bottom-18 left-1/2 -translate-x-1/2 z-20 bg-black/75 backdrop-blur-md px-4 py-2 rounded-2xl border border-white/15 text-white text-xs font-mono text-center flex items-center gap-2 shadow-2xl pointer-events-none animate-pulse">
-                <span class="material-symbols-rounded text-base" style="color: {brand.primaryColor};">ads_click</span>
-                <span>Click anywhere on the screen to lock mouse look. Press ESC to unlock.</span>
+            <div class="absolute bottom-16 left-1/2 -translate-x-1/2 z-20 bg-white/90 backdrop-blur-md px-3.5 py-1.5 rounded-xl border border-black/10 text-text text-[10px] font-mono text-center flex items-center gap-2 shadow-xs pointer-events-none animate-pulse">
+                <span class="material-symbols-rounded text-[14px]" style="color: {brand.primaryColor};">ads_click</span>
+                <span>Click canvas to lock mouse look · Press ESC to unlock</span>
             </div>
         {/if}
     </div>

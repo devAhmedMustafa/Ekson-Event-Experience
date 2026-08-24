@@ -445,6 +445,8 @@ export function makeHall({ accent = '#2f6bff' } = {}) {
     if (!o.isMesh || o.isInstancedMesh) return
     o.castShadow = true
     o.receiveShadow = true
+    o.updateMatrix()
+    o.matrixAutoUpdate = false
   })
   // The shell itself only receives — a wall casting onto itself just eats fill.
   for (const wall of [north, south, east, west, ceiling, floor, runner]) {
@@ -590,6 +592,8 @@ export function makeGenericBooth({ name, color, stand, style = 'wall' }) {
     if (!o.isMesh) return
     o.castShadow = true
     o.receiveShadow = true
+    o.updateMatrix()
+    o.matrixAutoUpdate = false
   })
   return g
 }

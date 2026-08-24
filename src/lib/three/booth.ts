@@ -406,6 +406,8 @@ export function createBooth(tex, {
     if (o.isMesh) {
       o.castShadow = o.castShadow ?? true
       o.receiveShadow = true
+      o.updateMatrix()
+      o.matrixAutoUpdate = false
     }
   })
 

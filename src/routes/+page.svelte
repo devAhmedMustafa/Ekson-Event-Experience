@@ -17,11 +17,11 @@
 
 <Navbar />
 
-<section id="landing" class="relative w-full min-h-[100dvh] md:h-screen flex flex-col justify-center items-center overflow-hidden">
+<section id="landing" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-hidden">
     <Landing />
 </section>
 
-<section id="about" class="relative w-full min-h-[100dvh] md:h-screen flex flex-col justify-center items-center overflow-hidden py-4">
+<section id="about" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-hidden py-4">
     <AboutUs />
 </section>
 
@@ -30,22 +30,22 @@
     <InteractionApplications />
 </section>
 
-<section id="minigames" class="relative w-full min-h-[100dvh] md:h-screen flex flex-col justify-center items-center overflow-hidden py-4">
+<section id="minigames" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-hidden py-4">
     <MiniGames />
 </section>
 
-<section id="ai-assistant" class="relative w-full min-h-[100dvh] md:h-screen flex flex-col justify-center items-center overflow-hidden py-4">
+<section id="ai-assistant" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-hidden py-4">
     <AiAssitant />
 </section>
 
-<section id="ar-apps" class="relative w-full min-h-[100dvh] md:h-screen flex flex-col justify-center items-center overflow-hidden py-3">
+<section id="ar-apps" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-hidden py-3">
     <ARApps />
 </section>
 
-<section id="plans" class="relative w-full min-h-[100dvh] md:h-screen flex flex-col justify-center items-center overflow-hidden py-4">
+<section id="plans" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-hidden py-4">
     <InvestmentPlans />
 </section>
 
-<section id="footer" class="relative w-full min-h-[100dvh] md:h-screen flex flex-col justify-center items-center overflow-hidden py-4">
+<section id="footer" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-hidden py-4">
     <Footer />
 </section>

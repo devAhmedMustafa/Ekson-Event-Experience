@@ -101,7 +101,7 @@
         renderer.toneMapping = THREE.ACESFilmicToneMapping;
         renderer.toneMappingExposure = 1.35;
 
-        // Load HDR Asset: modern_buildings_2_2k.hdr
+        // Load HDR Asset: pan.hdr
         try {
             const hdr = await loadHDR();
             if (hdr) {
@@ -201,86 +201,83 @@
 
 <div
     bind:this={containerEl}
-    class="relative w-full h-full min-h-[380px] sm:min-h-[440px] md:min-h-full flex flex-col justify-between p-3.5 sm:p-5 select-none font-sans overflow-hidden bg-slate-950 cursor-grab active:cursor-grabbing touch-none"
+    class="relative w-full h-full min-h-90 overflow-hidden select-none font-sans group/canvas"
     role="region"
     aria-label="360 Tour Viewport"
 >
     <!-- WebGL Canvas for 2K HDR Panorama -->
-    <canvas bind:this={canvasEl} class="absolute inset-0 w-full h-full block z-0 outline-none"></canvas>
+    <canvas bind:this={canvasEl} class="w-full h-full block cursor-grab active:cursor-grabbing outline-none"></canvas>
 
-    <!-- Top Header Badge & Title (Overlaid with Glassmorphism) -->
-    <div class="relative z-10 flex items-start justify-between gap-2 pointer-events-none">
-        <div class="p-2.5 sm:p-3 text-white max-w-xs bg-slate-900/60 backdrop-blur-md rounded-2xl border border-white/10 shadow-lg">
-            <div class="flex items-center gap-1.5 font-mono text-[9px] sm:text-[10px] uppercase tracking-widest font-bold mb-0.5" style="color: {brand.primaryColor};">
-                <span class="size-1.5 rounded-full" style="background-color: {brand.primaryColor};"></span>
-                <span>03 / SPATIAL TOUR</span>
+    <!-- Top Overlay Header: Title Badge & Controls Toolbar -->
+    <div class="absolute top-3 left-3 right-3 flex items-start justify-between pointer-events-none z-10">
+        <!-- Title & Subtitle Badge (Matches TrueScale Styling) -->
+        <div class="bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-black/10 shadow-xs flex flex-col pointer-events-auto">
+            <div class="flex items-center gap-1.5">
+                <span class="size-2 rounded-full animate-pulse" style="background-color: {brand.primaryColor};"></span>
+                <span class="font-mono text-[9px] uppercase tracking-wider font-bold text-text">
+                    03 / Spatial Tour
+                </span>
             </div>
-            <h3 class="text-base sm:text-lg md:text-xl font-black uppercase tracking-tight leading-tight text-white">
+            <span class="text-[11px] font-black uppercase text-text tracking-tight mt-0.5">
                 360° Environment
-            </h3>
-            <p class="text-[10px] sm:text-xs text-white/70 font-normal mt-0.5 leading-snug">
-                Equirectangular 2K HDR venue capture.
-            </p>
+            </span>
         </div>
 
-        <div class="pointer-events-auto flex items-center gap-1.5">
+        <!-- Controls Toolbar -->
+        <div class="flex items-center gap-1.5 pointer-events-auto">
+            <!-- Auto Rotate Toggle -->
             <button
                 onclick={toggleAutoRotate}
-                class="size-8 sm:size-9 bg-slate-900/80 hover:bg-slate-900 backdrop-blur-md text-white rounded-full flex items-center justify-center border border-white/15 shadow-md transition cursor-pointer"
-                title={autoRotate ? "Pause Auto-Rotation" : "Enable Auto-Rotation"}
-                aria-label="Toggle Auto-Rotation"
+                class="p-1.5 rounded-xl border shadow-xs transition cursor-pointer {autoRotate ? 'bg-white text-primary border-primary/30' : 'bg-white/90 text-text/60 border-black/10'}"
+                title="Toggle Auto Rotation"
             >
-                <span class="material-symbols-rounded text-base {autoRotate ? 'animate-spin' : 'text-white/60'}" style="{autoRotate ? `color: ${brand.primaryColor}` : ''}">
-                    sync
+                <span class="material-symbols-rounded text-[16px]">
+                    {autoRotate ? 'sync' : 'sync_disabled'}
                 </span>
             </button>
+
+            <!-- Reset View -->
             <button
                 onclick={resetView}
-                class="size-8 sm:size-9 bg-slate-900/80 hover:bg-slate-900 backdrop-blur-md text-white rounded-full flex items-center justify-center border border-white/15 shadow-md transition cursor-pointer"
-                title="Reset View"
-                aria-label="Reset View"
+                class="p-1.5 bg-white/90 hover:bg-white text-text border border-black/10 rounded-xl shadow-xs transition cursor-pointer"
+                title="Reset Camera View"
             >
-                <span class="material-symbols-rounded text-base text-white/80">
-                    center_focus_strong
-                </span>
+                <span class="material-symbols-rounded text-[16px]">refresh</span>
             </button>
         </div>
     </div>
 
-    <!-- Bottom HUD Controls & Directional Navigation -->
-    <div class="relative z-10 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 pt-2 border-t border-white/10 mt-auto pointer-events-none">
-        <!-- Interaction Hint -->
-        <div class="flex items-center gap-1.5 bg-slate-900/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/15 shadow-md font-mono text-[9px] sm:text-[10px] text-white/80 uppercase pointer-events-auto">
-            <span class="material-symbols-rounded text-[13px]" style="color: {brand.primaryColor};">touch_app</span>
-            <span>DRAG TO LOOK AROUND · SCROLL TO ZOOM</span>
-        </div>
+    <!-- Bottom Left: Directional Navigation Chips -->
+    <div class="absolute bottom-3 left-3 flex flex-wrap gap-1 z-10 max-w-[85%] pointer-events-auto">
+        <button
+            onclick={() => jumpDirection(0)}
+            class="px-2 py-1 rounded-lg text-[9px] font-mono font-bold uppercase tracking-wider transition border cursor-pointer shadow-xs bg-white/90 text-text/80 border-black/10 hover:bg-white"
+        >
+            NORTH
+        </button>
+        <button
+            onclick={() => jumpDirection(Math.PI / 2)}
+            class="px-2 py-1 rounded-lg text-[9px] font-mono font-bold uppercase tracking-wider transition border cursor-pointer shadow-xs bg-white/90 text-text/80 border-black/10 hover:bg-white"
+        >
+            EAST
+        </button>
+        <button
+            onclick={() => jumpDirection(Math.PI)}
+            class="px-2 py-1 rounded-lg text-[9px] font-mono font-bold uppercase tracking-wider transition border cursor-pointer shadow-xs bg-white/90 text-text/80 border-black/10 hover:bg-white"
+        >
+            SOUTH
+        </button>
+        <button
+            onclick={() => jumpDirection(-Math.PI / 2)}
+            class="px-2 py-1 rounded-lg text-[9px] font-mono font-bold uppercase tracking-wider transition border cursor-pointer shadow-xs bg-white/90 text-text/80 border-black/10 hover:bg-white"
+        >
+            WEST
+        </button>
+    </div>
 
-        <!-- Cardinal Direction Quick Views -->
-        <div class="flex items-center gap-1 bg-slate-900/80 backdrop-blur-md p-1 rounded-full border border-white/15 shadow-md pointer-events-auto overflow-x-auto scrollbar-none">
-            <button
-                onclick={() => jumpDirection(0)}
-                class="px-2.5 py-1 text-[9px] sm:text-[10px] font-mono font-bold uppercase tracking-wider rounded-full transition cursor-pointer border bg-white/5 text-white/80 hover:text-white border-white/10 hover:border-white/30"
-            >
-                NORTH
-            </button>
-            <button
-                onclick={() => jumpDirection(Math.PI / 2)}
-                class="px-2.5 py-1 text-[9px] sm:text-[10px] font-mono font-bold uppercase tracking-wider rounded-full transition cursor-pointer border bg-white/5 text-white/80 hover:text-white border-white/10 hover:border-white/30"
-            >
-                EAST
-            </button>
-            <button
-                onclick={() => jumpDirection(Math.PI)}
-                class="px-2.5 py-1 text-[9px] sm:text-[10px] font-mono font-bold uppercase tracking-wider rounded-full transition cursor-pointer border bg-white/5 text-white/80 hover:text-white border-white/10 hover:border-white/30"
-            >
-                SOUTH
-            </button>
-            <button
-                onclick={() => jumpDirection(-Math.PI / 2)}
-                class="px-2.5 py-1 text-[9px] sm:text-[10px] font-mono font-bold uppercase tracking-wider rounded-full transition cursor-pointer border bg-white/5 text-white/80 hover:text-white border-white/10 hover:border-white/30"
-            >
-                WEST
-            </button>
-        </div>
+    <!-- Bottom Right: Interaction Hint Badge -->
+    <div class="absolute bottom-3 right-3 flex items-center bg-white/90 backdrop-blur-md px-2.5 py-1.5 rounded-xl border border-black/10 shadow-xs z-10 gap-1.5 text-[9px] font-mono font-bold uppercase text-text/70">
+        <span class="material-symbols-rounded text-[14px]" style="color: {brand.primaryColor};">touch_app</span>
+        <span>Drag to look · Scroll to zoom</span>
     </div>
 </div>

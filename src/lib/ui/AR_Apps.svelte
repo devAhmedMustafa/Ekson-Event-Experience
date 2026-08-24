@@ -48,7 +48,7 @@
     }
 </script>
 
-<div class="w-full h-full min-h-[100dvh] md:h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-4 sm:py-6 flex flex-col justify-between select-none font-sans overflow-hidden">
+<div class="w-full h-full min-h-dvh md:h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-4 sm:py-6 flex flex-col justify-between select-none font-sans overflow-hidden">
     <!-- Clean Minimal Header -->
     <div class="flex items-end justify-between pb-2 border-b border-black/5 shrink-0 w-full mb-2 sm:mb-3">
         <div>
@@ -103,34 +103,14 @@
                                 class="w-full h-full object-contain rounded-md"
                             />
                         </div>
-                        <div class="flex flex-col gap-0.5 sm:gap-1 font-mono text-[8px] sm:text-[9px] text-text/70">
-                            <span class="font-bold text-text uppercase tracking-wide">SCAN FOR 3D PREVIEW</span>
-                            <span class="text-[8px] sm:text-[9px] text-text/50">Point phone camera</span>
-                            <div class="flex items-center gap-1 mt-0.5 px-2 py-0.5 rounded-full w-fit border" style="background-color: {brand.lightTint}; border-color: {brand.primaryColor}30; color: {brand.primaryColor};">
-                                <span class="material-symbols-rounded text-[12px] sm:text-[14px]">qr_code_scanner</span>
-                                <span class="text-[8px] sm:text-[9px] font-bold uppercase">INSTANT 3D</span>
-                            </div>
-                        </div>
                     </div>
 
-                    <!-- Action Link / Button -->
-                    <div class="flex items-center gap-1.5 font-mono text-[8px] sm:text-[9px]">
-                        <a
-                            href={getArUrl(app.id)}
-                            class="px-3 py-1.5 text-white font-bold uppercase rounded-lg shadow-sm transition hover:opacity-90 flex items-center gap-1.5 cursor-pointer"
-                            style="background-color: {brand.primaryColor};"
-                        >
-                            <span class="material-symbols-rounded text-[14px]">view_in_ar</span>
-                            <span>Open 3D Preview</span>
-                            <span class="material-symbols-rounded text-[13px] opacity-70">arrow_forward</span>
-                        </a>
-                    </div>
                 </div>
 
                 <!-- Right Interactive 3D Teaser Stage -->
                 <div class="w-28 sm:w-36 md:w-44 lg:w-52 h-full min-h-25 relative bg-slate-950 overflow-hidden rounded-xl border border-black/10 shrink-0 group/vid flex flex-col justify-between p-2">
                     <!-- Visual 3D Merch Teaser Badge -->
-                    <div class="absolute inset-0 bg-gradient-to-br from-slate-900 to-slate-950 flex flex-col items-center justify-center p-2 text-center">
+                    <div class="absolute inset-0 bg-linear-to-br from-slate-900 to-slate-950 flex flex-col items-center justify-center p-2 text-center">
                         <div class="size-11 sm:size-13 rounded-2xl flex items-center justify-center shadow-lg border border-white/10 mb-1" style="background-color: {brand.darkColor};">
                             <span class="material-symbols-rounded text-[22px] sm:text-[26px] text-white">
                                 {app.icon}
