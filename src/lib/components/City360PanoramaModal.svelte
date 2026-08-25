@@ -7,13 +7,15 @@
         title: string;
         url: string;
         tag: string;
+        type?: "embed" | "image" | "cubic";
+        embedUrl?: string;
     }
 
     interface CityPinData {
         id: string;
         name: string;
         country: string;
-        description: string;
+        description?: string;
         placeholders: PlaceInfo[];
     }
 
@@ -27,19 +29,22 @@
 
     let renderer: THREE.WebGLRenderer | null = null;
     let scene: THREE.Scene | null = null;
-    let camera: THREE.PerspectiveCamera | null = null;
+    let perspCamera: THREE.PerspectiveCamera | null = null;
+    let orthoCamera: THREE.OrthographicCamera | null = null;
     let sphereMaterial: THREE.MeshBasicMaterial | null = null;
     let animationFrameId: number | null = null;
 
     let autoRotate = $state(true);
 
-    // 360 View Camera Controls (Initial wide FOV 135 lerps down to 75 for smooth entrance zoom-out)
+    // 360 View Camera Controls
     let yaw = Math.PI * 0.2;
     let pitch = 0;
     let targetYaw = Math.PI * 0.2;
     let targetPitch = 0;
     let fov = 135;
     let targetFov = 75;
+    let frustumSize = 2.0;
+    let targetFrustumSize = 2.0;
 
     let isDragging = false;
     let lastX = 0;
@@ -76,9 +81,78 @@
         );
     }
 
+    function rebuildScene() {
+        if (!containerEl || !canvasEl) return;
+        const w = containerEl.clientWidth || window.innerWidth;
+        const h = containerEl.clientHeight || window.innerHeight;
+        const aspect = w / h;
+
+        if (scene) {
+            scene.traverse((obj) => {
+                if ((obj as THREE.Mesh).geometry) (obj as THREE.Mesh).geometry.dispose();
+            });
+        }
+
+        scene = new THREE.Scene();
+
+        if (activePlace.type === "cubic") {
+            // CUBIC SKYBOX VIEW: THREE.CubeTextureLoader set as scene.background
+            perspCamera = new THREE.PerspectiveCamera(75, aspect, 0.1, 1000);
+            perspCamera.position.set(0, 0, 0);
+
+            let baseUrl = activePlace.url;
+            if (baseUrl.endsWith(".jpg") || baseUrl.endsWith(".png") || baseUrl.endsWith(".webp")) {
+                baseUrl = baseUrl.substring(0, baseUrl.lastIndexOf("/"));
+            }
+            baseUrl = baseUrl.replace(/\/$/, "");
+
+            const cubeLoader = new THREE.CubeTextureLoader();
+            const cubeTexture = cubeLoader.load(
+                [
+                    `${baseUrl}/mobile_r.jpg`, // px (Right)
+                    `${baseUrl}/mobile_l.jpg`, // nx (Left)
+                    `${baseUrl}/mobile_u.jpg`, // py (Top)
+                    `${baseUrl}/mobile_d.jpg`, // ny (Bottom)
+                    `${baseUrl}/mobile_f.jpg`, // pz (Front)
+                    `${baseUrl}/mobile_b.jpg`  // nz (Back)
+                ],
+                () => {
+                    if (renderer && scene && perspCamera) {
+                        renderer.render(scene, perspCamera);
+                    }
+                },
+                undefined,
+                (err) => {
+                    console.warn(`Could not load cube texture from ${baseUrl}:`, err);
+                }
+            );
+            cubeTexture.colorSpace = THREE.SRGBColorSpace;
+            scene.background = cubeTexture;
+        } else {
+            // PANORAMA SPHERE VIEW: Perspective Camera
+            perspCamera = new THREE.PerspectiveCamera(75, aspect, 0.1, 1000);
+            perspCamera.position.set(0, 0, 0);
+
+            const sphereGeo = new THREE.SphereGeometry(500, 60, 40);
+            sphereGeo.scale(-1, 1, 1);
+
+            sphereMaterial = new THREE.MeshBasicMaterial({
+                color: new THREE.Color("#ffffff")
+            });
+
+            const sphereMesh = new THREE.Mesh(sphereGeo, sphereMaterial);
+            scene.add(sphereMesh);
+
+            if (activePlace?.url && activePlace.type !== "embed") {
+                loadPanoramaTexture(activePlace.url);
+            }
+        }
+    }
+
     $effect(() => {
-        if (activePlace?.url) {
-            loadPanoramaTexture(activePlace.url);
+        // Rebuild scene when active place changes
+        if (activePlaceIndex !== undefined && containerEl && canvasEl) {
+            rebuildScene();
         }
     });
 
@@ -92,7 +166,7 @@
 
     function handlePointerDown(e: PointerEvent) {
         const target = e.target as HTMLElement;
-        if (target.closest("button, input, a, select")) return;
+        if (target.closest("button, input, a, select, iframe")) return;
         isDragging = true;
         lastX = e.clientX;
         lastY = e.clientY;
@@ -116,13 +190,18 @@
 
     function handleWheel(e: WheelEvent) {
         e.preventDefault();
-        targetFov = Math.max(45, Math.min(90, targetFov + Math.sign(e.deltaY) * 4));
+        if (activePlace.type === "cubic") {
+            targetFrustumSize = Math.max(30, Math.min(250, targetFrustumSize + Math.sign(e.deltaY) * 10));
+        } else {
+            targetFov = Math.max(45, Math.min(90, targetFov + Math.sign(e.deltaY) * 4));
+        }
     }
 
     function resetView() {
         targetYaw = Math.PI * 0.2;
         targetPitch = 0;
         targetFov = 75;
+        targetFrustumSize = 100;
     }
 
     function jumpDirection(radians: number) {
@@ -148,10 +227,6 @@
             const w = containerEl.clientWidth;
             const h = containerEl.clientHeight;
 
-            scene = new THREE.Scene();
-            camera = new THREE.PerspectiveCamera(75, w / h, 0.1, 1000);
-            camera.position.set(0, 0, 0);
-
             renderer = new THREE.WebGLRenderer({
                 canvas: canvasEl,
                 antialias: true,
@@ -163,28 +238,18 @@
             renderer.toneMapping = THREE.ACESFilmicToneMapping;
             renderer.toneMappingExposure = 1.1;
 
-            // Inverted 360° Sphere Geometry for Panorama
-            const sphereGeo = new THREE.SphereGeometry(500, 60, 40);
-            sphereGeo.scale(-1, 1, 1);
-
-            sphereMaterial = new THREE.MeshBasicMaterial({
-                color: new THREE.Color("#ffffff")
-            });
-
-            const sphereMesh = new THREE.Mesh(sphereGeo, sphereMaterial);
-            scene.add(sphereMesh);
-
-            // Load initial texture
-            if (activePlace?.url) {
-                loadPanoramaTexture(activePlace.url);
-            }
+            rebuildScene();
 
             handleResize = () => {
-                if (!containerEl || !camera || !renderer) return;
+                if (!containerEl || !renderer) return;
                 const nw = containerEl.clientWidth;
                 const nh = containerEl.clientHeight;
-                camera.aspect = nw / nh;
-                camera.updateProjectionMatrix();
+                const aspect = nw / nh;
+
+                if (perspCamera) {
+                    perspCamera.aspect = aspect;
+                    perspCamera.updateProjectionMatrix();
+                }
                 renderer.setSize(nw, nh);
             };
             window.addEventListener("resize", handleResize);
@@ -202,20 +267,18 @@
                 yaw += (targetYaw - yaw) * Math.min(1, dt * 10);
                 pitch += (targetPitch - pitch) * Math.min(1, dt * 10);
                 fov += (targetFov - fov) * Math.min(1, dt * 10);
+                frustumSize += (targetFrustumSize - frustumSize) * Math.min(1, dt * 10);
 
-                if (camera) {
-                    camera.fov = fov;
-                    camera.updateProjectionMatrix();
+                const cosPitch = Math.cos(pitch);
+                const lookX = Math.sin(yaw) * cosPitch;
+                const lookY = Math.sin(pitch);
+                const lookZ = Math.cos(yaw) * cosPitch;
 
-                    const cosPitch = Math.cos(pitch);
-                    const lookX = Math.sin(yaw) * cosPitch;
-                    const lookY = Math.sin(pitch);
-                    const lookZ = Math.cos(yaw) * cosPitch;
-                    camera.lookAt(lookX, lookY, lookZ);
-                }
-
-                if (renderer && scene && camera) {
-                    renderer.render(scene, camera);
+                if (perspCamera && renderer && scene) {
+                    perspCamera.fov = fov;
+                    perspCamera.updateProjectionMatrix();
+                    perspCamera.lookAt(lookX, lookY, lookZ);
+                    renderer.render(scene, perspCamera);
                 }
             };
 
@@ -237,19 +300,33 @@
 <div
     class="fixed inset-0 z-50 bg-black/95 backdrop-blur-2xl flex flex-col justify-between overflow-hidden transition-all duration-700 ease-out animate-in zoom-in-125 fade-in-0 select-none"
 >
-    <!-- 360° Interactive Canvas Container -->
-    <div
-        bind:this={containerEl}
-        class="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing outline-none"
-        onpointerdown={handlePointerDown}
-        onpointermove={handlePointerMove}
-        onpointerup={handlePointerUp}
-        onwheel={handleWheel}
-        role="region"
-        aria-label="360 Panorama Viewport"
-    >
-        <canvas bind:this={canvasEl} class="w-full h-full block"></canvas>
-    </div>
+    <!-- VIEWPORT: IFRAME EMBED OR THREE.JS CANVAS (EQUIRECTANGULAR / CUBIC ORTHO) -->
+    {#if activePlace.type === "embed" || activePlace.embedUrl}
+        <div class="absolute inset-0 w-full h-full z-0 bg-black">
+            <iframe
+                src={activePlace.embedUrl || activePlace.url}
+                title={activePlace.title}
+                class="w-full h-full border-0 pointer-events-auto"
+                allowfullscreen
+                scrolling="none"
+                name="360Stories"
+            ></iframe>
+        </div>
+    {:else}
+        <!-- 360° Interactive WebGL Canvas Container -->
+        <div
+            bind:this={containerEl}
+            class="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing outline-none"
+            onpointerdown={handlePointerDown}
+            onpointermove={handlePointerMove}
+            onpointerup={handlePointerUp}
+            onwheel={handleWheel}
+            role="region"
+            aria-label="360 Viewport"
+        >
+            <canvas bind:this={canvasEl} class="w-full h-full block"></canvas>
+        </div>
+    {/if}
 
     <!-- TOP GLASS TOOLBAR (City Badge & Control Pill) -->
     <div class="relative z-10 p-4 sm:p-6 flex items-start justify-between pointer-events-none w-full">
@@ -258,7 +335,13 @@
             <div class="flex items-center gap-2">
                 <span class="size-2.5 rounded-full animate-ping shrink-0" style="background-color: {brand.primaryColor || '#009dd6'};"></span>
                 <span class="text-xs font-mono font-bold text-white/70 uppercase tracking-wider">
-                    360° VIRTUAL PANORAMA • {city.country.toUpperCase()}
+                    {#if activePlace.type === "cubic"}
+                        360° CUBIC ORTHO VIEW • {city.country.toUpperCase()}
+                    {:else if activePlace.type === "embed"}
+                        360° INTERACTIVE TOUR • {city.country.toUpperCase()}
+                    {:else}
+                        360° PANORAMA • {city.country.toUpperCase()}
+                    {/if}
                 </span>
             </div>
             <h2 class="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2">
@@ -269,52 +352,54 @@
 
         <!-- Right Controls: Compass, Auto-Rotate & Close -->
         <div class="flex items-center gap-2 pointer-events-auto">
-            <!-- Viewport Controls Pill -->
-            <div class="flex items-center gap-1.5 bg-black/75 backdrop-blur-xl p-1.5 rounded-2xl border border-white/15 shadow-2xl">
-                <!-- Compass Direction Dropdown -->
-                <div class="relative flex items-center px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 transition cursor-pointer text-white">
-                    <span class="material-symbols-rounded text-base text-white/80 mr-1 shrink-0">explore</span>
-                    <select
-                        onchange={(e) => jumpDirection(Number((e.target as HTMLSelectElement).value))}
-                        class="bg-transparent text-xs font-semibold text-white focus:outline-none cursor-pointer pr-1"
-                        aria-label="Jump Compass Direction"
+            <!-- Viewport Controls Pill (For WebGL Views) -->
+            {#if activePlace.type !== "embed"}
+                <div class="flex items-center gap-1.5 bg-black/75 backdrop-blur-xl p-1.5 rounded-2xl border border-white/15 shadow-2xl">
+                    <!-- Compass Direction Dropdown -->
+                    <div class="relative flex items-center px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 transition cursor-pointer text-white">
+                        <span class="material-symbols-rounded text-base text-white/80 mr-1 shrink-0">explore</span>
+                        <select
+                            onchange={(e) => jumpDirection(Number((e.target as HTMLSelectElement).value))}
+                            class="bg-transparent text-xs font-semibold text-white focus:outline-none cursor-pointer pr-1"
+                            aria-label="Jump Compass Direction"
+                        >
+                            <option value="0" class="bg-slate-900 text-white">North</option>
+                            <option value={Math.PI / 2} class="bg-slate-900 text-white">East</option>
+                            <option value={Math.PI} class="bg-slate-900 text-white">South</option>
+                            <option value={-Math.PI / 2} class="bg-slate-900 text-white">West</option>
+                        </select>
+                    </div>
+
+                    <!-- Auto-Rotate Toggle -->
+                    <button
+                        onclick={() => (autoRotate = !autoRotate)}
+                        class="size-8 rounded-xl flex items-center justify-center transition cursor-pointer {autoRotate ? 'bg-white/25 text-white font-bold' : 'bg-white/10 text-white/60 hover:bg-white/20'}"
+                        title={autoRotate ? "Pause Auto Rotation" : "Start Auto Rotation"}
+                        aria-label="Toggle Auto Rotation"
                     >
-                        <option value="0" class="bg-slate-900 text-white">North</option>
-                        <option value={Math.PI / 2} class="bg-slate-900 text-white">East</option>
-                        <option value={Math.PI} class="bg-slate-900 text-white">South</option>
-                        <option value={-Math.PI / 2} class="bg-slate-900 text-white">West</option>
-                    </select>
+                        <span class="material-symbols-rounded text-lg">
+                            {autoRotate ? 'sync' : 'sync_disabled'}
+                        </span>
+                    </button>
+
+                    <!-- Reset Camera Button -->
+                    <button
+                        onclick={resetView}
+                        class="size-8 rounded-xl bg-white/10 hover:bg-white/20 text-white/80 flex items-center justify-center transition cursor-pointer"
+                        title="Reset Camera Angle"
+                        aria-label="Reset Camera Angle"
+                    >
+                        <span class="material-symbols-rounded text-lg">refresh</span>
+                    </button>
                 </div>
-
-                <!-- Auto-Rotate Toggle -->
-                <button
-                    onclick={() => (autoRotate = !autoRotate)}
-                    class="size-8 rounded-xl flex items-center justify-center transition cursor-pointer {autoRotate ? 'bg-white/25 text-white font-bold' : 'bg-white/10 text-white/60 hover:bg-white/20'}"
-                    title={autoRotate ? "Pause Auto Rotation" : "Start Auto Rotation"}
-                    aria-label="Toggle Auto Rotation"
-                >
-                    <span class="material-symbols-rounded text-lg">
-                        {autoRotate ? 'sync' : 'sync_disabled'}
-                    </span>
-                </button>
-
-                <!-- Reset Camera Button -->
-                <button
-                    onclick={resetView}
-                    class="size-8 rounded-xl bg-white/10 hover:bg-white/20 text-white/80 flex items-center justify-center transition cursor-pointer"
-                    title="Reset Camera Angle"
-                    aria-label="Reset Camera Angle"
-                >
-                    <span class="material-symbols-rounded text-lg">refresh</span>
-                </button>
-            </div>
+            {/if}
 
             <!-- Close Modal Button -->
             <button
                 onclick={onclose}
-                class="size-11 rounded-2xl bg-white/15 hover:bg-white/25 text-white border border-white/20 flex items-center justify-center transition cursor-pointer shadow-2xl"
+                class="size-11 rounded-2xl bg-white/80 hover:bg-white text-slate-950 border border-white/40 flex items-center justify-center transition cursor-pointer shadow-2xl font-bold"
                 title="Return to Globe View (Esc)"
-                aria-label="Close 360 Panorama"
+                aria-label="Close 360 View"
             >
                 <span class="material-symbols-rounded text-2xl">close</span>
             </button>
@@ -326,7 +411,7 @@
         <!-- Previous Location Side Button -->
         <button
             onclick={prevPlace}
-            class="size-12 sm:size-14 rounded-full bg-black/60 hover:bg-black/85 backdrop-blur-xl border border-white/20 active:scale-95 text-white flex items-center justify-center cursor-pointer pointer-events-auto transition duration-200 shadow-2xl hover:border-white/40"
+            class="size-12 sm:size-14 rounded-full bg-black/75 hover:bg-black/90 backdrop-blur-xl border border-white/20 active:scale-95 text-white flex items-center justify-center cursor-pointer pointer-events-auto transition duration-200 shadow-2xl hover:border-white/40"
             title="Previous Location (Left Arrow)"
             aria-label="Previous Location"
         >
@@ -336,7 +421,7 @@
         <!-- Next Location Side Button -->
         <button
             onclick={nextPlace}
-            class="size-12 sm:size-14 rounded-full bg-black/60 hover:bg-black/85 backdrop-blur-xl border border-white/20 active:scale-95 text-white flex items-center justify-center cursor-pointer pointer-events-auto transition duration-200 shadow-2xl hover:border-white/40"
+            class="size-12 sm:size-14 rounded-full bg-black/75 hover:bg-black/90 backdrop-blur-xl border border-white/20 active:scale-95 text-white flex items-center justify-center cursor-pointer pointer-events-auto transition duration-200 shadow-2xl hover:border-white/40"
             title="Next Location (Right Arrow)"
             aria-label="Next Location"
         >

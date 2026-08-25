@@ -9,6 +9,8 @@
         title: string;
         url: string;
         tag: string;
+        type?: "embed" | "image" | "cubic";
+        embedUrl?: string;
     }
 
     interface CityPinData {
@@ -17,7 +19,7 @@
         country: string;
         lat: number;
         lon: number;
-        description: string;
+        description?: string;
         placeholders: PlaceholderImage[];
     }
 
@@ -38,22 +40,26 @@
             country: "Egypt",
             lat: 30.0444,
             lon: 31.2357,
-            description: "Experience Nile Spatial Tech & Giza Exhibition Pavilions.",
             placeholders: [
                 {
-                    title: "Giza Exhibition Hall",
-                    url: "https://images.unsplash.com/photo-1572252821143-035a29f8f260?auto=format&fit=crop&w=600&q=80",
-                    tag: "360° Main Stage"
+                    title: "Giza Pyramids 360°",
+                    url: "https://360stories.com/cairo/place/giza-pyramids?mode=2&playerMode=2",
+                    tag: "Interactive Tour",
+                    type: "embed",
+                    embedUrl: "https://360stories.com/cairo/place/giza-pyramids?mode=2&playerMode=2"
                 },
                 {
-                    title: "Nile Spatial Booth",
-                    url: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=600&q=80",
-                    tag: "Interactive Kiosk"
+                    title: "Cairo Pyramids Cubic",
+                    url: "/cubic_views/Cairo Pyramids/mobile_f.jpg",
+                    tag: "Cubic View",
+                    type: "cubic"
                 },
                 {
-                    title: "Pyramids VR Panorama",
-                    url: "https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?auto=format&fit=crop&w=600&q=80",
-                    tag: "VIP Lounge"
+                    title: "Nile River Panorama",
+                    url: "https://360stories.com/cairo/place/nile-river?mode=2&playerMode=2",
+                    tag: "360° View",
+                    type: "embed",
+                    embedUrl: "https://360stories.com/cairo/place/nile-river?mode=2&playerMode=2"
                 }
             ]
         },
@@ -63,22 +69,26 @@
             country: "France",
             lat: 48.8566,
             lon: 2.3522,
-            description: "Explore Paris Grand Palais Spatial Arenas & Innovation Hubs.",
             placeholders: [
                 {
-                    title: "Grand Palais Stage",
-                    url: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=600&q=80",
-                    tag: "Keynote Arena"
+                    title: "Eiffel Tower 360°",
+                    url: "https://360stories.com/paris/place/eiffel-tower?mode=2&playerMode=2",
+                    tag: "Interactive Tour",
+                    type: "embed",
+                    embedUrl: "https://360stories.com/paris/place/eiffel-tower?mode=2&playerMode=2"
                 },
                 {
-                    title: "Eiffel Exhibition Hub",
-                    url: "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&w=600&q=80",
-                    tag: "360° Dome"
+                    title: "Paris Eiffel Tower Cubic",
+                    url: "/cubic_views/Paris Eiffel Tower/mobile_f.jpg",
+                    tag: "Cubic View",
+                    type: "cubic"
                 },
                 {
-                    title: "Louvre Spatial Pavilion",
-                    url: "https://images.unsplash.com/photo-1520939817895-060bdaf4fe1b?auto=format&fit=crop&w=600&q=80",
-                    tag: "AR Gallery"
+                    title: "Louvre Museum 360°",
+                    url: "https://360stories.com/paris/place/louvre-museum?mode=2&playerMode=2",
+                    tag: "360° View",
+                    type: "embed",
+                    embedUrl: "https://360stories.com/paris/place/louvre-museum?mode=2&playerMode=2"
                 }
             ]
         },
@@ -88,22 +98,26 @@
             country: "United Kingdom",
             lat: 51.5074,
             lon: -0.1278,
-            description: "Step into ExCeL London Virtual Arenas and Thames Domes.",
             placeholders: [
                 {
-                    title: "ExCeL Arena Stage",
-                    url: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=600&q=80",
-                    tag: "Exhibition Main Stage"
+                    title: "Tower Bridge 360°",
+                    url: "https://360stories.com/London/place/London-Tower-Bridge?mode=2&playerMode=2",
+                    tag: "Interactive Tour",
+                    type: "embed",
+                    embedUrl: "https://360stories.com/London/place/London-Tower-Bridge?mode=2&playerMode=2"
                 },
                 {
-                    title: "Thames VR Dome",
-                    url: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80",
-                    tag: "360° Booth"
+                    title: "Big Ben Cubic View",
+                    url: "/cubic_views/Big Ben/mobile_f.jpg",
+                    tag: "Cubic View",
+                    type: "cubic"
                 },
                 {
-                    title: "Westminster Tech Hub",
-                    url: "https://images.unsplash.com/photo-1529655683826-aba9b3e77383?auto=format&fit=crop&w=600&q=80",
-                    tag: "Interactive Showcase"
+                    title: "Big Ben 360°",
+                    url: "https://360stories.com/London/place/Big-Ben?mode=2&playerMode=2",
+                    tag: "360° View",
+                    type: "embed",
+                    embedUrl: "https://360stories.com/London/place/Big-Ben?mode=2&playerMode=2"
                 }
             ]
         },
@@ -113,23 +127,13 @@
             country: "USA",
             lat: 40.7128,
             lon: -74.0060,
-            description: "Discover Manhattan Javits Center Virtual Booths & Galleries.",
             placeholders: [
                 {
-                    title: "Javits Center Stage",
-                    url: "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?auto=format&fit=crop&w=600&q=80",
-                    tag: "Keynote Arena"
+                    title: "NY Public Library",
+                    url: "/cubic_views/New York Public Library",
+                    tag: "Cubic View",
+                    type: "cubic"
                 },
-                {
-                    title: "Manhattan AR Gallery",
-                    url: "https://images.unsplash.com/photo-1518391846015-55a9cc003b25?auto=format&fit=crop&w=600&q=80",
-                    tag: "AR Interactive"
-                },
-                {
-                    title: "Times Square Booth",
-                    url: "https://images.unsplash.com/photo-1534430480872-3498386e7856?auto=format&fit=crop&w=600&q=80",
-                    tag: "360° Panorama"
-                }
             ]
         },
         {
@@ -138,22 +142,26 @@
             country: "Japan",
             lat: 35.6762,
             lon: 139.6503,
-            description: "Immerse in Tokyo Big Sight Futuristic Cyber Pavilions.",
             placeholders: [
                 {
-                    title: "Big Sight Expo Center",
-                    url: "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=600&q=80",
-                    tag: "Main Exhibition"
+                    title: "Tokyo Skytree 360°",
+                    url: "https://360stories.com/tokyo/place/Tokyo-Skytree?mode=2&playerMode=2",
+                    tag: "Interactive Tour",
+                    type: "embed",
+                    embedUrl: "https://360stories.com/tokyo/place/Tokyo-Skytree?mode=2&playerMode=2"
                 },
                 {
-                    title: "Shinjuku VR Studio",
-                    url: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=600&q=80",
-                    tag: "360° Cyber Stage"
+                    title: "Tokyo Shinjuku Cubic",
+                    url: "/cubic_views/Tokyo Shinjuku/mobile_f.jpg",
+                    tag: "Cubic View",
+                    type: "cubic"
                 },
                 {
-                    title: "Tokyo Tech Dome",
-                    url: "https://images.unsplash.com/photo-1492571350019-22de08371fd3?auto=format&fit=crop&w=600&q=80",
-                    tag: "Interactive Lounge"
+                    title: "Tokyo Tower 360°",
+                    url: "https://360stories.com/tokyo/place/Tokyo-Tower?mode=2&playerMode=2",
+                    tag: "360° View",
+                    type: "embed",
+                    embedUrl: "https://360stories.com/tokyo/place/Tokyo-Tower?mode=2&playerMode=2"
                 }
             ]
         },
@@ -163,22 +171,26 @@
             country: "UAE",
             lat: 25.2048,
             lon: 55.2708,
-            description: "Experience World Trade Center Dubai Innovation Pavilions.",
             placeholders: [
                 {
-                    title: "DWTC Innovation Hall",
-                    url: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=600&q=80",
-                    tag: "VIP Expo Stage"
+                    title: "Burj Khalifa 360°",
+                    url: "https://360stories.com/dubai/place/burj-khalifa?mode=2&playerMode=2",
+                    tag: "Interactive Tour",
+                    type: "embed",
+                    embedUrl: "https://360stories.com/dubai/place/burj-khalifa?mode=2&playerMode=2"
                 },
                 {
-                    title: "Burj Spatial Lounge",
-                    url: "https://images.unsplash.com/photo-1546412414-8035e1786b9b?auto=format&fit=crop&w=600&q=80",
-                    tag: "360° Panorama"
+                    title: "Dubai Burj Khalifa Cubic",
+                    url: "/cubic_views/Dubai Burj Khalifa/mobile_f.jpg",
+                    tag: "Cubic View",
+                    type: "cubic"
                 },
                 {
-                    title: "Dubai Expo Pavilion",
-                    url: "https://images.unsplash.com/photo-1580674684081-7617fbf3d745?auto=format&fit=crop&w=600&q=80",
-                    tag: "AR Kiosk"
+                    title: "Dubai Marina 360°",
+                    url: "https://360stories.com/dubai/place/dubai-marina?mode=2&playerMode=2",
+                    tag: "360° View",
+                    type: "embed",
+                    embedUrl: "https://360stories.com/dubai/place/dubai-marina?mode=2&playerMode=2"
                 }
             ]
         },
@@ -188,22 +200,26 @@
             country: "Saudi Arabia",
             lat: 24.7136,
             lon: 46.6753,
-            description: "Explore Riyadh Front Convention Center & Diriyah Domes.",
             placeholders: [
                 {
-                    title: "Riyadh Front Expo",
-                    url: "https://images.unsplash.com/photo-1586724237569-f3d0c1dee8c6?auto=format&fit=crop&w=600&q=80",
-                    tag: "Keynote Arena"
+                    title: "Kingdom Centre 360°",
+                    url: "https://360stories.com/riyadh/place/kingdom-centre?mode=2&playerMode=2",
+                    tag: "Interactive Tour",
+                    type: "embed",
+                    embedUrl: "https://360stories.com/riyadh/place/kingdom-centre?mode=2&playerMode=2"
                 },
                 {
-                    title: "Kingdom Tech Stage",
-                    url: "https://images.unsplash.com/photo-1578898835024-db011270a48a?auto=format&fit=crop&w=600&q=80",
-                    tag: "360° VR Arena"
+                    title: "Riyadh Kingdom Centre Cubic",
+                    url: "/cubic_views/Riyadh Kingdom Centre/mobile_f.jpg",
+                    tag: "Cubic View",
+                    type: "cubic"
                 },
                 {
-                    title: "Diriyah VR Pavilion",
-                    url: "https://images.unsplash.com/photo-1541888946425-d0fbb186a5b7?auto=format&fit=crop&w=600&q=80",
-                    tag: "Spatial Booth"
+                    title: "Al Faisaliyah Tower 360°",
+                    url: "https://360stories.com/riyadh/place/al-faisaliyah-tower?mode=2&playerMode=2",
+                    tag: "360° View",
+                    type: "embed",
+                    embedUrl: "https://360stories.com/riyadh/place/al-faisaliyah-tower?mode=2&playerMode=2"
                 }
             ]
         },
@@ -213,47 +229,26 @@
             country: "Australia",
             lat: -33.8688,
             lon: 151.2093,
-            description: "Tour ICC Sydney Convention Arenas & Harbour Pavilions.",
             placeholders: [
                 {
-                    title: "ICC Sydney Arena",
-                    url: "https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?auto=format&fit=crop&w=600&q=80",
-                    tag: "Exhibition Main Stage"
+                    title: "Sydney Opera House 360°",
+                    url: "https://360stories.com/sydney/place/opera-house?mode=2&playerMode=2",
+                    tag: "Interactive Tour",
+                    type: "embed",
+                    embedUrl: "https://360stories.com/sydney/place/opera-house?mode=2&playerMode=2"
                 },
                 {
-                    title: "Opera House Spatial Hub",
-                    url: "https://images.unsplash.com/photo-1523428096881-5bd79d043006?auto=format&fit=crop&w=600&q=80",
-                    tag: "360° Dome"
+                    title: "Sydney Opera House Cubic",
+                    url: "/cubic_views/Sydney Opera House/mobile_f.jpg",
+                    tag: "Cubic View",
+                    type: "cubic"
                 },
                 {
-                    title: "Harbour VR Showcase",
-                    url: "https://images.unsplash.com/photo-1549180030-48bf079fb38a?auto=format&fit=crop&w=600&q=80",
-                    tag: "AR Pavilion"
-                }
-            ]
-        },
-        {
-            id: "rio",
-            name: "Rio de Janeiro",
-            country: "Brazil",
-            lat: -22.9068,
-            lon: -43.1729,
-            description: "Visit Riocentro Convention Domes and Copacabana Stages.",
-            placeholders: [
-                {
-                    title: "Riocentro Convention Center",
-                    url: "https://images.unsplash.com/photo-1483729558449-99ef09a8c325?auto=format&fit=crop&w=600&q=80",
-                    tag: "Main Stage"
-                },
-                {
-                    title: "Copacabana Tech Lounge",
-                    url: "https://images.unsplash.com/photo-1516306580123-e6e52b1b7b5f?auto=format&fit=crop&w=600&q=80",
-                    tag: "360° Panorama"
-                },
-                {
-                    title: "Corcovado VR Dome",
-                    url: "https://images.unsplash.com/photo-1473186578172-c141e6798cf4?auto=format&fit=crop&w=600&q=80",
-                    tag: "Interactive Kiosk"
+                    title: "Harbour Bridge 360°",
+                    url: "https://360stories.com/sydney/place/harbour-bridge?mode=2&playerMode=2",
+                    tag: "360° View",
+                    type: "embed",
+                    embedUrl: "https://360stories.com/sydney/place/harbour-bridge?mode=2&playerMode=2"
                 }
             ]
         }
