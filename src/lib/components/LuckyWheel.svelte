@@ -216,20 +216,20 @@
     ></div>
 
     <!-- Phone Top HUD Stats Bar Overlay -->
-    <div class="absolute top-11 left-3.5 right-3.5 z-20 flex items-center gap-2 pointer-events-none">
-        <div class="flex-1 px-3 py-1.5 rounded-xl bg-slate-900/75 backdrop-blur-md border border-white/10 text-white text-center flex flex-col">
-            <span class="text-[8px] font-mono font-bold uppercase text-white/50">Spins</span>
-            <strong class="font-mono text-sm leading-tight">{spinsCount}</strong>
+    <div class="absolute top-11 left-3.5 right-12 z-20 flex items-center gap-1.5 pointer-events-none">
+        <div class="flex-1 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-white text-center flex items-center justify-between">
+            <span class="text-[10px] text-white/70 font-medium">Spins</span>
+            <strong class="text-xs font-bold">{spinsCount}</strong>
         </div>
-        <div class="flex-1 px-3 py-1.5 rounded-xl bg-slate-900/75 backdrop-blur-md border border-white/10 text-white text-center flex flex-col">
-            <span class="text-[8px] font-mono font-bold uppercase text-white/50">Prizes</span>
-            <strong class="font-mono text-sm leading-tight text-emerald-400">{winsCount}</strong>
+        <div class="flex-1 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-white text-center flex items-center justify-between">
+            <span class="text-[10px] text-white/70 font-medium">Prizes</span>
+            <strong class="text-xs font-bold text-emerald-400">{winsCount}</strong>
         </div>
     </div>
 
     <!-- Phone Prompt Bar at Bottom -->
     {#if promptText && !showOverlay}
-        <div class="absolute bottom-16 left-3.5 right-3.5 z-20 px-3 py-2 rounded-xl bg-slate-900/80 backdrop-blur-md border border-white/10 text-white text-xs font-semibold text-center pointer-events-none transition-opacity">
+        <div class="absolute bottom-16 left-3.5 right-3.5 z-20 px-3.5 py-1.5 rounded-full bg-slate-900/80 backdrop-blur-md border border-white/10 text-white text-xs font-medium text-center pointer-events-none">
             {promptText}
         </div>
     {/if}
@@ -238,7 +238,7 @@
     {#if !isSpinning && !showOverlay}
         <button
             onclick={spin}
-            class="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 px-8 py-2.5 rounded-full font-bold text-xs uppercase tracking-wider text-white shadow-xl transition hover:scale-105 active:scale-95 cursor-pointer border border-white/20"
+            class="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 px-8 py-2.5 rounded-full font-semibold text-xs text-white shadow-xl transition hover:scale-105 active:scale-95 cursor-pointer border border-white/20"
             style="background-color: {brand.primaryColor || '#009dd6'};"
         >
             Spin
@@ -247,8 +247,8 @@
 
     <!-- Phone Overlay Modal (Win / Loss Result) -->
     {#if showOverlay && lastResult}
-        <div class="absolute inset-0 z-30 bg-slate-950/85 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center text-white animate-fadeIn">
-            <h4 class="text-2xl font-black uppercase tracking-tight mb-2 {lastResult.win ? 'text-emerald-400' : 'text-white'}">
+        <div class="absolute inset-0 z-30 bg-slate-950/85 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center text-white">
+            <h4 class="text-2xl font-bold tracking-tight mb-2 {lastResult.win ? 'text-emerald-400' : 'text-white'}">
                 {lastResult.title}
             </h4>
             <p class="text-xs text-white/80 leading-relaxed max-w-[22ch] mb-4">
@@ -256,7 +256,7 @@
             </p>
             <button
                 onclick={() => { showOverlay = false; promptText = "Tap spin to try your luck"; }}
-                class="px-6 py-2.5 rounded-full font-bold text-xs uppercase tracking-wider text-white transition hover:scale-105 cursor-pointer border border-white/20"
+                class="px-6 py-2.5 rounded-full font-semibold text-xs text-white transition hover:scale-105 cursor-pointer border border-white/20"
                 style="background-color: {brand.primaryColor || '#009dd6'};"
             >
                 Spin again

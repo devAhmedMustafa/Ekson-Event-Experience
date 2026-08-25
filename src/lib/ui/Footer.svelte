@@ -15,45 +15,37 @@
     }
 </script>
 
-<div class="relative w-full h-full min-h-dvh md:h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-4 sm:py-6 flex flex-col justify-between select-none font-sans overflow-hidden">
-    <!-- Huge Watermark Brand Accent in Background (Ekson Business Identity) -->
-    <div class="absolute -bottom-4 -right-4 text-[90px] sm:text-[160px] md:text-[220px] font-black text-black/4 tracking-tighter pointer-events-none select-none z-0">
-        EKSON
-    </div>
-
-    <!-- Top Headline Section (Standardized Alignment) -->
-    <div class="relative z-10 flex items-end justify-between pb-2 border-b border-black/5 shrink-0 w-full mb-2 sm:mb-3">
+<div class="relative w-full h-full min-h-dvh md:h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-8 flex flex-col justify-between select-none overflow-hidden">
+    <!-- Top Headline Section -->
+    <div class="relative z-10 flex items-end justify-between pb-3 border-b border-black/5 shrink-0 w-full mb-3">
         <div>
-            <div class="flex items-center gap-1.5 font-mono text-[9px] sm:text-[10px] uppercase tracking-widest text-primary font-bold mb-0.5">
-                <span class="size-1.5 bg-primary"></span>
-                <span>09 / Connect With Us</span>
-            </div>
-            <h2 class="text-xl sm:text-2xl md:text-3xl font-extrabold text-text tracking-tight uppercase">
-                Let's Build the Future of Events
+
+            <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-text tracking-tight">
+                Build the Future of Events
             </h2>
-            <p class="text-[11px] sm:text-xs text-text/70 mt-0.5 max-w-xl">
-                Ready to transform your exhibition booth into an interactive, high-ROI destination?
+            <p class="text-xs sm:text-sm text-text/70 mt-1 max-w-xl leading-relaxed">
+                Transform your booth into an interactive destination.
             </p>
         </div>
 
         <!-- Back to Top Button -->
         <button
             onclick={scrollToTop}
-            class="px-3.5 sm:px-4 py-1 sm:py-1.5 bg-white hover:bg-slate-50 text-text text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider rounded-full border border-black/10 shadow-xs flex items-center gap-1.5 cursor-pointer transition shrink-0"
+            class="px-4 py-2 bg-white/70 hover:bg-white text-text text-xs font-semibold rounded-full border border-black/5 shadow-xs flex items-center gap-2 cursor-pointer transition shrink-0"
         >
             <span>Back to Top</span>
-            <span class="material-symbols-rounded text-[14px] sm:text-[16px] text-primary">arrow_upward</span>
+            <span class="material-symbols-rounded text-base text-primary">arrow_upward</span>
         </button>
     </div>
 
-    <!-- 4-Column Directory Grid (Responsive 2x2 on mobile, 4-col on desktop) -->
-    <div class="relative z-10 grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 my-auto py-2 shrink-0">
-        <!-- Col 1: Solutions Catalog -->
-        <div class="flex flex-col gap-1.5 sm:gap-2">
-            <span class="font-mono text-[9px] sm:text-[10px] font-bold text-text/40 uppercase tracking-widest">
+    <!-- 4-Column Directory Grid -->
+    <div class="relative z-10 grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 my-auto py-4 shrink-0">
+        <!-- Col 1: Solutions -->
+        <div class="flex flex-col gap-2">
+            <span class="text-xs font-semibold text-text/40 uppercase tracking-widest">
                 Solutions
             </span>
-            <ul class="space-y-1 sm:space-y-1.5 text-[11px] sm:text-xs text-text/80 font-medium">
+            <ul class="space-y-1.5 text-xs text-text/80 font-medium">
                 <li><a href="#interactive" class="hover:text-primary transition">360° Spatial Tours</a></li>
                 <li><a href="#interactive" class="hover:text-primary transition">True Scale 3D Demo</a></li>
                 <li><a href="#ar-apps" class="hover:text-primary transition">WebAR Applications</a></li>
@@ -62,69 +54,65 @@
             </ul>
         </div>
 
-        <!-- Col 2: Studio & Capabilities -->
-        <div class="flex flex-col gap-1.5 sm:gap-2">
-            <span class="font-mono text-[9px] sm:text-[10px] font-bold text-text/40 uppercase tracking-widest">
+        <!-- Col 2: Capabilities -->
+        <div class="flex flex-col gap-2">
+            <span class="text-xs font-semibold text-text/40 uppercase tracking-widest">
                 Capabilities
             </span>
-            <ul class="space-y-1 sm:space-y-1.5 text-[11px] sm:text-xs text-text/80 font-medium">
-                <li><span>Real-Time SLAM & WebXR</span></li>
-                <li><span>Interactive Touch Displays</span></li>
+            <ul class="space-y-1.5 text-xs text-text/80 font-medium">
+                <li><span>Real-Time WebXR</span></li>
+                <li><span>Interactive Displays</span></li>
                 <li><span>Hardware Integration</span></li>
-                <li><span>Leaderboard & Analytics</span></li>
+                <li><span>Leaderboards & Analytics</span></li>
                 <li><span>Turnkey Event Delivery</span></li>
             </ul>
         </div>
 
         <!-- Col 3: Direct Contact -->
-        <div class="flex flex-col gap-1.5 sm:gap-2">
-            <span class="font-mono text-[9px] sm:text-[10px] font-bold text-text/40 uppercase tracking-widest">
-                Contact & Studio
+        <div class="flex flex-col gap-2">
+            <span class="text-xs font-semibold text-text/40 uppercase tracking-widest">
+                Contact
             </span>
-            <div class="space-y-1.5 sm:space-y-2 text-[11px] sm:text-xs text-text/80">
-                <div class="flex items-start gap-1.5">
-                    <span class="material-symbols-rounded text-[14px] sm:text-[16px] text-primary shrink-0 mt-0.5">mail</span>
-                    <a href="mailto:events@ekson.com" class="hover:text-primary transition font-mono break-all">
+            <div class="space-y-2 text-xs text-text/80">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-rounded text-base text-primary shrink-0">mail</span>
+                    <a href="mailto:events@ekson.com" class="hover:text-primary transition">
                         events@ekson.com
                     </a>
                 </div>
-                <div class="flex items-start gap-1.5">
-                    <span class="material-symbols-rounded text-[14px] sm:text-[16px] text-primary shrink-0 mt-0.5">call</span>
-                    <span class="font-mono">+966 11 000 0000</span>
-                </div>
-                <div class="flex items-start gap-1.5">
-                    <span class="material-symbols-rounded text-[14px] sm:text-[16px] text-primary shrink-0 mt-0.5">schedule</span>
-                    <span class="text-[10px] sm:text-[11px] text-text/60">Sun-Thu: 09:00-18:00</span>
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-rounded text-base text-primary shrink-0">call</span>
+                    <span>+966 11 000 0000</span>
                 </div>
             </div>
         </div>
 
-        <!-- Col 4: Newsletter & Updates -->
-        <div class="flex flex-col gap-1.5 sm:gap-2 col-span-2 lg:col-span-1">
-            <span class="font-mono text-[9px] sm:text-[10px] font-bold text-text/40 uppercase tracking-widest">
+        <!-- Col 4: Newsletter -->
+        <div class="flex flex-col gap-2 col-span-2 lg:col-span-1">
+            <span class="text-xs font-semibold text-text/40 uppercase tracking-widest">
                 Newsletter
             </span>
-            <p class="text-[10px] sm:text-[11px] text-text/70 leading-snug">
-                Receive quarterly updates on spatial tech & booth gamification.
+            <p class="text-xs text-text/70 leading-relaxed">
+                Updates on spatial tech & booth gamification.
             </p>
 
             {#if newsletterSubscribed}
-                <div class="p-2.5 bg-emerald-50 border border-emerald-200 text-emerald-700 text-[10px] sm:text-[11px] font-medium rounded-xl flex items-center gap-1.5">
-                    <span class="material-symbols-rounded text-[15px]">check_circle</span>
+                <div class="p-3 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-medium rounded-2xl flex items-center gap-2">
+                    <span class="material-symbols-rounded text-base">check_circle</span>
                     <span>Subscribed successfully!</span>
                 </div>
             {:else}
-                <form onsubmit={handleNewsletterSubmit} class="flex items-center gap-1 mt-0.5">
+                <form onsubmit={handleNewsletterSubmit} class="flex items-center gap-2 mt-1">
                     <input
                         type="email"
                         bind:value={newsletterEmail}
                         placeholder="your@email.com"
                         required
-                        class="flex-1 min-w-0 px-3 py-1.5 text-[11px] sm:text-xs text-text bg-white border border-black/15 rounded-full focus:outline-none focus:border-primary"
+                        class="flex-1 min-w-0 px-4 py-2 text-xs text-text bg-white border border-black/10 rounded-full focus:outline-none focus:border-primary shadow-xs"
                     />
                     <button
                         type="submit"
-                        class="px-3.5 py-1.5 bg-primary hover:bg-primary/90 text-white font-mono text-[9px] sm:text-[10px] font-bold uppercase tracking-wider rounded-full transition cursor-pointer shrink-0"
+                        class="px-4 py-2 bg-black hover:bg-slate-900 text-white text-xs font-semibold rounded-full transition cursor-pointer shrink-0"
                     >
                         Join
                     </button>
@@ -133,23 +121,20 @@
         </div>
     </div>
 
-    <!-- Bottom Footer Bar -->
-    <div class="relative z-10 pt-3 sm:pt-4 border-t border-black/5 flex flex-col sm:flex-row items-center justify-between gap-2 text-[10px] sm:text-xs text-text/60 shrink-0 font-mono text-center sm:text-left">
-        <div class="flex items-center gap-2">
-            <span class="size-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
-            <span class="text-[9px] sm:text-[10px] uppercase tracking-wider">ALL SYSTEMS OPERATIONAL</span>
-        </div>
-
-        <div class="text-[9px] sm:text-[10px] uppercase">
-            © {new Date().getFullYear()} EKSON TECHNOLOGY. ALL RIGHTS RESERVED.
-        </div>
-
-        <div class="flex items-center gap-3 text-[9px] sm:text-[10px] uppercase">
-            <a href="#landing" class="hover:text-primary transition">Privacy</a>
-            <span>•</span>
-            <a href="#landing" class="hover:text-primary transition">Terms</a>
-            <span>•</span>
-            <a href="#landing" class="hover:text-primary transition">Security</a>
+    <!-- Reference Style Huge Brand Title at Footer Bottom -->
+    <div class="relative z-10 w-full pt-4 border-t border-black/5 flex flex-col items-center justify-center shrink-0">
+        <h1 class="text-6xl sm:text-8xl md:text-9xl font-black tracking-tighter text-text/90 uppercase text-center leading-none">
+            EKSON
+        </h1>
+        <div class="w-full flex flex-col sm:flex-row items-center justify-between gap-2 mt-4 text-xs text-text/50 font-medium">
+            <span>© {new Date().getFullYear()} EKSON Technology. All rights reserved.</span>
+            <div class="flex items-center gap-4">
+                <a href="#landing" class="hover:text-primary transition">Privacy</a>
+                <span>•</span>
+                <a href="#landing" class="hover:text-primary transition">Terms</a>
+                <span>•</span>
+                <a href="#landing" class="hover:text-primary transition">Security</a>
+            </div>
         </div>
     </div>
 </div>

@@ -179,6 +179,12 @@
         }
     }
 
+    function cycleLighting() {
+        const modes: ("studio" | "night" | "tech")[] = ["studio", "night", "tech"];
+        const nextIdx = (modes.indexOf(lightingMode) + 1) % modes.length;
+        setLighting(modes[nextIdx]);
+    }
+
     function makeSlotMarkers(booth: THREE.Group, accent: string) {
         const group = new THREE.Group();
         group.name = "logo_slot_markers";
@@ -500,156 +506,130 @@
     });
 </script>
 
-<div class="relative w-full h-full min-h-90 overflow-hidden select-none font-sans group/canvas" bind:this={containerEl}>
+<div class="relative w-full h-full min-h-90 overflow-hidden select-none group/canvas" bind:this={containerEl}>
     {#if !isLive}
         <div class="relative w-full h-full min-h-[38vh] flex items-center justify-center bg-slate-900 overflow-hidden group/image">
             {#if imageSrc}
                 <img src={imageSrc} alt="{brand.name} True Scale Demo" class="w-full h-full object-cover" />
             {:else}
-                <!-- Image Placeholder: Ready for src attribute -->
                 <div class="w-full h-full flex flex-col items-center justify-center p-6 text-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
-                    <div class="size-16 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center mb-3 border border-white/10 shadow-lg">
-                        <span class="material-symbols-rounded text-3xl text-primary" style="color: {brand.primaryColor || '#009dd6'};">view_in_ar</span>
+                    <div class="size-16 rounded-3xl bg-white/10 backdrop-blur-md flex items-center justify-center mb-4 border border-white/10 shadow-xl">
+                        <span class="material-symbols-rounded text-4xl text-primary" style="color: {brand.primaryColor || '#009dd6'};">view_in_ar</span>
                     </div>
-                    <h3 class="text-base font-bold tracking-tight uppercase mb-1">{brand.name} Exhibition Island</h3>
-                    <p class="text-xs text-white/60 max-w-sm font-mono mb-3">1:1 Scale 3D Architectural Stand Model</p>
-                    <span class="text-[10px] font-mono text-white/40 bg-black/40 px-3 py-1 rounded-full border border-white/10">
-                        Image Preview Placeholder (src="{imageSrc}")
-                    </span>
+                    <h3 class="text-xl font-bold tracking-tight mb-1">{brand.name} Exhibition Island</h3>
+                    <p class="text-xs text-white/60 max-w-xs">1:1 Scale 3D Architectural Model</p>
                 </div>
             {/if}
 
             <!-- Hover Overlay with 'Try it live' button -->
             <div class="absolute inset-0 bg-slate-950/40 backdrop-blur-xs opacity-0 hover:opacity-100 transition-all duration-300 flex flex-col items-center justify-center p-4">
-                {#if !brand.isCustom}
-                    <div class="mb-3 px-3 py-1 bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider flex items-center gap-1.5">
-                        <span class="material-symbols-rounded text-sm">lock</span>
-                        <span>Provide Brand Details To Unlock Live Demo</span>
-                    </div>
-                    <button
-                        onclick={handleTryLive}
-                        class="px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider text-white shadow-xl transition-all duration-200 hover:scale-105 active:scale-95 flex items-center gap-2 cursor-pointer border border-white/20"
-                        style="background-color: {brand.primaryColor || '#009dd6'};"
-                    >
-                        <span class="material-symbols-rounded text-base">auto_awesome</span>
-                        <span>Try it for your brand</span>
-                    </button>
-                {:else}
-                    <button
-                        onclick={handleTryLive}
-                        class="px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider text-white shadow-xl transition-all duration-200 hover:scale-105 active:scale-95 flex items-center gap-2 cursor-pointer border border-white/20"
-                        style="background-color: {brand.primaryColor || '#009dd6'};"
-                    >
-                        <span class="material-symbols-rounded text-base">play_arrow</span>
-                        <span>Try it live</span>
-                    </button>
-                {/if}
+                <button
+                    onclick={handleTryLive}
+                    class="px-6 py-3 rounded-full font-semibold text-xs text-white shadow-xl transition-all duration-200 hover:scale-105 active:scale-95 flex items-center gap-2 cursor-pointer border border-white/20"
+                    style="background-color: {brand.primaryColor || '#009dd6'};"
+                >
+                    <span class="material-symbols-rounded text-base">
+                        {!brand.isCustom ? 'auto_awesome' : 'play_arrow'}
+                    </span>
+                    <span>{!brand.isCustom ? 'Try for your brand' : 'Try it live'}</span>
+                </button>
             </div>
         </div>
     {:else}
         <canvas bind:this={canvasEl} class="w-full h-full block cursor-grab active:cursor-grabbing outline-none"></canvas>
 
-        <!-- Top Overlay Header: Title & Logo Placement Toggle & Exit Live -->
-        <div class="absolute top-3 left-3 right-3 flex items-start justify-between pointer-events-none z-10">
-            <!-- Title & Subtitle Badge -->
-            <div class="bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-black/10 shadow-xs flex flex-col pointer-events-auto">
-                <span class="text-[11px] font-black uppercase text-text tracking-tight mt-0.5">
-                    {brand.name} Exhibition Island
+        <!-- Floating Glass Toolbar Header (Minimized & Auto-adapts to small & large screens) -->
+        <div class="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none z-10">
+            <!-- Stand Title (Hidden on tiny screens to save space) -->
+            <div class="hidden sm:flex bg-white/80 backdrop-blur-xl px-3.5 py-1.5 rounded-full border border-black/5 shadow-sm pointer-events-auto">
+                <span class="text-xs font-bold text-text tracking-tight">
+                    {brand.name} Stand
                 </span>
             </div>
 
-            <!-- Controls Toolbar -->
-            <div class="flex items-center gap-1.5 pointer-events-auto">
-                <!-- Exit Live View -->
+            <!-- Single Consolidated Floating Control Pill -->
+            <div class="flex items-center gap-1 bg-white/85 backdrop-blur-xl p-1.5 rounded-full border border-black/5 shadow-md pointer-events-auto ml-auto">
+                <!-- Camera Preset Select Dropdown -->
+                <div class="relative flex items-center px-2.5 py-1 rounded-full bg-black/5 hover:bg-black/10 transition cursor-pointer">
+                    <span class="material-symbols-rounded text-base text-text/70 mr-1 shrink-0">videocam</span>
+                    <select
+                        bind:value={activePreset}
+                        onchange={(e) => applyPreset((e.target as HTMLSelectElement).value)}
+                        class="bg-transparent text-xs font-semibold text-text focus:outline-none cursor-pointer pr-1"
+                        aria-label="Camera Angle Preset"
+                    >
+                        {#each presets as preset}
+                            <option value={preset.id}>{preset.title}</option>
+                        {/each}
+                    </select>
+                </div>
+
+                <!-- Lighting Mode Cycle Button -->
                 <button
-                    onclick={stopLive}
-                    class="px-2.5 py-1.5 rounded-xl text-[10px] font-mono font-bold uppercase transition flex items-center gap-1.5 shadow-xs border cursor-pointer bg-red-500/90 hover:bg-red-600 text-white border-red-400"
-                    title="Exit 3D Live View"
+                    onclick={cycleLighting}
+                    class="size-7.5 rounded-full flex items-center justify-center transition cursor-pointer bg-black/5 hover:bg-black/10 text-text/80"
+                    title="Lighting: {lightingMode.toUpperCase()} (Click to cycle)"
+                    aria-label="Cycle Lighting Mode"
                 >
-                    <span class="material-symbols-rounded text-[14px]">close</span>
-                    <span class="hidden sm:inline">Exit Live View</span>
+                    <span class="material-symbols-rounded text-base">
+                        {lightingMode === 'studio' ? 'wb_sunny' : lightingMode === 'night' ? 'dark_mode' : 'bolt'}
+                    </span>
                 </button>
 
-                <!-- Logo Placements Toggle -->
+                <!-- Show/Hide Logo Slots Toggle -->
                 <button
                     onclick={toggleLogoSlots}
-                    class="px-2.5 py-1.5 rounded-xl text-[10px] font-mono font-bold uppercase transition flex items-center gap-1.5 shadow-xs border cursor-pointer {showLogoSlots ? 'bg-primary text-white border-primary' : 'bg-white/90 text-text border-black/10 hover:bg-white'}"
-                    style={showLogoSlots ? `background-color: ${brand.primaryColor}; border-color: ${brand.primaryColor};` : ''}
-                    title="Toggle visual markers on surfaces carrying your brand logo"
+                    class="size-7.5 rounded-full flex items-center justify-center transition cursor-pointer {showLogoSlots ? 'bg-primary text-white shadow-xs' : 'bg-black/5 hover:bg-black/10 text-text/80'}"
+                    style={showLogoSlots ? `background-color: ${brand.primaryColor};` : ''}
+                    title={showLogoSlots ? "Hide Brand Logo Markers" : "Show Brand Logo Markers"}
+                    aria-label="Toggle Brand Logo Markers"
                 >
-                    <span class="material-symbols-rounded text-[14px]">
+                    <span class="material-symbols-rounded text-base">
                         {showLogoSlots ? 'visibility_off' : 'verified'}
                     </span>
-                    <span class="hidden sm:inline">
-                        {showLogoSlots ? 'Hide Logo Slots' : 'Show Logo Slots'}
-                    </span>
                 </button>
 
-                <!-- Reset View -->
+                <!-- Auto-Rotate Toggle -->
                 <button
-                    onclick={resetView}
-                    class="p-1.5 bg-white/90 hover:bg-white text-text border border-black/10 rounded-xl shadow-xs transition cursor-pointer"
-                    title="Reset Camera to Default Angle"
+                    onclick={() => (autoRotate = !autoRotate)}
+                    class="size-7.5 rounded-full flex items-center justify-center transition cursor-pointer {autoRotate ? 'bg-primary/10 text-primary font-bold' : 'bg-black/5 hover:bg-black/10 text-text/80'}"
+                    title={autoRotate ? "Pause Auto Rotation" : "Start Auto Rotation"}
+                    aria-label="Toggle Auto Rotation"
                 >
-                    <span class="material-symbols-rounded text-[16px]">refresh</span>
-                </button>
-
-                <!-- Auto Rotate Toggle -->
-                <button
-                    onclick={() => autoRotate = !autoRotate}
-                    class="p-1.5 rounded-xl border shadow-xs transition cursor-pointer {autoRotate ? 'bg-white text-primary border-primary/30' : 'bg-white/90 text-text/60 border-black/10'}"
-                    title="Toggle Auto Rotation"
-                >
-                    <span class="material-symbols-rounded text-[16px]">
+                    <span class="material-symbols-rounded text-base">
                         {autoRotate ? 'sync' : 'sync_disabled'}
                     </span>
                 </button>
-            </div>
-        </div>
 
-        <!-- Bottom Left: Viewpoint Camera Presets -->
-        <div class="absolute bottom-3 left-3 flex flex-wrap gap-1 z-10 max-w-[85%]">
-            {#each presets as preset}
+                <!-- Reset View Button -->
                 <button
-                    onclick={() => applyPreset(preset.id)}
-                    class="px-2 py-1 rounded-lg text-[9px] font-mono font-bold uppercase tracking-wider transition border cursor-pointer shadow-xs {activePreset === preset.id ? 'text-white border-transparent' : 'bg-white/90 text-text/80 border-black/10 hover:bg-white'}"
-                    style={activePreset === preset.id ? `background-color: ${brand.primaryColor};` : ''}
+                    onclick={resetView}
+                    class="size-7.5 rounded-full bg-black/5 hover:bg-black/10 text-text/80 flex items-center justify-center transition cursor-pointer"
+                    title="Reset View"
+                    aria-label="Reset View"
                 >
-                    {preset.label}
+                    <span class="material-symbols-rounded text-base">refresh</span>
                 </button>
-            {/each}
-        </div>
 
-        <!-- Bottom Right: Lighting Rig Selector -->
-        <div class="absolute bottom-3 right-3 flex items-center bg-white/90 backdrop-blur-md p-1 rounded-xl border border-black/10 shadow-xs z-10 gap-0.5">
-            <button
-                onclick={() => setLighting('studio')}
-                class="px-2 py-0.5 text-[9px] font-mono font-bold uppercase rounded-lg transition cursor-pointer {lightingMode === 'studio' ? 'bg-black/10 text-text' : 'text-text/50 hover:text-text'}"
-            >
-                Studio
-            </button>
-            <button
-                onclick={() => setLighting('night')}
-                class="px-2 py-0.5 text-[9px] font-mono font-bold uppercase rounded-lg transition cursor-pointer {lightingMode === 'night' ? 'bg-black/10 text-text' : 'text-text/50 hover:text-text'}"
-            >
-                Night
-            </button>
-            <button
-                onclick={() => setLighting('tech')}
-                class="px-2 py-0.5 text-[9px] font-mono font-bold uppercase rounded-lg transition cursor-pointer {lightingMode === 'tech' ? 'bg-black/10 text-text' : 'text-text/50 hover:text-text'}"
-            >
-                Cyber
-            </button>
+                <!-- Exit Live View Button -->
+                <button
+                    onclick={stopLive}
+                    class="size-7.5 rounded-full bg-red-500 hover:bg-red-600 text-white flex items-center justify-center transition cursor-pointer shadow-xs"
+                    title="Exit Live View"
+                    aria-label="Exit Live View"
+                >
+                    <span class="material-symbols-rounded text-base">close</span>
+                </button>
+            </div>
         </div>
 
         <!-- Loading Overlay -->
         {#if isLoading}
             <div class="absolute inset-0 bg-slate-900/80 backdrop-blur-md flex flex-col items-center justify-center text-white z-30 transition-opacity duration-300">
                 <div class="size-10 border-3 border-white/20 border-t-primary rounded-full animate-spin mb-3 shadow-lg" style="border-top-color: {brand.primaryColor};"></div>
-                <span class="text-xs font-mono font-bold uppercase tracking-widest text-white/90">
+                <span class="text-xs font-bold uppercase tracking-widest text-white/90">
                     Assembling True Scale Stand…
                 </span>
-                <span class="text-[10px] font-mono text-white/50 mt-1">Generating High-Precision 3D Geometry & Textures</span>
             </div>
         {/if}
     {/if}

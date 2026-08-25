@@ -131,14 +131,14 @@
 
 <div class="relative w-full h-full flex flex-col justify-between overflow-hidden bg-slate-950 text-white font-sans select-none p-3.5">
     <!-- Phone Top HUD Stats Bar Overlay -->
-    <div class="pt-8 flex items-center gap-2 z-20 pointer-events-none">
-        <div class="flex-1 px-2.5 py-1.5 rounded-xl bg-slate-900/90 border border-white/10 text-center flex flex-col">
-            <span class="text-[8px] font-mono font-bold uppercase text-white/50">Question</span>
-            <strong class="font-mono text-xs leading-tight">0{currentQIndex + 1} / 0{questions.length}</strong>
+    <div class="pt-8 pr-9 flex items-center gap-1.5 z-20 pointer-events-none">
+        <div class="flex-1 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-white text-center flex items-center justify-between">
+            <span class="text-[10px] text-white/70 font-medium">Question</span>
+            <strong class="text-xs font-bold">{currentQIndex + 1} / {questions.length}</strong>
         </div>
-        <div class="flex-1 px-2.5 py-1.5 rounded-xl bg-slate-900/90 border border-white/10 text-center flex flex-col">
-            <span class="text-[8px] font-mono font-bold uppercase text-white/50">Score</span>
-            <strong class="font-mono text-xs leading-tight text-emerald-400">{score} PTS</strong>
+        <div class="flex-1 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-white text-center flex items-center justify-between">
+            <span class="text-[10px] text-white/70 font-medium">Score</span>
+            <strong class="text-xs font-bold text-emerald-400">{score} PTS</strong>
         </div>
     </div>
 
@@ -158,7 +158,7 @@
                     <button
                         onclick={() => selectOption(idx)}
                         disabled={isAnswered}
-                        class="p-2 text-left transition-all flex items-center gap-2 border cursor-pointer rounded-xl disabled:cursor-default text-[11px] font-sans {isAnswered
+                        class="p-2.5 text-left transition-all flex items-center gap-2 border cursor-pointer rounded-2xl disabled:cursor-default text-[11px] font-sans {isAnswered
                             ? isCorrect
                                 ? 'bg-emerald-500/20 border-emerald-400 text-emerald-300 font-bold'
                                 : isSelected
@@ -166,7 +166,7 @@
                                   : 'bg-white/5 border-white/5 text-white/30'
                             : 'bg-white/10 hover:bg-white/20 border-white/10 text-white'}"
                     >
-                        <span class="size-4 shrink-0 flex items-center justify-center font-bold text-[9px] rounded {isAnswered && isCorrect ? 'bg-emerald-500 text-white' : isAnswered && isSelected ? 'bg-rose-500 text-white' : 'bg-white/20 text-white'}">
+                        <span class="size-5 shrink-0 flex items-center justify-center font-bold text-[10px] rounded-full {isAnswered && isCorrect ? 'bg-emerald-500 text-white' : isAnswered && isSelected ? 'bg-rose-500 text-white' : 'bg-white/20 text-white'}">
                             {LETTERS[idx]}
                         </span>
                         <span class="leading-tight truncate">{option}</span>
@@ -175,7 +175,7 @@
             </div>
 
             {#if isAnswered}
-                <div class="p-2 bg-white/10 border-l-2 rounded-r-lg text-[10px] leading-tight font-sans {selectedOptionIndex === currentQuestion.correctIndex ? 'border-l-emerald-400 text-emerald-200' : 'border-l-rose-400 text-rose-200'}">
+                <div class="p-2.5 bg-white/10 border-l-2 rounded-r-xl text-[10px] leading-relaxed font-sans {selectedOptionIndex === currentQuestion.correctIndex ? 'border-l-emerald-400 text-emerald-200' : 'border-l-rose-400 text-rose-200'}">
                     {currentQuestion.explanation}
                 </div>
             {/if}
@@ -184,15 +184,15 @@
 
     <!-- Phone Prompt Bar at Bottom -->
     {#if !showOverlay}
-        <div class="mb-4 z-20 px-3 py-1.5 rounded-xl bg-slate-900/80 border border-white/10 text-white/70 text-[10px] font-semibold text-center pointer-events-none">
+        <div class="mb-4 z-20 px-3.5 py-1.5 rounded-full bg-slate-900/80 border border-white/10 text-white/70 text-[10px] font-medium text-center pointer-events-none">
             {isAnswered ? "Next question loading..." : "Pick an answer"}
         </div>
     {/if}
 
     <!-- Phone Overlay Modal (Start / Quiz Result) -->
     {#if showOverlay}
-        <div class="absolute inset-0 z-30 bg-slate-950/90 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center text-white animate-fadeIn">
-            <h4 class="text-2xl font-black uppercase tracking-tight mb-2 text-emerald-400">
+        <div class="absolute inset-0 z-30 bg-slate-950/90 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center text-white">
+            <h4 class="text-2xl font-bold tracking-tight mb-2 text-emerald-400">
                 {overlayTitle}
             </h4>
             <p class="text-xs text-white/80 leading-relaxed max-w-[22ch] mb-4">
@@ -200,7 +200,7 @@
             </p>
             <button
                 onclick={resetQuiz}
-                class="px-6 py-2.5 rounded-full font-bold text-xs uppercase tracking-wider text-white transition hover:scale-105 cursor-pointer border border-white/20"
+                class="px-6 py-2.5 rounded-full font-semibold text-xs text-white transition hover:scale-105 cursor-pointer border border-white/20"
                 style="background-color: {brand.primaryColor || '#009dd6'};"
             >
                 {overlayCta}

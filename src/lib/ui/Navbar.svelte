@@ -53,17 +53,17 @@
     });
 </script>
 
-<!-- Top Right Horizontal Icon Navbar (Ultra Responsive on Mobile) -->
-<header class="fixed top-2 sm:top-4 right-2 sm:right-6 z-50 select-none font-sans max-w-[95vw]">
-    <nav class="flex items-center gap-0.5 sm:gap-1 bg-white/85 backdrop-blur-md border border-black/10 shadow-sm p-1 sm:px-2 rounded-full overflow-x-auto scrollbar-none">
+<!-- Floating Glass Pill Navbar -->
+<header class="fixed top-3 sm:top-5 right-3 sm:right-8 z-50 select-none max-w-[95vw]">
+    <nav class="flex items-center gap-1 sm:gap-1.5 bg-white/70 backdrop-blur-xl border border-black/5 shadow-lg shadow-black/[0.03] p-1.5 sm:p-2 rounded-full overflow-x-auto scrollbar-none transition-all duration-300">
         {#each navItems as item}
             <button
                 onclick={() => scrollToSection(item.id)}
-                class="size-7 sm:size-8 md:size-9 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer shrink-0 {activeSection === item.id ? 'bg-primary text-white shadow-xs' : 'bg-transparent text-text/60 hover:text-text hover:bg-black/[0.04]'}"
+                class="size-8 sm:size-9 md:size-10 rounded-full flex items-center justify-center transition-all duration-300 cursor-pointer shrink-0 {activeSection === item.id ? 'bg-primary text-white shadow-md shadow-primary/25 scale-105' : 'bg-transparent text-text/60 hover:text-text hover:bg-black/[0.04]'}"
                 title={item.label}
                 aria-label={item.label}
             >
-                <span class="material-symbols-rounded text-[16px] sm:text-[18px] md:text-[20px]">
+                <span class="material-symbols-rounded text-[17px] sm:text-[19px] md:text-[21px]">
                     {item.icon}
                 </span>
             </button>

@@ -6,36 +6,28 @@
 
 <div class="w-full flex flex-col">
     <!-- Single Combined Section: 360 Tour (Left Half) & True Scale Demo (Right Half) -->
-    <div class="w-full min-h-[100dvh] md:h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-4 sm:py-6 flex flex-col justify-between select-none font-sans overflow-hidden">
+    <div class="w-full min-h-[100dvh] md:h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-8 flex flex-col justify-between select-none overflow-hidden">
         <!-- Unified Section Header -->
-        <div class="flex items-end justify-between pb-2 border-b border-black/5 shrink-0 w-full mb-2 sm:mb-3">
+        <div class="flex items-end justify-between pb-3 border-b border-black/5 shrink-0 w-full mb-3 sm:mb-4">
             <div>
-                <div class="flex items-center gap-1.5 font-mono text-[9px] sm:text-[10px] uppercase tracking-widest text-primary font-bold mb-0.5">
-                    <span class="size-1.5 bg-primary"></span>
-                    <span>03 / Spatial Architecture</span>
-                </div>
-                <h2 class="text-xl sm:text-2xl md:text-3xl font-extrabold text-text tracking-tight uppercase">
-                    3D Virtual Presence & True Scale
+                <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-text tracking-tight">
+                    3D Presence & True Scale
                 </h2>
-                <p class="text-[11px] sm:text-xs text-text/70 mt-0.5 max-w-xl">
-                    Interact with real-time 360° panoramic spatial environments and 1:1 true-scale architectural booth models.
+                <p class="text-xs sm:text-sm text-text/70 mt-1 max-w-xl leading-relaxed">
+                    Interactive 360° panoramas and 1:1 true-scale booth configurators.
                 </p>
-            </div>
-            <div class="hidden sm:flex items-center gap-2 font-mono text-[10px] text-text/50">
-                <span class="size-2 bg-emerald-500 rounded-full animate-pulse"></span>
-                <span>MOUSE CONTROLLABLE</span>
             </div>
         </div>
 
         <!-- 50/50 Split 3D Viewports Container -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 flex-1 w-full my-auto max-h-[74vh] md:max-h-[78vh] overflow-hidden">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 flex-1 w-full my-auto max-h-[74vh] md:max-h-[78vh] overflow-hidden">
             <!-- 360 Tour - Left Half -->
-            <div class="w-full h-[38vh] md:h-full relative overflow-hidden rounded-2xl border border-black/10 shadow-xs bg-slate-900">
+            <div class="w-full h-[38vh] md:h-full relative overflow-hidden rounded-3xl border border-black/5 shadow-sm bg-slate-900">
                 <Tour360 />
             </div>
 
             <!-- True Scale Demo - Right Half -->
-            <div class="w-full h-[38vh] md:h-full relative overflow-hidden rounded-2xl border border-black/10 shadow-xs bg-slate-50">
+            <div class="w-full h-[38vh] md:h-full relative overflow-hidden rounded-3xl border border-black/5 shadow-sm bg-white/70 backdrop-blur-xl">
                 <TrueScaleDemo />
             </div>
         </div>

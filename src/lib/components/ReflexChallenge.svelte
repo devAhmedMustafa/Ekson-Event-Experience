@@ -302,32 +302,28 @@
     ></canvas>
 
     <!-- Phone Top HUD Stats Bar Overlay -->
-    <div class="absolute top-11 left-3.5 right-3.5 z-20 flex items-center gap-2 pointer-events-none">
-        <div class="flex-1 px-2.5 py-1.5 rounded-xl bg-slate-900/75 backdrop-blur-md border border-white/10 text-white text-center flex flex-col">
-            <span class="text-[8px] font-mono font-bold uppercase text-white/50">Score</span>
-            <strong class="font-mono text-sm leading-tight" style="color: {brand.primaryColor || '#009dd6'};">{score}</strong>
+    <div class="absolute top-11 left-3.5 right-12 z-20 flex items-center gap-1.5 pointer-events-none">
+        <div class="flex-1 px-2 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-white text-center flex items-center justify-between">
+            <span class="text-[9px] text-white/70 font-medium">Score</span>
+            <strong class="text-xs font-bold" style="color: {brand.primaryColor || '#009dd6'};">{score}</strong>
         </div>
-        <div class="flex-1 px-2.5 py-1.5 rounded-xl bg-slate-900/75 backdrop-blur-md border border-white/10 text-white text-center flex flex-col">
-            <span class="text-[8px] font-mono font-bold uppercase text-white/50">Time</span>
-            <strong class="font-mono text-sm leading-tight">{timeLeft}s</strong>
-        </div>
-        <div class="flex-1 px-2.5 py-1.5 rounded-xl bg-slate-900/75 backdrop-blur-md border border-white/10 text-white text-center flex flex-col">
-            <span class="text-[8px] font-mono font-bold uppercase text-white/50">Streak</span>
-            <strong class="font-mono text-sm leading-tight text-amber-400">{streak}</strong>
+        <div class="flex-1 px-2 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-white text-center flex items-center justify-between">
+            <span class="text-[9px] text-white/70 font-medium">Time</span>
+            <strong class="text-xs font-bold">{timeLeft}s</strong>
         </div>
     </div>
 
     <!-- Phone Prompt Bar at Bottom -->
     {#if isRunning && !showOverlay}
-        <div class="absolute bottom-6 left-3.5 right-3.5 z-20 px-3 py-2 rounded-xl bg-slate-900/80 backdrop-blur-md border border-white/10 text-white text-xs font-semibold text-center pointer-events-none">
-            Tap the product — not the crosses
+        <div class="absolute bottom-6 left-3.5 right-3.5 z-20 px-3.5 py-1.5 rounded-full bg-slate-900/80 backdrop-blur-md border border-white/10 text-white text-xs font-medium text-center pointer-events-none">
+            Tap product — avoid crosses
         </div>
     {/if}
 
     <!-- Phone Overlay Modal (Start / Win Result) -->
     {#if showOverlay}
-        <div class="absolute inset-0 z-30 bg-slate-950/85 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center text-white animate-fadeIn">
-            <h4 class="text-2xl font-black uppercase tracking-tight mb-2 text-emerald-400">
+        <div class="absolute inset-0 z-30 bg-slate-950/85 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center text-white">
+            <h4 class="text-2xl font-bold tracking-tight mb-2 text-emerald-400">
                 {overlayTitle}
             </h4>
             <p class="text-xs text-white/80 leading-relaxed max-w-[22ch] mb-4">
@@ -335,7 +331,7 @@
             </p>
             <button
                 onclick={reset}
-                class="px-6 py-2.5 rounded-full font-bold text-xs uppercase tracking-wider text-white transition hover:scale-105 cursor-pointer border border-white/20"
+                class="px-6 py-2.5 rounded-full font-semibold text-xs text-white transition hover:scale-105 cursor-pointer border border-white/20"
                 style="background-color: {brand.primaryColor || '#009dd6'};"
             >
                 {overlayCta}

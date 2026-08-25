@@ -291,62 +291,51 @@
     }
 </script>
 
-<div class="relative w-full h-full min-h-[100dvh] md:h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-4 sm:py-6 select-none font-sans flex flex-col justify-between overflow-hidden">
-    <!-- Top Header (Standardized Alignment) -->
-    <div class="flex items-end justify-between pb-2 border-b border-black/5 shrink-0 w-full mb-2 sm:mb-3">
+<div class="relative w-full h-full min-h-[100dvh] md:h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-8 flex flex-col justify-between select-none overflow-hidden">
+    <!-- Top Header -->
+    <div class="flex items-end justify-between pb-3 border-b border-black/5 shrink-0 w-full mb-3 sm:mb-4">
         <div>
-            <div class="flex items-center gap-1.5 font-mono text-[9px] sm:text-[10px] uppercase tracking-widest text-primary font-bold mb-0.5">
-                <span class="size-1.5 bg-primary"></span>
-                <span>08 / Investment Plans</span>
-            </div>
-            <h2 class="text-xl sm:text-2xl md:text-3xl font-extrabold text-text tracking-tight uppercase">
-                Investment Plans & Packages
-            </h2>
-            <p class="text-[11px] sm:text-xs text-text/70 mt-0.5 max-w-xl">
-                Flexible turnkey solutions, custom hardware integration, and multi-tier spatial technology packages.
-            </p>
-        </div>
 
-        <div class="hidden sm:flex items-center gap-2 font-mono text-[10px] text-text/50">
-            <span class="size-2 bg-primary rounded-full"></span>
-            <span>CUSTOMIZABLE TIERS</span>
+            <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-text tracking-tight">
+                Investment Plans
+            </h2>
+            <p class="text-xs sm:text-sm text-text/70 mt-1 max-w-xl leading-relaxed">
+                Turnkey spatial tech packages tailored for exhibition booths.
+            </p>
         </div>
     </div>
 
-    <!-- 3 Pricing Cards Grid (Scrollable on mobile, 3-col on desktop) -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 lg:gap-5 items-stretch my-auto shrink-0 overflow-y-auto max-h-[60vh] md:max-h-none py-1 scrollbar-none">
+    <!-- 3 Pricing Cards Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6 items-stretch my-auto shrink-0 overflow-y-auto max-h-[60vh] md:max-h-none py-3 scrollbar-none">
         {#each plans as plan (plan.id)}
             <div
-                class="relative bg-white rounded-2xl flex flex-col justify-between p-3.5 sm:p-4.5 transition-all duration-300 {plan.isPopular
-                    ? 'border-2 border-primary shadow-md bg-linear-to-b from-sky-50/60 via-white to-white'
-                    : 'border border-black/10 shadow-xs'}"
+                class="relative bg-white/70 backdrop-blur-xl rounded-3xl flex flex-col justify-between p-6 sm:p-7 transition-all duration-300 {plan.isPopular
+                    ? 'border-2 border-primary shadow-lg ring-1 ring-primary/20 scale-102 bg-white'
+                    : 'border border-black/5 shadow-sm hover:shadow-md'}"
             >
                 <!-- Top Badge Pill -->
-                <div class="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <span
-                        class="px-3 py-0.5 rounded-full text-[9px] sm:text-[10px] font-mono font-bold uppercase tracking-wider shadow-xs {plan.badgeType === 'popular'
-                            ? 'bg-primary text-white'
-                            : plan.badgeType === 'essential'
-                              ? 'bg-secondary text-white'
-                              : 'bg-slate-500 text-white'}"
-                    >
-                        {plan.name}
-                    </span>
-                </div>
+                {#if plan.isPopular}
+                    <div class="absolute -top-3.5 left-1/2 -translate-x-1/2">
+                        <span class="px-3.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-primary text-white shadow-md">
+                            {plan.name}
+                        </span>
+                    </div>
+                {/if}
 
                 <div class="flex flex-col h-full justify-between pt-1">
                     <div>
-                        <!-- Circular Icon Hub -->
-                        <div class="flex justify-center mt-1 mb-1">
-                            <div class="size-8 sm:size-10 rounded-full flex items-center justify-center {plan.isPopular ? 'bg-primary/10 text-primary' : 'bg-slate-100 text-secondary'}">
-                                <span class="material-symbols-rounded text-[20px] sm:text-[22px]">
+                        <!-- Header -->
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="text-lg font-bold text-text tracking-tight">{plan.name}</h3>
+                            <div class="size-10 rounded-2xl flex items-center justify-center {plan.isPopular ? 'bg-primary/10 text-primary' : 'bg-black/5 text-text/70'}">
+                                <span class="material-symbols-rounded text-xl">
                                     {plan.icon}
                                 </span>
                             </div>
                         </div>
 
                         <!-- Tagline -->
-                        <p class="text-[10px] sm:text-[11px] text-text/70 text-center min-h-5.5 sm:min-h-6.5 leading-snug px-1">
+                        <p class="text-xs text-text/70 leading-relaxed mb-4 min-h-10">
                             {plan.tagline}
                             {#if plan.highlightText}
                                 <span class="text-primary font-bold">{plan.highlightText}</span>
@@ -354,23 +343,23 @@
                         </p>
 
                         <!-- Price Section -->
-                        <div class="text-center my-1.5 py-1 border-y border-black/5">
-                            <div class="text-xl sm:text-2xl md:text-3xl font-black text-text tracking-tight font-sans">
+                        <div class="my-3 py-3 border-y border-black/5">
+                            <div class="text-3xl font-extrabold text-text tracking-tight">
                                 {plan.price}
                             </div>
-                            <span class="text-[9px] sm:text-[10px] font-mono text-text/50 uppercase tracking-wider block">
+                            <span class="text-[10px] font-medium text-text/50 uppercase tracking-wider block mt-0.5">
                                 {plan.priceSub}
                             </span>
                         </div>
 
                         <!-- Features Checklist -->
-                        <ul class="space-y-1 sm:space-y-1.5 font-sans text-[10px] sm:text-[11px] text-text/80 my-1.5">
+                        <ul class="space-y-2 text-xs text-text/80 my-4">
                             {#each plan.features as feat}
-                                <li class="flex items-center gap-1.5 sm:gap-2">
-                                    <span class="material-symbols-rounded text-[14px] sm:text-[15px] text-primary shrink-0">
+                                <li class="flex items-center gap-2">
+                                    <span class="material-symbols-rounded text-base text-primary shrink-0">
                                         check_circle
                                     </span>
-                                    <span class="leading-tight font-medium">{feat}</span>
+                                    <span class="font-medium">{feat}</span>
                                 </li>
                             {/each}
                         </ul>
@@ -379,10 +368,10 @@
                     <!-- Subscribe Button -->
                     <button
                         onclick={() => openModal(plan.name)}
-                        class="w-full mt-2 py-2 px-3 rounded-full text-[11px] sm:text-xs font-mono font-bold uppercase tracking-wider transition cursor-pointer flex items-center justify-center gap-1.5 {plan.isPopular ? 'bg-primary hover:bg-primary/90 text-white shadow-xs' : 'bg-slate-100 hover:bg-slate-200 text-text border border-black/5'}"
+                        class="w-full mt-4 py-3 px-4 rounded-full text-xs font-semibold tracking-wide transition cursor-pointer flex items-center justify-center gap-2 {plan.isPopular ? 'bg-black hover:bg-slate-900 text-white shadow-md' : 'bg-black/5 hover:bg-black/10 text-text border border-black/5'}"
                     >
                         <span>Subscribe</span>
-                        <span class="material-symbols-rounded text-[14px] sm:text-[15px]">arrow_forward</span>
+                        <span class="material-symbols-rounded text-base">arrow_forward</span>
                     </button>
                 </div>
             </div>

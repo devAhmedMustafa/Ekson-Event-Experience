@@ -32,54 +32,51 @@
     });
 </script>
 
-<div class="relative w-full h-full min-h-dvh md:h-screen flex flex-col justify-between items-center px-4 md:px-8 py-6 sm:py-8 select-none font-sans overflow-hidden">
+<div class="relative w-full h-full min-h-dvh md:h-screen flex flex-col justify-between items-center px-4 md:px-8 py-8 sm:py-12 select-none overflow-hidden">
     <!-- Top Spacer for Floating Navbar -->
-    <div class="h-6 sm:h-8"></div>
+    <div class="h-8 sm:h-12"></div>
 
-    <!-- Center Kinetic Title & Subtitle & Brand CTA -->
-    <div class="relative z-10 flex flex-col items-center justify-center my-auto text-center max-w-5xl px-2">
-        <!-- Main Headline with Mix Blend Difference & Staggered Reveal -->
+    <!-- Center Hero Title & Subtitle & Brand CTA -->
+    <div class="relative z-10 flex flex-col items-center justify-center my-auto text-center max-w-5xl px-4">
+
+
+        <!-- Main Headline inspired by reference design -->
         <h1
-            class="text-4xl sm:text-6xl md:text-8xl lg:text-9xl font-black text-center text-white tracking-tight leading-[0.95] uppercase transition-all duration-1000 ease-out {isLoaded ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-8 scale-95'}"
-            style="transform: translate3d({mouseX * 0.4}px, {mouseY * 0.4}px, 0);"
+            class="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-center text-text tracking-tight leading-[1.02] transition-all duration-1000 ease-out {isLoaded ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-8 scale-95'}"
+            style="transform: translate3d({mouseX * 0.3}px, {mouseY * 0.3}px, 0);"
         >
-            <span class="inline-block hover:tracking-wide transition-all duration-300">
-                {brand.name} Event
+            <span class="inline-block transition-all duration-300">
+                {brand.name}
             </span>
             <br />
-            <span class="inline-block hover:tracking-wide transition-all duration-300">
-                Experiences
+            <span class="inline-block text-transparent bg-clip-text bg-gradient-to-r from-text via-primary to-text transition-all duration-300">
+                Event Experiences.
             </span>
         </h1>
 
         <!-- Animated Subtitle -->
         <div
-            class="mt-4 sm:mt-6 md:mt-8 transition-all duration-1000 delay-300 ease-out {isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}"
+            class="mt-6 sm:mt-8 max-w-xl transition-all duration-1000 delay-200 ease-out {isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}"
         >
-            <p class="text-xs sm:text-base md:text-lg font-bold text-text/80 tracking-wide uppercase font-mono flex items-center justify-center gap-1.5 sm:gap-2">
-                <span class="w-4 sm:w-10 h-px bg-primary"></span>
-                <span>Make your brand impossible to ignore</span>
-                <span class="w-4 sm:w-10 h-px bg-primary"></span>
+            <p class="text-sm sm:text-base md:text-lg font-medium text-text/70 leading-relaxed">
+                Elevate exhibition booths with 3D spatial tech, WebAR giveaways, AI voice guide, and interactive gamification.
             </p>
         </div>
 
         <!-- Action Trigger: Try it for your brand -->
         <div
-            class="mt-5 sm:mt-7 transition-all duration-1000 delay-400 ease-out {isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}"
+            class="mt-8 sm:mt-10 transition-all duration-1000 delay-300 ease-out {isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}"
         >
             <button
                 onclick={() => (isBrandModalOpen = true)}
-                class="group relative px-5 sm:px-6 py-2.5 sm:py-3 bg-white/90 hover:bg-white text-text font-mono text-xs sm:text-sm font-bold uppercase tracking-wider rounded-full shadow-lg hover:shadow-xl border border-black/10 hover:border-primary transition-all duration-300 flex items-center gap-2 sm:gap-2.5 cursor-pointer backdrop-blur-md hover:-translate-y-0.5"
+                class="group relative px-7 py-3.5 bg-black hover:bg-slate-900 text-white text-xs sm:text-sm font-semibold tracking-wide rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 flex items-center gap-3 cursor-pointer hover:-translate-y-0.5"
             >
-                <div class="size-6 sm:size-7 rounded-full bg-primary/10 text-primary flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <span class="material-symbols-rounded text-[16px] sm:text-[18px]">auto_awesome</span>
-                </div>
-                <span>Try it for your brand</span>
-                <span class="material-symbols-rounded text-[15px] sm:text-[17px] text-primary group-hover:translate-x-0.5 transition-transform">
+                <span>Try for your brand</span>
+                <span class="material-symbols-rounded text-lg text-primary group-hover:translate-x-1 transition-transform">
                     arrow_forward
                 </span>
                 {#if brand.isCustom}
-                    <span class="px-2 py-0.5 bg-emerald-50 text-emerald-700 text-[9px] sm:text-[10px] rounded-full border border-emerald-300 font-bold ml-1 truncate max-w-[120px]">
+                    <span class="px-2.5 py-0.5 bg-white/20 text-white text-[10px] rounded-full font-bold ml-1 truncate max-w-[120px]">
                         {brand.name}
                     </span>
                 {/if}
@@ -89,18 +86,18 @@
 
     <!-- Bottom Scroll Indicator & Action -->
     <div
-        class="z-10 transition-all duration-1000 delay-500 ease-out {isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'} pb-2"
+        class="z-10 transition-all duration-1000 delay-400 ease-out {isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'} pb-4"
     >
         <button
             onclick={scrollToExplore}
-            class="group flex flex-col items-center gap-1 cursor-pointer text-text/60 hover:text-primary transition"
+            class="group flex flex-col items-center gap-1.5 cursor-pointer text-text/50 hover:text-text transition"
             aria-label="Scroll to explore experiences"
         >
-            <span class="font-mono text-[9px] uppercase tracking-widest font-bold group-hover:tracking-wider transition-all">
-                Scroll to Explore
+            <span class="text-[10px] font-semibold uppercase tracking-widest text-text/50 group-hover:text-text transition-all">
+                Explore Solutions
             </span>
-            <div class="size-8 bg-white/80 backdrop-blur-md border border-black/10 rounded-full flex items-center justify-center shadow-xs group-hover:border-primary transition">
-                <span class="material-symbols-rounded text-[16px] text-primary animate-bounce">
+            <div class="size-8 bg-white/70 backdrop-blur-md border border-black/5 rounded-full flex items-center justify-center shadow-xs group-hover:border-black/20 transition">
+                <span class="material-symbols-rounded text-base text-text animate-bounce">
                     keyboard_arrow_down
                 </span>
             </div>

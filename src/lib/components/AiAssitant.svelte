@@ -396,92 +396,61 @@
     }}
 ></audio>
 
-<div class="relative w-full h-full min-h-[100dvh] md:h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-4 sm:py-6 flex flex-col justify-between select-none font-sans overflow-hidden">
-    <!-- Top Header (Standardized Alignment) -->
-    <div class="flex items-end justify-between pb-2 border-b border-black/5 shrink-0 w-full mb-2 sm:mb-3">
+<div class="relative w-full h-full min-h-[100dvh] md:h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-8 flex flex-col justify-between select-none overflow-hidden">
+    <!-- Top Header -->
+    <div class="flex items-end justify-between pb-3 border-b border-black/5 shrink-0 w-full mb-3">
         <div>
-            <div class="flex items-center gap-1.5 font-mono text-[9px] sm:text-[10px] uppercase tracking-widest text-primary font-bold mb-0.5">
-                <span class="size-1.5 bg-primary"></span>
-                <span>06 / Voice Concierge</span>
-                {#if brand.isCustom}
-                    <span class="px-2 py-0.5 bg-primary/10 text-primary border border-primary/20 rounded-full font-bold text-[8px] sm:text-[9px]">
-                        {brand.name}
-                    </span>
-                {/if}
-            </div>
-            <h2 class="text-xl sm:text-2xl md:text-3xl font-extrabold text-text tracking-tight uppercase">
+
+            <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-text tracking-tight">
                 {brand.name} AI Voice Concierge
             </h2>
-            <p class="text-[11px] sm:text-xs text-text/70 mt-0.5 max-w-xl">
-                Conversational booth guide powered by low-latency neural voice synthesis and interactive voice chat.
+            <p class="text-xs sm:text-sm text-text/70 mt-1 max-w-xl leading-relaxed">
+                Interactive voice guide for your exhibition booth.
             </p>
         </div>
 
-        <div class="flex items-center gap-2 font-mono text-[10px] text-text/50">
-            {#if isLive}
-                <button
-                    onclick={() => isLive = false}
-                    class="px-2.5 py-1.5 rounded-xl text-[10px] font-mono font-bold uppercase transition flex items-center gap-1 shadow-md border cursor-pointer bg-red-500/90 hover:bg-red-600 text-white border-red-400"
-                    title="Exit Live Assistant Preview"
-                >
-                    <span class="material-symbols-rounded text-[14px]">close</span>
-                    <span class="hidden sm:inline">Exit Live</span>
-                </button>
-            {/if}
-            <span class="hidden sm:inline-flex items-center gap-2">
-                <span class="size-2 bg-emerald-500 rounded-full animate-pulse"></span>
-                <span>VOICE RECOGNITION READY</span>
-            </span>
-        </div>
+        {#if isLive}
+            <button
+                onclick={() => isLive = false}
+                class="px-4 py-2 rounded-full text-xs font-semibold uppercase transition flex items-center gap-1.5 shadow-sm cursor-pointer bg-red-500 hover:bg-red-600 text-white"
+                title="Exit Live Assistant"
+            >
+                <span class="material-symbols-rounded text-base">close</span>
+                <span>Exit Live</span>
+            </button>
+        {/if}
     </div>
 
     {#if !isLive}
-        <!-- Image Preview Card & Hover 'Try it live' Overlay -->
-        <div class="flex-1 w-full my-auto py-3 sm:py-6 flex items-center justify-center">
-            <div class="relative w-full h-[55vh] sm:h-[60vh] md:h-[65vh] max-h-145 rounded-2xl border border-black/10 shadow-xs overflow-hidden bg-slate-900 text-white group/ai-card">
+        <!-- Stage Card & Launch Action -->
+        <div class="flex-1 w-full my-auto py-4 flex items-center justify-center">
+            <div class="relative w-full h-[52vh] sm:h-[58vh] md:h-[62vh] max-h-145 rounded-3xl border border-black/5 shadow-sm overflow-hidden bg-slate-900 text-white group/ai-card">
                 {#if imageSrc}
                     <img src={imageSrc} alt="{brand.name} AI Voice Assistant" class="w-full h-full object-cover" />
                 {:else}
-                    <!-- Image Placeholder: Ready for src attribute -->
                     <div class="w-full h-full flex flex-col items-center justify-center p-6 text-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-                        <div class="size-20 rounded-3xl bg-white/10 backdrop-blur-md flex items-center justify-center mb-4 border border-white/10 shadow-xl">
-                            <span class="material-symbols-rounded text-4xl text-primary" style="color: {brand.primaryColor || '#009dd6'};">
+                        <div class="size-24 rounded-3xl bg-white/10 backdrop-blur-md flex items-center justify-center mb-5 border border-white/10 shadow-2xl">
+                            <span class="material-symbols-rounded text-5xl text-primary" style="color: {brand.primaryColor || '#009dd6'};">
                                 smart_toy
                             </span>
                         </div>
-                        <h3 class="text-xl font-extrabold tracking-tight uppercase mb-1">{brand.name} AI Voice Concierge</h3>
-                        <p class="text-xs text-white/60 max-w-md font-mono mb-4">Neural Voice Assistant & Interactive Event Concierge</p>
-                        <span class="text-[10px] font-mono text-white/40 bg-black/40 px-3.5 py-1.5 rounded-full border border-white/10">
-                            Image Preview Placeholder (src="{imageSrc}")
-                        </span>
+                        <h3 class="text-2xl font-extrabold tracking-tight mb-2">{brand.name} AI Voice Concierge</h3>
+                        <p class="text-xs text-white/60 max-w-sm leading-relaxed">Interactive neural voice assistant for booth visitors</p>
                     </div>
                 {/if}
 
                 <!-- Hover Overlay with 'Try it live' button -->
-                <div class="absolute inset-0 bg-slate-950/50 backdrop-blur-xs opacity-0 hover:opacity-100 transition-all duration-300 flex flex-col items-center justify-center p-4">
-                    {#if !brand.isCustom}
-                        <div class="mb-3 px-3 py-1 bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider flex items-center gap-1.5">
-                            <span class="material-symbols-rounded text-sm">lock</span>
-                            <span>Provide Brand Details To Unlock Live Assistant</span>
-                        </div>
-                        <button
-                            onclick={handleTryLive}
-                            class="px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider text-white shadow-2xl transition-all duration-200 hover:scale-105 active:scale-95 flex items-center gap-2 cursor-pointer border border-white/20"
-                            style="background-color: {brand.primaryColor || '#009dd6'};"
-                        >
-                            <span class="material-symbols-rounded text-lg">auto_awesome</span>
-                            <span>Try it for your brand</span>
-                        </button>
-                    {:else}
-                        <button
-                            onclick={handleTryLive}
-                            class="px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider text-white shadow-2xl transition-all duration-200 hover:scale-105 active:scale-95 flex items-center gap-2 cursor-pointer border border-white/20"
-                            style="background-color: {brand.primaryColor || '#009dd6'};"
-                        >
-                            <span class="material-symbols-rounded text-lg">play_arrow</span>
-                            <span>Try it live</span>
-                        </button>
-                    {/if}
+                <div class="absolute inset-0 bg-slate-950/60 backdrop-blur-xs opacity-0 hover:opacity-100 transition-all duration-300 flex flex-col items-center justify-center p-4">
+                    <button
+                        onclick={handleTryLive}
+                        class="px-7 py-3.5 rounded-full font-semibold text-xs text-white shadow-2xl transition-all duration-200 hover:scale-105 active:scale-95 flex items-center gap-2.5 cursor-pointer border border-white/20"
+                        style="background-color: {brand.primaryColor || '#009dd6'};"
+                    >
+                        <span class="material-symbols-rounded text-lg">
+                            {!brand.isCustom ? 'auto_awesome' : 'play_arrow'}
+                        </span>
+                        <span>{!brand.isCustom ? 'Try for your brand' : 'Try it live'}</span>
+                    </button>
                 </div>
             </div>
         </div>
