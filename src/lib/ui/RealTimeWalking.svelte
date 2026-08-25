@@ -905,12 +905,12 @@
 
 <div class="w-full flex flex-col">
     <!-- Standalone Hero Walkthrough Launch Card -->
-    <div class="w-full min-h-[100dvh] md:h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-8 flex flex-col justify-between select-none overflow-hidden">
+    <div class="w-full min-h-dvh md:h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-8 flex flex-col justify-between select-none overflow-hidden">
         <!-- Section Header -->
         <div class="flex items-end justify-between pb-3 border-b border-black/5 shrink-0 w-full mb-3 sm:mb-4">
             <div>
                 <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-text tracking-tight">
-                    3D Hall Walkthrough
+                    Virtual Exhibition / Walkthrough
                 </h2>
                 <p class="text-xs sm:text-sm text-text/70 mt-1 max-w-xl leading-relaxed">
                     Walk through the exhibition venue with spatial wayfinding to the {brand.name} booth.
@@ -938,7 +938,7 @@
                 ></video>
 
                 <!-- Center Launch Overlay & Information Badge -->
-                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/60 flex flex-col items-center justify-center p-6 text-center">
+                <div class="absolute inset-0 bg-linear-to-t from-black/80 via-black/30 to-black/60 flex flex-col items-center justify-center p-6 text-center">
                     <h3 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-tight max-w-lg mb-2">
                         Explore Exhibition Venue
                     </h3>

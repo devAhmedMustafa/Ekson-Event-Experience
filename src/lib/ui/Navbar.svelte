@@ -11,9 +11,11 @@
         { id: "landing", label: "Home", icon: "home" },
         { id: "about", label: "About Us", icon: "info" },
         { id: "interactive", label: "Spatial Tech", icon: "view_in_ar" },
-        { id: "minigames", label: "Mini Games", icon: "sports_esports" },
+        { id: "minigames", label: "Mini Games", icon: "joystick" },
+        { id: "vr-games", label: "VR Games", icon: "sports_esports" },
         { id: "ai-assistant", label: "AI Voice", icon: "mic" },
         { id: "ar-apps", label: "AR Apps", icon: "qr_code_scanner" },
+        { id: "global-network", label: "Global Network", icon: "language" },
         { id: "plans", label: "Investment Plans", icon: "loyalty" },
     ];
 
