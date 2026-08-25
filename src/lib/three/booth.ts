@@ -402,13 +402,6 @@ export function createBooth(tex, {
   sign.position.set(0, 4.6, -0.9)
   booth.add(sign)
 
-  /* ── stand number plate ────────────────────────────────────────────── */
-  if (tex.standNumber) {
-    const plate = graphicPanel(0.62, 0.32, tex.standNumber, { backing: true, emissive: 0.12 })
-    plate.position.set(HALF_W - 0.35, RISER + 2.5, HALF_D - 0.4)
-    plate.rotation.y = -Math.PI / 2
-    booth.add(plate)
-  }
 
   booth.userData.logoSlots = []
   booth.traverse((o) => {

@@ -138,7 +138,17 @@
         group.add(screen);
 
         group.traverse((o) => {
-            if ((o as THREE.Mesh).isMesh) o.renderOrder = 20;
+            if ((o as THREE.Mesh).isMesh) {
+                const mesh = o as THREE.Mesh;
+                mesh.renderOrder = 100;
+                if (mesh.material) {
+                    if (Array.isArray(mesh.material)) {
+                        mesh.material.forEach((m) => (m.depthTest = true));
+                    } else {
+                        mesh.material.depthTest = true;
+                    }
+                }
+            }
         });
 
         return {
@@ -294,7 +304,7 @@
         ctx.fillText(turnHint(rel, dist), 140, cardY + 96);
         ctx.fillStyle = "rgba(255,255,255,.35)";
         ctx.font = "500 14px 'Inter', sans-serif";
-        ctx.fillText(`Stand B-14 · Hall 3`, 140, cardY + 120);
+        ctx.fillText(`Hall 3`, 140, cardY + 120);
 
         /* arrival banner */
         if (dist < ARRIVE_RADIUS) {
@@ -341,10 +351,7 @@
     let radarY = $state(50);
     let radarAngle = $state(0);
 
-    // Floor Wayfinding Path & Beacon
-    const PATH_POINTS = 64;
-    let pathLineMesh: THREE.Line | null = null;
-    let beaconGroup: THREE.Group | null = null;
+
 
     function requestCanvasPointerLock() {
         if (canvasEl && typeof document !== "undefined" && document.pointerLockElement !== canvasEl) {
@@ -387,9 +394,11 @@
     }
 
     function routeTo(from: THREE.Vector3): THREE.Vector3[] {
-        const turnIn = new THREE.Vector3(targetBoothPos.x, 0, 0);
-        if (Math.abs(from.x - targetBoothPos.x) < 1.4) return [targetBoothPos.clone()];
-        return [turnIn, targetBoothPos.clone()];
+        if (Math.abs(from.x - targetBoothPos.x) < 1.2 || Math.abs(from.z - targetBoothPos.z) < 1.2) {
+            return [targetBoothPos.clone()];
+        }
+        const corner = new THREE.Vector3(targetBoothPos.x, 0, from.z);
+        return [corner, targetBoothPos.clone()];
     }
 
     function triggerAutoWalk() {
@@ -413,78 +422,7 @@
         stopAutoWalk();
     }
 
-    function makeBeacon(accent: THREE.Color) {
-        const g = new THREE.Group();
-        const pin = new THREE.Mesh(
-            new THREE.ConeGeometry(0.46, 1.2, 24),
-            new THREE.MeshStandardMaterial({ color: accent, emissive: accent, emissiveIntensity: 0.95, roughness: 0.35 })
-        );
-        pin.rotation.x = Math.PI;
-        g.add(pin);
 
-        const ball = new THREE.Mesh(
-            new THREE.SphereGeometry(0.44, 24, 16),
-            new THREE.MeshStandardMaterial({ color: accent, emissive: accent, emissiveIntensity: 0.6, roughness: 0.3 })
-        );
-        ball.position.y = 0.65;
-        pin.add(ball);
-
-        const halo = new THREE.Mesh(
-            new THREE.TorusGeometry(1.1, 0.04, 8, 48),
-            new THREE.MeshBasicMaterial({ color: accent, transparent: true, opacity: 0.6 })
-        );
-        halo.rotation.x = Math.PI / 2;
-        halo.position.y = -1.3;
-        g.add(halo);
-
-        return g;
-    }
-
-    function makePathLine(accent: THREE.Color) {
-        const geometry = new THREE.BufferGeometry();
-        geometry.setAttribute("position", new THREE.BufferAttribute(new Float32Array(3 * PATH_POINTS), 3));
-        const material = new THREE.LineDashedMaterial({
-            color: accent,
-            dashSize: 0.6,
-            gapSize: 0.4,
-            transparent: true,
-            opacity: 0.95,
-            depthTest: false,
-            depthWrite: false
-        });
-        const line = new THREE.Line(geometry, material);
-        line.renderOrder = 10;
-        line.frustumCulled = false;
-        return line;
-    }
-
-    function updatePathLine(line: THREE.Line, from: THREE.Vector3, waypoints: THREE.Vector3[], t: number) {
-        const pts = [from, ...waypoints];
-        const legs: number[] = [];
-        let total = 0;
-        for (let i = 1; i < pts.length; i++) {
-            const len = Math.hypot(pts[i].x - pts[i - 1].x, pts[i].z - pts[i - 1].z);
-            legs.push(len);
-            total += len;
-        }
-
-        const pos = line.geometry.attributes.position as THREE.BufferAttribute;
-        for (let i = 0; i < PATH_POINTS; i++) {
-            let travel = (i / (PATH_POINTS - 1)) * total;
-            let leg = 0;
-            while (leg < legs.length - 1 && travel > legs[leg]) travel -= legs[leg++];
-            const s = legs[leg] > 1e-4 ? travel / legs[leg] : 0;
-            const a = pts[leg];
-            const b = pts[leg + 1];
-            pos.setXYZ(
-                i,
-                a.x + (b.x - a.x) * s,
-                0.05 + Math.sin((i / (PATH_POINTS - 1)) * 10 - t * 3.2) * 0.015,
-                a.z + (b.z - a.z) * s
-            );
-        }
-        line.computeLineDistances();
-    }
 
     async function initThreeScene() {
         if (typeof window === "undefined" || !canvasEl || !modalContainerEl || scene) return;
@@ -604,14 +542,7 @@
         colliders.push({ minX: -1e3, maxX: -HW, minZ: -1e3, maxZ: 1e3 });
         colliders.push({ minX: HW, maxX: 1e3, minZ: -1e3, maxZ: 1e3 });
 
-        // Overhead Waypoint Beacon over Visitor Stand
-        beaconGroup = makeBeacon(accentColor);
-        beaconGroup.position.set(visitorSlot.x, 5.2, visitorSlot.z);
-        scene.add(beaconGroup);
 
-        // Floor Wayfinding Breadcrumb Path Line
-        pathLineMesh = makePathLine(accentColor);
-        scene.add(pathLineMesh);
 
         // Hand holding Phone in First Person view
         phoneInstance = makePhone();
@@ -648,6 +579,7 @@
         window.addEventListener("keydown", handleKeyDown);
         window.addEventListener("keyup", handleKeyUp);
         window.addEventListener("mousemove", handleMouseMove);
+        window.addEventListener("pointerdown", handleWindowPointerDown);
         window.addEventListener("pointerup", handlePointerUp);
         window.addEventListener("blur", handleBlur);
         if (canvasEl) {
@@ -784,18 +716,7 @@
             radarY = ((playerPos.z + HALL.depth / 2) / HALL.depth) * 100;
             radarAngle = Math.atan2(Math.sin(yaw), Math.cos(yaw)) * (180 / Math.PI) - 90;
 
-            // Beacon Halo Animation
-            if (beaconGroup) {
-                const s = 1.0 + Math.sin(t * 3.5) * 0.08;
-                beaconGroup.scale.set(s, s, s);
-                beaconGroup.rotation.y = t * 0.8;
-            }
 
-            // Wayfinding Floor Line
-            if (pathLineMesh) {
-                const route = routeTo(playerPos);
-                updatePathLine(pathLineMesh, playerPos, route, t);
-            }
 
             // Phone in hand sway & live navigation screen
             if (phoneInstance) {
@@ -858,11 +779,26 @@
     function handleCanvasPointerDown(e: PointerEvent) {
         if (!is3DActive) return;
         if (e.pointerType === "touch" || (e.button !== undefined && e.button !== 0)) return;
+        const target = e.target as HTMLElement | null;
+        if (target && target.closest("button, select, a, input")) return;
         isMouseDown = true;
         lastMouseX = e.clientX;
         lastMouseY = e.clientY;
         showGestureHint = false;
         requestCanvasPointerLock();
+    }
+
+    function handleWindowPointerDown(e: PointerEvent) {
+        if (!is3DActive || !modalContainerEl) return;
+        const target = e.target as Node | null;
+        if (target && !modalContainerEl.contains(target)) {
+            isMouseDown = false;
+            pendingLookX = 0;
+            pendingLookY = 0;
+            if (typeof document !== "undefined" && document.pointerLockElement === canvasEl) {
+                document.exitPointerLock();
+            }
+        }
     }
 
     function handlePointerUp() {
@@ -878,8 +814,8 @@
             // Unconditional pointer lock mouse look
             pendingLookX += e.movementX * 0.0022;
             pendingLookY += e.movementY * 0.0022;
-        } else if (isMouseDown || e.buttons === 1) {
-            // Drag to look fallback
+        } else if (isMouseDown) {
+            // Drag to look fallback (ONLY when drag was initiated inside 3D viewport)
             const dx = e.movementX || (e.clientX - lastMouseX);
             const dy = e.movementY || (e.clientY - lastMouseY);
             pendingLookX += dx * 0.0035;
@@ -916,6 +852,7 @@
         window.removeEventListener("keydown", handleKeyDown);
         window.removeEventListener("keyup", handleKeyUp);
         window.removeEventListener("mousemove", handleMouseMove);
+        window.removeEventListener("pointerdown", handleWindowPointerDown);
         window.removeEventListener("pointerup", handlePointerUp);
         window.removeEventListener("blur", handleBlur);
         if (canvasEl) {
@@ -1006,7 +943,7 @@
                         Explore Exhibition Venue
                     </h3>
                     <p class="text-xs sm:text-sm text-white/80 max-w-md mb-6 leading-relaxed">
-                        First-person 3D navigation with wayfinding beacons.
+                        First-person 3D navigation.
                     </p>
 
                     <!-- Primary Launch Button -->

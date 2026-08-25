@@ -98,6 +98,7 @@
         // Build Merch Model with Brand Logo and Accent
         activeModelGroup = createMerchModel(modelId, {
             logoMap,
+            logoImage: logoImg,
             accent: displayColor
         });
 

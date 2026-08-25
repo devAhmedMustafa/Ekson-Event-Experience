@@ -48,12 +48,30 @@ export function contrastInk(hex: string): string {
   return lum > 0.55 ? '#10131a' : '#ffffff'
 }
 
+let lastLoadedLogoImg: HTMLImageElement | null = null
+
+export function getLoadedLogoImage(): HTMLImageElement | null {
+  return lastLoadedLogoImg
+}
+
 /** Decoded logo bitmap, or null if the visitor never supplied one. */
 export async function getLogoImage(): Promise<HTMLImageElement | null> {
   const logo = brand.logo
-  if (!logo) return null
-  if (imageCache.has(logo)) return imageCache.get(logo)!
-  const p = loadImage(logo).catch(() => null)
+  if (!logo) {
+    lastLoadedLogoImg = null
+    return null
+  }
+  if (imageCache.has(logo)) {
+    const img = await imageCache.get(logo)!
+    lastLoadedLogoImg = img
+    return img
+  }
+  const p = loadImage(logo)
+    .then((img) => {
+      lastLoadedLogoImg = img
+      return img
+    })
+    .catch(() => null)
   imageCache.set(logo, p)
   return p
 }

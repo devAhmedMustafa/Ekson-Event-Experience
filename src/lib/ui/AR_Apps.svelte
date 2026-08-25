@@ -1,6 +1,7 @@
 <script lang="ts">
     import { brand } from "$lib/brand.svelte";
     import { MERCH, type MerchItem } from "$lib/three/merch";
+    import MerchBoxViewer from "$lib/components/MerchBoxViewer.svelte";
 
     interface ARCardItem extends MerchItem {
         code: string;
@@ -35,6 +36,9 @@
         }
     ];
 
+    // Per-model Live Preview activation state
+    let liveModels = $state<Record<string, boolean>>({});
+
     // Dynamic QR code generation for mobile navigation to /ar route
     let originUrl = $state("");
     $effect(() => {
@@ -52,16 +56,22 @@
         return `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(url)}`;
     }
 
-    function handleOpenAr(modelId: string) {
-        if (!brand.isCustom) {
-            if (typeof window !== "undefined") {
-                window.dispatchEvent(new CustomEvent("ekson_open_brand_modal"));
-            }
+    function handleUnlockAr() {
+        if (typeof window !== "undefined") {
+            window.dispatchEvent(new CustomEvent("ekson_open_brand_modal"));
+        }
+    }
+
+    function startLivePreview(modelId: string) {
+        if (!brand.logo) {
+            handleUnlockAr();
             return;
         }
-        if (typeof window !== "undefined") {
-            window.location.href = getArUrl(modelId);
-        }
+        liveModels[modelId] = true;
+    }
+
+    function stopLivePreview(modelId: string) {
+        liveModels[modelId] = false;
     }
 </script>
 
@@ -99,7 +109,7 @@
                     <!-- Center Big QR Code Container -->
                     <div class="flex items-center gap-3 my-auto py-2">
                         <div class="relative size-24 sm:size-28 p-2 bg-white border border-black/10 rounded-2xl shrink-0 shadow-sm flex items-center justify-center overflow-hidden">
-                            {#if !brand.isCustom}
+                            {#if !brand.logo}
                                 <img
                                     src={getQrCodeUrl(app.id)}
                                     alt="{app.name} QR Code"
@@ -107,7 +117,7 @@
                                     loading="lazy"
                                 />
                                 <button
-                                    onclick={() => handleOpenAr(app.id)}
+                                    onclick={handleUnlockAr}
                                     class="absolute inset-0 bg-slate-950/75 backdrop-blur-xs flex flex-col items-center justify-center p-1 text-center cursor-pointer group/qr"
                                     title="Unlock AR Scan"
                                 >
@@ -127,34 +137,55 @@
                     </div>
                 </div>
 
-                <!-- Right Interactive 3D Stage -->
-                <div class="w-32 sm:w-44 md:w-52 h-full min-h-28 relative bg-slate-950 overflow-hidden rounded-2xl border border-black/10 shrink-0 group/vid flex flex-col justify-end p-3">
-                    {#if app.imageSrc}
-                        <img
-                            src={app.imageSrc}
-                            alt="{brand.name} {app.name} 3D Preview"
-                            class="absolute inset-0 w-full h-full object-cover"
-                        />
-                    {:else}
-                        <div class="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 flex flex-col items-center justify-center p-2 text-center">
-                            <span class="material-symbols-rounded text-3xl text-primary mb-1">{app.icon}</span>
-                            <span class="text-xs font-semibold text-white">{app.name}</span>
+                <!-- Right Interactive 3D Stage (In-Place 3D Live Preview) -->
+                <div class="w-32 sm:w-44 md:w-52 h-full min-h-28 relative  overflow-hidden rounded-2xl border border-black/10 shrink-0 group/vid flex flex-col justify-end">
+                    {#if !brand.logo}
+                        <!-- State 1: Brand logo NOT provided -->
+                        <div class="absolute inset-0 bg-linear-to-br from-slate-900 via-slate-950 to-slate-900 flex flex-col items-center justify-center p-2 text-center">
+                            <span class="material-symbols-rounded text-3xl text-amber-400/80 mb-1">lock</span>
+                            <span class="text-xs font-semibold text-white/90">{app.name}</span>
+                            <span class="text-[9px] text-white/50 mt-0.5">Logo Required</span>
                         </div>
-                    {/if}
 
-                    <!-- Hover Launch Overlay -->
-                    <button
-                        onclick={() => handleOpenAr(app.id)}
-                        class="absolute inset-0 bg-black/75 opacity-0 group-hover:opacity-100 transition duration-200 flex flex-col items-center justify-center gap-1.5 p-2 text-white cursor-pointer backdrop-blur-xs z-20 text-center"
-                        aria-label="Open 3D {app.name} Preview"
-                    >
-                        <span class="material-symbols-rounded text-2xl" style="color: {brand.primaryColor};">
-                            open_in_full
-                        </span>
-                        <span class="text-[10px] font-semibold uppercase tracking-wider">
-                            Open 3D Preview
-                        </span>
-                    </button>
+                        <button
+                            onclick={handleUnlockAr}
+                            class="absolute inset-0 bg-black/80 opacity-0 group-hover/vid:opacity-100 transition duration-200 flex flex-col items-center justify-center gap-1.5 p-2 text-white cursor-pointer backdrop-blur-xs z-20 text-center"
+                        >
+                            <span class="material-symbols-rounded text-2xl text-amber-400">auto_awesome</span>
+                            <span class="text-[10px] font-bold uppercase tracking-wider">
+                                Upload Logo to Preview
+                            </span>
+                        </button>
+                    {:else if !liveModels[app.id]}
+                        <!-- State 2: Brand logo IS provided, standby state waiting for user click -->
+                        <div class="absolute inset-0 bg-linear-to-br from-slate-900 via-slate-950 to-slate-900 flex flex-col items-center justify-center p-2 text-center">
+                            <span class="material-symbols-rounded text-3xl text-primary mb-1" style="color: {brand.primaryColor};">{app.icon}</span>
+                            <span class="text-xs font-semibold text-white">{app.name}</span>
+                            
+                        </div>
+
+                        <button
+                            onclick={() => startLivePreview(app.id)}
+                            class="absolute inset-0 bg-black/75 opacity-0 group-hover/vid:opacity-100 transition duration-200 flex flex-col items-center justify-center gap-1.5 p-2 text-white cursor-pointer backdrop-blur-xs z-20 text-center"
+                        >
+                            <span class="material-symbols-rounded text-2xl text-emerald-400">play_arrow</span>
+                            <span class="text-[10px] font-bold uppercase tracking-wider">
+                                Try 3D Live Preview
+                            </span>
+                        </button>
+                    {:else}
+                        <!-- State 3: Brand logo provided + User clicked to Live Preview -->
+                        <MerchBoxViewer modelId={app.id} name={app.name} icon={app.icon} />
+
+                        <button
+                            onclick={() => stopLivePreview(app.id)}
+                            class="absolute top-2 right-2 size-6 rounded-full bg-red-500/80 hover:bg-red-600 text-white flex items-center justify-center transition cursor-pointer z-30 shadow-md"
+                            title="Stop Live Preview"
+                            aria-label="Stop Live Preview"
+                        >
+                            <span class="material-symbols-rounded text-xs">close</span>
+                        </button>
+                    {/if}
                 </div>
             </div>
         {/each}

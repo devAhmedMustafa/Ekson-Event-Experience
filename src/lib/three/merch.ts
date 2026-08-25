@@ -3,6 +3,7 @@ import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.j
 import { mat, surface } from './materials'
 import { seg, bevel, bevelSegments, IS_HIGH } from './quality'
 import { fbm } from './noise'
+import { logoTexture, getLoadedLogoImage } from './logo-texture'
 
 export interface MerchItem {
   id: string
@@ -50,7 +51,24 @@ export const MERCH: MerchItem[] = [
   },
 ]
 
-export function createMerchModel(kind: string, opts: { logoMap?: THREE.Texture | null; accent?: string } = {}) {
+export interface MerchModelOpts {
+  logoMap?: THREE.Texture | null
+  logoImage?: HTMLImageElement | null
+  accent?: string
+}
+
+function resolveLogoTexture(opts: MerchModelOpts, targetAspect: number, padding = 0.08): THREE.Texture | null {
+  const img = opts.logoImage || getLoadedLogoImage()
+  if (img) {
+    return logoTexture(img, { aspect: targetAspect, padding })
+  }
+  if (opts.logoMap) {
+    return opts.logoMap
+  }
+  return logoTexture(null, { aspect: targetAspect, padding })
+}
+
+export function createMerchModel(kind: string, opts: MerchModelOpts = {}) {
   let model: THREE.Group
   switch (kind) {
     case 'pen':
@@ -155,7 +173,9 @@ function drape(geometry: THREE.BufferGeometry, { amount = 0.006, frequency = 3.5
 
 /* ── Mug ─────────────────────────────────────────────────────────────────── */
 
-function makeMug({ logoMap, accent = '#009dd6' }: { logoMap?: THREE.Texture | null; accent?: string } = {}) {
+function makeMug(opts: MerchModelOpts = {}) {
+  const accent = opts.accent || '#009dd6'
+  const logoMap = resolveLogoTexture(opts, 2.474, 0.08)
   const g = new THREE.Group()
   g.name = 'mug'
   const R = 0.041 // Ø82 mm
@@ -256,7 +276,9 @@ function makeMug({ logoMap, accent = '#009dd6' }: { logoMap?: THREE.Texture | nu
 
 /* ── Pen ─────────────────────────────────────────────────────────────────── */
 
-function makePen({ logoMap, accent = '#009dd6' }: { logoMap?: THREE.Texture | null; accent?: string } = {}) {
+function makePen(opts: MerchModelOpts = {}) {
+  const accent = opts.accent || '#009dd6'
+  const logoMap = resolveLogoTexture(opts, 0.2144, 0.08)
   const g = new THREE.Group()
   g.name = 'pen'
   const accentColor = new THREE.Color(accent)
@@ -349,7 +371,9 @@ function makePen({ logoMap, accent = '#009dd6' }: { logoMap?: THREE.Texture | nu
 
 /* ── Notebook ────────────────────────────────────────────────────────────── */
 
-function makeNotebook({ logoMap, accent = '#009dd6' }: { logoMap?: THREE.Texture | null; accent?: string } = {}) {
+function makeNotebook(opts: MerchModelOpts = {}) {
+  const accent = opts.accent || '#009dd6'
+  const logoMap = resolveLogoTexture(opts, 1.0, 0.08)
   const g = new THREE.Group()
   g.name = 'notebook'
   const accentColor = new THREE.Color(accent)
@@ -440,7 +464,9 @@ function makeNotebook({ logoMap, accent = '#009dd6' }: { logoMap?: THREE.Texture
 
 /* ── Tote bag ────────────────────────────────────────────────────────────── */
 
-function makeBag({ logoMap, accent = '#009dd6' }: { logoMap?: THREE.Texture | null; accent?: string } = {}) {
+function makeBag(opts: MerchModelOpts = {}) {
+  const accent = opts.accent || '#009dd6'
+  const logoMap = resolveLogoTexture(opts, 1.0, 0.08)
   const g = new THREE.Group()
   g.name = 'bag'
   const accentColor = new THREE.Color(accent)

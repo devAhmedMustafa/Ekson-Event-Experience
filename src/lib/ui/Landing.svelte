@@ -42,14 +42,20 @@
 
         <!-- Main Headline inspired by reference design -->
         <h1
-            class="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-center text-text tracking-tight leading-[1.02] transition-all duration-1000 ease-out {isLoaded ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-8 scale-95'}"
+            class="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-center tracking-tight leading-[1.02] transition-all duration-1000 ease-out {isLoaded ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-8 scale-95'}"
             style="transform: translate3d({mouseX * 0.3}px, {mouseY * 0.3}px, 0);"
         >
-            <span class="inline-block transition-all duration-300">
+            <span
+                class="inline-block text-transparent bg-clip-text transition-all duration-300 drop-shadow-xs"
+                style="background-image: linear-gradient(135deg, var(--brand-primary, {brand.primaryColor || '#009dd6'}), var(--brand-secondary, {brand.darkColor || '#04547c'}), var(--brand-primary, {brand.primaryColor || '#009dd6'}));"
+            >
                 {brand.name}
             </span>
             <br />
-            <span class="inline-block text-transparent bg-clip-text bg-gradient-to-r from-text via-primary to-text transition-all duration-300">
+            <span
+                class="inline-block text-transparent bg-clip-text transition-all duration-300"
+                style="background-image: linear-gradient(135deg, #010104 0%, var(--brand-secondary, {brand.darkColor || '#04547c'}) 50%, #010104 100%);"
+            >
                 Event Experiences.
             </span>
         </h1>
@@ -76,7 +82,7 @@
                     arrow_forward
                 </span>
                 {#if brand.isCustom}
-                    <span class="px-2.5 py-0.5 bg-white/20 text-white text-[10px] rounded-full font-bold ml-1 truncate max-w-[120px]">
+                    <span class="px-2.5 py-0.5 bg-white/20 text-white text-[10px] rounded-full font-bold ml-1 truncate max-w-30">
                         {brand.name}
                     </span>
                 {/if}
