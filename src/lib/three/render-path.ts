@@ -170,8 +170,11 @@ export function createRenderPath(
 }
 
 function hideBackgroundFromGBuffer(gtao: any, scene: THREE.Scene) {
-  const inner = gtao.renderOverride.bind(gtao)
-  gtao.renderOverride = (...args: any[]) => {
+  const method = gtao._renderOverride ? '_renderOverride' : gtao.renderOverride ? 'renderOverride' : null
+  if (!method) return
+
+  const inner = gtao[method].bind(gtao)
+  gtao[method] = (...args: any[]) => {
     const background = scene.background
     scene.background = null
     try {

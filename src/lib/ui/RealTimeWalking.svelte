@@ -19,6 +19,7 @@
     import { mat } from "$lib/three/materials";
 
     let is3DActive = $state(false);
+    let is3DLoading = $state(false);
     let isPointerLocked = $state(false);
     let isArrived = $state(false);
     let isAutoWalking = $state(false);
@@ -358,11 +359,21 @@
         isPointerLocked = typeof document !== "undefined" && document.pointerLockElement === canvasEl;
     }
 
-    function open3DWalkthrough() {
-        is3DActive = true;
-        setTimeout(() => {
+    $effect(() => {
+        if (is3DActive && canvasEl && modalContainerEl && !scene) {
             initThreeScene();
-        }, 60);
+        }
+    });
+
+    function open3DWalkthrough() {
+        if (!brand.isCustom) {
+            if (typeof window !== "undefined") {
+                window.dispatchEvent(new CustomEvent("ekson_open_brand_modal"));
+            }
+            return;
+        }
+        is3DActive = true;
+        is3DLoading = true;
     }
 
     function close3DWalkthrough() {
@@ -370,6 +381,7 @@
             document.exitPointerLock();
         }
         is3DActive = false;
+        is3DLoading = false;
         cleanupThreeScene();
     }
 
@@ -470,13 +482,17 @@
                 a.z + (b.z - a.z) * s
             );
         }
-        pos.needsUpdate = true;
         line.computeLineDistances();
     }
 
     async function initThreeScene() {
-        if (typeof window === "undefined" || !canvasEl || !modalContainerEl) return;
-        cleanupThreeScene();
+        if (typeof window === "undefined" || !canvasEl || !modalContainerEl || scene) return;
+        is3DLoading = true;
+
+        try {
+            cleanupThreeScene();
+
+            await new Promise((r) => setTimeout(r, 20));
 
         const w = modalContainerEl.clientWidth;
         const h = modalContainerEl.clientHeight;
@@ -531,10 +547,14 @@
         const accentColor = new THREE.Color(accentHex);
         const darkAccentHex = brand.darkColor || "#04547c";
 
+        await new Promise((r) => setTimeout(r, 20));
+
         // Build Entire Exhibition Hall
         const hall = makeHall({ accent: accentHex });
         scene.add(hall);
         freeze(hall);
+
+        await new Promise((r) => setTimeout(r, 20));
 
         // Build All 8 Stands (Visitor's Branded Stand at Slot 3)
         const slots = boothSlots();
@@ -599,6 +619,8 @@
             scene.add(camera);
         }
 
+        await new Promise((r) => setTimeout(r, 20));
+
         // Render Path / Post Processing
         renderPath = createRenderPath(renderer, scene, camera, {
             aoRadius: 0.7,
@@ -654,6 +676,28 @@
                 pitch = Math.max(-1.15, Math.min(1.15, pitch - pendingLookY));
                 pendingLookX = 0;
                 pendingLookY = 0;
+            }
+
+            if (camera) {
+                camera.rotation.y = yaw;
+                camera.rotation.x = pitch;
+            }
+
+            // 2. Determine movement direction
+            const speed = keysPressed["ShiftLeft"] || keysPressed["ShiftRight"] ? RUN_SPEED : WALK_SPEED;
+            speedMode = speed === RUN_SPEED ? "run" : "walk";
+
+            move.set(0, 0, 0);
+
+            if (keysPressed["KeyW"] || keysPressed["ArrowUp"]) move.z -= 1;
+            if (keysPressed["KeyS"] || keysPressed["ArrowDown"]) move.z += 1;
+            if (keysPressed["KeyA"] || keysPressed["ArrowLeft"]) move.x -= 1;
+            if (keysPressed["KeyD"] || keysPressed["ArrowRight"]) move.x += 1;
+
+            if (move.lengthSq() > 0) {
+                stopAutoWalk();
+                move.normalize();
+                showGestureHint = false;
             }
 
             // 2. Auto-walk Autopilot
@@ -780,6 +824,12 @@
         };
 
         animate();
+        await new Promise((r) => setTimeout(r, 60));
+        } catch (err) {
+            console.error("3D Walkthrough initialization error:", err);
+        } finally {
+            is3DLoading = false;
+        }
     }
 
     function handleKeyDown(e: KeyboardEvent) {
@@ -880,6 +930,9 @@
         renderPath = null;
         renderer?.dispose();
         if (scene) disposeObject(scene);
+        scene = null;
+        renderer = null;
+        camera = null;
     }
 
     onMount(() => {
@@ -957,29 +1010,45 @@
 
                 <!-- Center Launch Overlay & Information Badge -->
                 <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-black/60 flex flex-col items-center justify-center p-4 text-center">
-                    <!-- Venue Badge -->
-                    <div class="inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-md rounded-full border border-white/20 text-white font-mono text-[10px] uppercase tracking-widest mb-3">
-                        <span class="size-2 rounded-full animate-pulse" style="background-color: {brand.primaryColor};"></span>
-                        <span>{brand.name} Stand · Slot B-14</span>
-                    </div>
+                    {#if !brand.isCustom}
+                        <div class="mb-3 px-3 py-1 bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider flex items-center gap-1.5">
+                            <span class="material-symbols-rounded text-sm">lock</span>
+                            <span>Provide Brand Details To Unlock Walkthrough</span>
+                        </div>
+                        <button
+                            onclick={open3DWalkthrough}
+                            class="group/btn relative px-7 py-3 text-white font-mono font-bold text-xs sm:text-sm uppercase tracking-widest rounded-2xl shadow-xl transition-all duration-200 transform hover:scale-105 active:scale-95 flex items-center gap-2.5 cursor-pointer border border-white/20"
+                            style="background-color: {brand.primaryColor};"
+                        >
+                            <span class="material-symbols-rounded text-lg">auto_awesome</span>
+                            <span>Try it for your brand</span>
+                            <span class="material-symbols-rounded text-base opacity-70 group-hover/btn:translate-x-0.5 transition">arrow_forward</span>
+                        </button>
+                    {:else}
+                        <!-- Venue Badge -->
+                        <div class="inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-md rounded-full border border-white/20 text-white font-mono text-[10px] uppercase tracking-widest mb-3">
+                            <span class="size-2 rounded-full animate-pulse" style="background-color: {brand.primaryColor};"></span>
+                            <span>{brand.name} Stand · Slot B-14</span>
+                        </div>
 
-                    <h3 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white uppercase tracking-tight max-w-lg drop-shadow-md">
-                        Explore Exhibition Hall 3
-                    </h3>
-                    <p class="text-xs sm:text-sm text-white/80 max-w-md mt-1.5 mb-6 font-sans">
-                        Navigate the aisles with free mouse-look, collision physics, and live AR wayfinding beacons.
-                    </p>
+                        <h3 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white uppercase tracking-tight max-w-lg drop-shadow-md">
+                            Explore Exhibition Hall 3
+                        </h3>
+                        <p class="text-xs sm:text-sm text-white/80 max-w-md mt-1.5 mb-6 font-sans">
+                            Navigate the aisles with free mouse-look, collision physics, and live AR wayfinding beacons.
+                        </p>
 
-                    <!-- Primary Launch Button -->
-                    <button
-                        onclick={open3DWalkthrough}
-                        class="group/btn relative px-7 py-3 text-white font-mono font-bold text-xs sm:text-sm uppercase tracking-widest rounded-2xl shadow-xl transition-all duration-200 transform hover:scale-105 active:scale-95 flex items-center gap-2.5 cursor-pointer border border-white/20"
-                        style="background-color: {brand.primaryColor};"
-                    >
-                        <span class="material-symbols-rounded text-lg">directions_walk</span>
-                        <span>Enter 3D Walkthrough</span>
-                        <span class="material-symbols-rounded text-base opacity-70 group-hover/btn:translate-x-0.5 transition">arrow_forward</span>
-                    </button>
+                        <!-- Primary Launch Button -->
+                        <button
+                            onclick={open3DWalkthrough}
+                            class="group/btn relative px-7 py-3 text-white font-mono font-bold text-xs sm:text-sm uppercase tracking-widest rounded-2xl shadow-xl transition-all duration-200 transform hover:scale-105 active:scale-95 flex items-center gap-2.5 cursor-pointer border border-white/20"
+                            style="background-color: {brand.primaryColor};"
+                        >
+                            <span class="material-symbols-rounded text-lg">directions_walk</span>
+                            <span>Enter 3D Walkthrough</span>
+                            <span class="material-symbols-rounded text-base opacity-70 group-hover/btn:translate-x-0.5 transition">arrow_forward</span>
+                        </button>
+                    {/if}
                 </div>
 
                 <!-- Bottom Left Telemetry Preview -->
@@ -989,6 +1058,15 @@
                 </div>
             {:else}
                 <!-- LIVE 3D WALKTHROUGH (BOUNDED IN THIS CONTAINER BOX) -->
+                {#if is3DLoading}
+                    <div class="absolute inset-0 bg-slate-950/85 backdrop-blur-md flex flex-col items-center justify-center text-white z-30 transition-opacity duration-300">
+                        <div class="size-10 border-3 border-white/20 border-t-primary rounded-full animate-spin mb-3 shadow-lg" style="border-top-color: {brand.primaryColor};"></div>
+                        <span class="text-xs font-mono font-bold uppercase tracking-widest text-white/90">
+                            Assembling 3D Hall & Stand…
+                        </span>
+                        <span class="text-[10px] font-mono text-white/50 mt-1">Generating 52m Venue, Stands & AR Navigation</span>
+                    </div>
+                {/if}
                 <!-- svelte-ignore a11y_click_events_have_key_events -->
                 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
                 <canvas

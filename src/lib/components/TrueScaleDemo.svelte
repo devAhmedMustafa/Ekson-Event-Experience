@@ -299,8 +299,6 @@
         markersGroup = makeSlotMarkers(boothGroup, brand.primaryColor || "#009dd6");
         markersGroup.visible = showLogoSlots;
         scene.add(markersGroup);
-
-        isLoading = false;
     }
 
     $effect(() => {
@@ -316,7 +314,11 @@
 
     $effect(() => {
         if (isLive && containerEl && canvasEl && !isInitialized) {
-            init();
+            isLoading = true;
+            const timer = setTimeout(() => {
+                init();
+            }, 50);
+            return () => clearTimeout(timer);
         }
     });
 
@@ -329,141 +331,160 @@
         if (!containerEl || !canvasEl || isInitialized) return;
         isInitialized = true;
 
-        scene = new THREE.Scene();
-        scene.background = backdropGradient("#eef1f6", "#ccd2de");
+        try {
+            isLoading = true;
 
-        const w = containerEl.clientWidth;
-        const h = containerEl.clientHeight;
+            await new Promise((r) => setTimeout(r, 20));
 
-        camera = new THREE.PerspectiveCamera(42, w / h, 0.1, 60);
-        camera.position.copy(HOME.pos);
+            scene = new THREE.Scene();
+            scene.background = backdropGradient("#eef1f6", "#ccd2de");
 
-        renderer = new THREE.WebGLRenderer({
-            canvas: canvasEl,
-            antialias: true,
-            powerPreference: "high-performance"
-        });
-        renderer.setSize(w, h);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, QUALITY.maxPixelRatio));
-        renderer.shadowMap.enabled = QUALITY.shadows;
-        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        renderer.toneMappingExposure = 1.05;
+            const w = containerEl.clientWidth;
+            const h = containerEl.clientHeight;
 
-        controls = new OrbitControls(camera, canvasEl);
-        controls.target.copy(HOME.target);
-        controls.enableDamping = true;
-        controls.dampingFactor = 0.06;
-        controls.enablePan = false;
-        controls.minDistance = 5.5;
-        controls.maxDistance = 20;
-        controls.minPolarAngle = 0.25;
-        controls.maxPolarAngle = Math.PI / 2.08;
-        controls.autoRotate = autoRotate;
-        controls.autoRotateSpeed = 0.42;
+            camera = new THREE.PerspectiveCamera(42, w / h, 0.1, 60);
+            camera.position.copy(HOME.pos);
 
-        controls.addEventListener("start", () => {
-            autoRotate = false;
-        });
+            renderer = new THREE.WebGLRenderer({
+                canvas: canvasEl,
+                antialias: true,
+                powerPreference: "high-performance"
+            });
+            renderer.setSize(w, h);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, QUALITY.maxPixelRatio));
+            renderer.shadowMap.enabled = QUALITY.shadows;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            renderer.toneMappingExposure = 1.05;
 
-        // Lighting & Environment
-        const envPromise = envFor(renderer);
-        envPromise.then((env) => {
-            if (scene) {
-                scene.environment = env;
-                scene.environmentIntensity = QUALITY.envMapIntensity * 0.7;
-            }
-        });
+            controls = new OrbitControls(camera, canvasEl);
+            controls.target.copy(HOME.target);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.06;
+            controls.enablePan = false;
+            controls.minDistance = 5.5;
+            controls.maxDistance = 20;
+            controls.minPolarAngle = 0.25;
+            controls.maxPolarAngle = Math.PI / 2.08;
+            controls.autoRotate = autoRotate;
+            controls.autoRotateSpeed = 0.42;
 
-        studioRig = studioLights(scene, { intensity: 0.95, shadowRadius: 12 });
+            controls.addEventListener("start", () => {
+                autoRotate = false;
+            });
 
-        // Concrete Ground Plinth
-        const ground = new THREE.Mesh(new THREE.CircleGeometry(28, 72), mat.concrete(0xbfc4cf, 26));
-        ground.rotation.x = -Math.PI / 2;
-        ground.position.y = -0.002;
-        ground.receiveShadow = true;
-        scene.add(ground);
-
-        // Assemble Procedural Kubix Stand
-        await assembleBoothScene();
-
-        renderPath = createRenderPath(renderer, scene, camera, {
-            aoRadius: 0.35,
-            aoIntensity: 1.0,
-            bloomStrength: 0.1,
-            bloomThreshold: 0.95,
-            vignetteDarkness: 1.0,
-            vignetteOffset: 1.15
-        });
-
-        handleResize = () => {
-            if (!containerEl || !camera || !renderer) return;
-            const nw = containerEl.clientWidth;
-            const nh = containerEl.clientHeight;
-            camera.aspect = nw / nh;
-            camera.updateProjectionMatrix();
-            renderer.setSize(nw, nh);
-            renderPath?.setSize(nw, nh);
-        };
-        window.addEventListener("resize", handleResize);
-
-        // Game Loop
-        let clock = new THREE.Clock();
-        let markerT = 0;
-
-        const animate = () => {
-            animationFrameId = requestAnimationFrame(animate);
-            const dt = clock.getDelta();
-
-            if (isTransitioning && camera && controls) {
-                const elapsed = performance.now() - transitionStartTime;
-                const t = Math.min(elapsed / transitionDuration, 1);
-                // Smooth easeOutCubic
-                const ease = 1 - Math.pow(1 - t, 3);
-
-                camera.position.lerpVectors(camStartPos, camEndPos, ease);
-                controls.target.lerpVectors(targetStart, targetEnd, ease);
-
-                if (t >= 1) {
-                    isTransitioning = false;
+            // Lighting & Environment
+            const envPromise = envFor(renderer);
+            envPromise.then((env) => {
+                if (scene) {
+                    scene.environment = env;
+                    scene.environmentIntensity = QUALITY.envMapIntensity * 0.7;
                 }
-            }
+            });
 
-            if (controls) {
-                controls.autoRotate = autoRotate && !isTransitioning;
-                controls.update();
-            }
+            studioRig = studioLights(scene, { intensity: 0.95, shadowRadius: 12 });
 
-            if (showLogoSlots && markersGroup && camera) {
-                markerT += dt;
-                const pulse = 0.6 + Math.sin(markerT * 3.5) * 0.4;
-                for (const m of markersGroup.children) {
-                    const ring = m.userData.ring as THREE.LineSegments | undefined;
-                    if (ring?.material && "opacity" in (ring.material as any)) {
-                        (ring.material as any).opacity = pulse;
-                    }
-                    const sprite = m.userData.sprite as THREE.Mesh | undefined;
-                    if (sprite?.material && "opacity" in (sprite.material as any)) {
-                        (sprite.material as any).opacity = 0.8 + pulse * 0.2;
-                        sprite.quaternion.copy(camera.quaternion);
-                    }
-                }
-            }
+            // Concrete Ground Plinth
+            const ground = new THREE.Mesh(new THREE.CircleGeometry(28, 72), mat.concrete(0xbfc4cf, 26));
+            ground.rotation.x = -Math.PI / 2;
+            ground.position.y = -0.002;
+            ground.receiveShadow = true;
+            scene.add(ground);
 
-            if (renderPath) {
-                renderPath.render();
-            } else if (renderer && scene && camera) {
-                renderer.render(scene, camera);
-            }
-        };
+            await new Promise((r) => setTimeout(r, 20));
 
-        animateFn = animate;
-        animate();
-
-        onBrandUpdated = async () => {
+            // Assemble Procedural Kubix Stand
             await assembleBoothScene();
-        };
-        window.addEventListener("ekson_brand_updated", onBrandUpdated);
+
+            await new Promise((r) => setTimeout(r, 20));
+
+            renderPath = createRenderPath(renderer, scene, camera, {
+                aoRadius: 0.35,
+                aoIntensity: 1.0,
+                bloomStrength: 0.1,
+                bloomThreshold: 0.95,
+                vignetteDarkness: 1.0,
+                vignetteOffset: 1.15
+            });
+
+            handleResize = () => {
+                if (!containerEl || !camera || !renderer) return;
+                const nw = containerEl.clientWidth;
+                const nh = containerEl.clientHeight;
+                camera.aspect = nw / nh;
+                camera.updateProjectionMatrix();
+                renderer.setSize(nw, nh);
+                renderPath?.setSize(nw, nh);
+            };
+            window.addEventListener("resize", handleResize);
+
+            // Game Loop
+            let clock = new THREE.Clock();
+            let markerT = 0;
+
+            const animate = () => {
+                animationFrameId = requestAnimationFrame(animate);
+                const dt = clock.getDelta();
+
+                if (isTransitioning && camera && controls) {
+                    const elapsed = performance.now() - transitionStartTime;
+                    const t = Math.min(elapsed / transitionDuration, 1);
+                    // Smooth easeOutCubic
+                    const ease = 1 - Math.pow(1 - t, 3);
+
+                    camera.position.lerpVectors(camStartPos, camEndPos, ease);
+                    controls.target.lerpVectors(targetStart, targetEnd, ease);
+
+                    if (t >= 1) {
+                        isTransitioning = false;
+                    }
+                }
+
+                if (controls) {
+                    controls.autoRotate = autoRotate && !isTransitioning;
+                    controls.update();
+                }
+
+                if (showLogoSlots && markersGroup && camera) {
+                    markerT += dt;
+                    const pulse = 0.6 + Math.sin(markerT * 3.5) * 0.4;
+                    for (const m of markersGroup.children) {
+                        const ring = m.userData.ring as THREE.LineSegments | undefined;
+                        if (ring?.material && "opacity" in (ring.material as any)) {
+                            (ring.material as any).opacity = pulse;
+                        }
+                        const sprite = m.userData.sprite as THREE.Mesh | undefined;
+                        if (sprite?.material && "opacity" in (sprite.material as any)) {
+                            (sprite.material as any).opacity = 0.8 + pulse * 0.2;
+                            sprite.quaternion.copy(camera.quaternion);
+                        }
+                    }
+                }
+
+                if (renderPath) {
+                    renderPath.render();
+                } else if (renderer && scene && camera) {
+                    renderer.render(scene, camera);
+                }
+            };
+
+            animateFn = animate;
+            animate();
+
+            onBrandUpdated = async () => {
+                isLoading = true;
+                await new Promise((r) => setTimeout(r, 20));
+                await assembleBoothScene();
+                isLoading = false;
+            };
+            window.addEventListener("ekson_brand_updated", onBrandUpdated);
+
+            await new Promise((r) => setTimeout(r, 60));
+        } catch (err) {
+            console.error("TrueScaleDemo init error:", err);
+        } finally {
+            isLoading = false;
+        }
     };
 
     onDestroy(() => {
@@ -623,11 +644,12 @@
 
         <!-- Loading Overlay -->
         {#if isLoading}
-            <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-xs flex flex-col items-center justify-center text-white z-20">
-                <div class="size-8 border-2 border-primary border-t-transparent rounded-full animate-spin mb-2" style="border-top-color: {brand.primaryColor};"></div>
-                <span class="text-xs font-mono font-bold uppercase tracking-widest">
+            <div class="absolute inset-0 bg-slate-900/80 backdrop-blur-md flex flex-col items-center justify-center text-white z-30 transition-opacity duration-300">
+                <div class="size-10 border-3 border-white/20 border-t-primary rounded-full animate-spin mb-3 shadow-lg" style="border-top-color: {brand.primaryColor};"></div>
+                <span class="text-xs font-mono font-bold uppercase tracking-widest text-white/90">
                     Assembling True Scale Stand…
                 </span>
+                <span class="text-[10px] font-mono text-white/50 mt-1">Generating High-Precision 3D Geometry & Textures</span>
             </div>
         {/if}
     {/if}
