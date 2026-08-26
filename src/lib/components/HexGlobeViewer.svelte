@@ -614,7 +614,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                 <!-- Feature 1: 360 Experience -->
                 <div class="bg-white/70 backdrop-blur-xl border border-black/5 rounded-2xl p-3.5 flex items-center gap-3 shadow-2xs">
-                    <div class="size-9 rounded-xl bg-primary flex items-center justify-center shrink-0" style="color: {brand.primaryColor}">
+                    <div class="size-9 rounded-xl flex items-center justify-center shrink-0" style="color: {brand.primaryColor}">
                         <span class="material-symbols-rounded text-xl">360</span>
                     </div>
                     <div>
@@ -625,7 +625,7 @@
 
                 <!-- Feature 2: Iconic Destinations -->
                 <div class="bg-white/70 backdrop-blur-xl border border-black/5 rounded-2xl p-3.5 flex items-center gap-3 shadow-2xs">
-                    <div class="size-9 rounded-xl bg-primary flex items-center justify-center shrink-0" style="color: {brand.primaryColor}">
+                    <div class="size-9 rounded-xl flex items-center justify-center shrink-0" style="color: {brand.primaryColor}">
                         <span class="material-symbols-rounded text-xl">map</span>
                     </div>
                     <div>
@@ -636,7 +636,7 @@
 
                 <!-- Feature 3: Realistic Immersion -->
                 <div class="bg-white/70 backdrop-blur-xl border border-black/5 rounded-2xl p-3.5 flex items-center gap-3 shadow-2xs">
-                    <div class="size-9 rounded-xl bg-primary flex items-center justify-center shrink-0" style="color: {brand.primaryColor}">
+                    <div class="size-9 rounded-xl flex items-center justify-center shrink-0" style="color: {brand.primaryColor}">
                         <span class="material-symbols-rounded text-xl">view_in_ar</span>
                     </div>
                     <div>
@@ -647,7 +647,7 @@
 
                 <!-- Feature 4: Unforgettable Memories -->
                 <div class="bg-white/70 backdrop-blur-xl border border-black/5 rounded-2xl p-3.5 flex items-center gap-3 shadow-2xs">
-                    <div class="size-9 rounded-xl bg-primary flex items-center justify-center shrink-0" style="color: {brand.primaryColor}">
+                    <div class="size-9 rounded-xl flex items-center justify-center shrink-0" style="color: {brand.primaryColor}">
                         <span class="material-symbols-rounded text-xl">auto_awesome</span>
                     </div>
                     <div>
