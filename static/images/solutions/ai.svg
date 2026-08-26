@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <defs>
+    <linearGradient id="aiGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#009dd6"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#9333ea"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+  <circle cx="100" cy="100" r="90" fill="url(#aiGrad)" fill-opacity="0.1" stroke="url(#aiGrad)" stroke-width="2" stroke-dasharray="8 6"/>
+  <rect x="55" y="55" width="90" height="90" rx="20" fill="#010104" stroke="url(#aiGrad)" stroke-width="3" filter="url(#glow)"/>
+  <path d="M75 100 C75 80, 85 70, 100 70 C115 70, 125 80, 125 100 C125 120, 115 130, 100 130 C85 130, 75 120, 75 100 Z" stroke="url(#aiGrad)" stroke-width="4" fill="none"/>
+  <circle cx="100" cy="100" r="12" fill="url(#aiGrad)"/>
+  <circle cx="85" cy="88" r="4" fill="#38bdf8"/>
+  <circle cx="115" cy="88" r="4" fill="#38bdf8"/>
+  <circle cx="85" cy="112" r="4" fill="#38bdf8"/>
+  <circle cx="115" cy="112" r="4" fill="#38bdf8"/>
+  <line x1="85" y1="88" x2="100" y2="100" stroke="#38bdf8" stroke-width="2"/>
+  <line x1="115" y1="88" x2="100" y2="100" stroke="#38bdf8" stroke-width="2"/>
+  <line x1="85" y1="112" x2="100" y2="100" stroke="#38bdf8" stroke-width="2"/>
+  <line x1="115" y1="112" x2="100" y2="100" stroke="#38bdf8" stroke-width="2"/>
+  <path d="M40 100 L55 100 M145 100 L160 100 M100 40 L100 55 M100 145 L100 160" stroke="url(#aiGrad)" stroke-width="3" stroke-linecap="round"/>
+</svg>

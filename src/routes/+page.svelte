@@ -27,8 +27,8 @@
     <AboutUs />
 </section>
 
-<!-- NO overflow-hidden on interactive section so position:sticky works for Tour360 & TrueScaleDemo -->
-<section id="interactive" class="relative w-full">
+<!-- NO overflow-hidden on interactive section so position:sticky works for Tour360 & TrueScaleDemo, but overflow-x-hidden prevents horizontal scrollbars -->
+<section id="interactive" class="relative w-full overflow-x-hidden">
     <InteractionApplications />
 </section>
 

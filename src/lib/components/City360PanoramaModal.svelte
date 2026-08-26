@@ -331,21 +331,10 @@
     <!-- TOP GLASS TOOLBAR (City Badge & Control Pill) -->
     <div class="relative z-10 p-4 sm:p-6 flex items-start justify-between pointer-events-none w-full">
         <!-- City Badge & Location Tag -->
-        <div class="bg-black/75 backdrop-blur-xl border border-white/15 px-4 py-2.5 rounded-2xl shadow-2xl flex flex-col gap-1 pointer-events-auto max-w-md">
-            <div class="flex items-center gap-2">
-                <span class="size-2.5 rounded-full animate-ping shrink-0" style="background-color: {brand.primaryColor || '#009dd6'};"></span>
-                <span class="text-xs font-mono font-bold text-white/70 uppercase tracking-wider">
-                    {#if activePlace.type === "cubic"}
-                        360° CUBIC ORTHO VIEW • {city.country.toUpperCase()}
-                    {:else if activePlace.type === "embed"}
-                        360° INTERACTIVE TOUR • {city.country.toUpperCase()}
-                    {:else}
-                        360° PANORAMA • {city.country.toUpperCase()}
-                    {/if}
-                </span>
-            </div>
+        <div class="bg-black/45 backdrop-blur-xs border border-white/15 px-4 py-2.5 rounded-2xl shadow-2xl flex flex-col gap-1 pointer-events-auto max-w-md">
+        
             <h2 class="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2">
-                <span>📍 {city.name}</span>
+                <span>{city.name}</span>
                 <span class="text-sm font-semibold text-white/50 truncate">• {activePlace.title}</span>
             </h2>
         </div>

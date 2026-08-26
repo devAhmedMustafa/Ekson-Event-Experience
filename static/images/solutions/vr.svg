@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <defs>
+    <linearGradient id="vrGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#9333ea"/>
+      <stop offset="50%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#009dd6"/>
+    </linearGradient>
+  </defs>
+  <circle cx="100" cy="100" r="90" fill="url(#vrGrad)" fill-opacity="0.1" stroke="url(#vrGrad)" stroke-width="2" stroke-dasharray="6 6"/>
+  <!-- VR Headset Silhouette -->
+  <rect x="40" y="70" width="120" height="60" rx="24" fill="#010104" stroke="url(#vrGrad)" stroke-width="4"/>
+  <rect x="52" y="80" width="42" height="40" rx="14" fill="url(#vrGrad)" fill-opacity="0.3" stroke="url(#vrGrad)" stroke-width="2"/>
+  <rect x="106" y="80" width="42" height="40" rx="14" fill="url(#vrGrad)" fill-opacity="0.3" stroke="url(#vrGrad)" stroke-width="2"/>
+  <circle cx="73" cy="100" r="10" fill="#38bdf8"/>
+  <circle cx="127" cy="100" r="10" fill="#38bdf8"/>
+  <path d="M92 110 C96 114, 104 114, 108 110" stroke="url(#vrGrad)" stroke-width="3" stroke-linecap="round"/>
+  <path d="M30 95 C30 75, 50 55, 100 55 C150 55, 170 75, 170 95" stroke="url(#vrGrad)" stroke-width="3" stroke-dasharray="4 4" fill="none"/>
+</svg>

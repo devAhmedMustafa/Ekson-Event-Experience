@@ -35,35 +35,6 @@
 
     const CITIES: CityPinData[] = [
         {
-            id: "cairo",
-            name: "Cairo",
-            country: "Egypt",
-            lat: 30.0444,
-            lon: 31.2357,
-            placeholders: [
-                {
-                    title: "Giza Pyramids 360°",
-                    url: "https://360stories.com/cairo/place/giza-pyramids?mode=2&playerMode=2",
-                    tag: "Interactive Tour",
-                    type: "embed",
-                    embedUrl: "https://360stories.com/cairo/place/giza-pyramids?mode=2&playerMode=2"
-                },
-                {
-                    title: "Cairo Pyramids Cubic",
-                    url: "/cubic_views/Cairo Pyramids/mobile_f.jpg",
-                    tag: "Cubic View",
-                    type: "cubic"
-                },
-                {
-                    title: "Nile River Panorama",
-                    url: "https://360stories.com/cairo/place/nile-river?mode=2&playerMode=2",
-                    tag: "360° View",
-                    type: "embed",
-                    embedUrl: "https://360stories.com/cairo/place/nile-river?mode=2&playerMode=2"
-                }
-            ]
-        },
-        {
             id: "paris",
             name: "Paris",
             country: "France",
@@ -71,15 +42,8 @@
             lon: 2.3522,
             placeholders: [
                 {
-                    title: "Eiffel Tower 360°",
-                    url: "https://360stories.com/paris/place/eiffel-tower?mode=2&playerMode=2",
-                    tag: "Interactive Tour",
-                    type: "embed",
-                    embedUrl: "https://360stories.com/paris/place/eiffel-tower?mode=2&playerMode=2"
-                },
-                {
-                    title: "Paris Eiffel Tower Cubic",
-                    url: "/cubic_views/Paris Eiffel Tower/mobile_f.jpg",
+                    title: "Eiffel Tower",
+                    url: "/cubic_views/Paris Eiffel Tower",
                     tag: "Cubic View",
                     type: "cubic"
                 },
@@ -92,35 +56,35 @@
                 }
             ]
         },
-        {
-            id: "london",
-            name: "London",
-            country: "United Kingdom",
-            lat: 51.5074,
-            lon: -0.1278,
-            placeholders: [
-                {
-                    title: "Tower Bridge 360°",
-                    url: "https://360stories.com/London/place/London-Tower-Bridge?mode=2&playerMode=2",
-                    tag: "Interactive Tour",
-                    type: "embed",
-                    embedUrl: "https://360stories.com/London/place/London-Tower-Bridge?mode=2&playerMode=2"
-                },
-                {
-                    title: "Big Ben Cubic View",
-                    url: "/cubic_views/Big Ben/mobile_f.jpg",
-                    tag: "Cubic View",
-                    type: "cubic"
-                },
-                {
-                    title: "Big Ben 360°",
-                    url: "https://360stories.com/London/place/Big-Ben?mode=2&playerMode=2",
-                    tag: "360° View",
-                    type: "embed",
-                    embedUrl: "https://360stories.com/London/place/Big-Ben?mode=2&playerMode=2"
-                }
-            ]
-        },
+        // {
+        //     id: "london",
+        //     name: "London",
+        //     country: "United Kingdom",
+        //     lat: 51.5074,
+        //     lon: -0.1278,
+        //     placeholders: [
+        //         {
+        //             title: "Tower Bridge 360°",
+        //             url: "https://360stories.com/London/place/London-Tower-Bridge?mode=2&playerMode=2",
+        //             tag: "Interactive Tour",
+        //             type: "embed",
+        //             embedUrl: "https://360stories.com/London/place/London-Tower-Bridge?mode=2&playerMode=2"
+        //         },
+        //         {
+        //             title: "Big Ben Cubic View",
+        //             url: "/cubic_views/Big Ben/mobile_f.jpg",
+        //             tag: "Cubic View",
+        //             type: "cubic"
+        //         },
+        //         {
+        //             title: "Big Ben 360°",
+        //             url: "https://360stories.com/London/place/Big-Ben?mode=2&playerMode=2",
+        //             tag: "360° View",
+        //             type: "embed",
+        //             embedUrl: "https://360stories.com/London/place/Big-Ben?mode=2&playerMode=2"
+        //         }
+        //     ]
+        // },
         {
             id: "nyc",
             name: "New York",
@@ -136,122 +100,122 @@
                 },
             ]
         },
-        {
-            id: "tokyo",
-            name: "Tokyo",
-            country: "Japan",
-            lat: 35.6762,
-            lon: 139.6503,
-            placeholders: [
-                {
-                    title: "Tokyo Skytree 360°",
-                    url: "https://360stories.com/tokyo/place/Tokyo-Skytree?mode=2&playerMode=2",
-                    tag: "Interactive Tour",
-                    type: "embed",
-                    embedUrl: "https://360stories.com/tokyo/place/Tokyo-Skytree?mode=2&playerMode=2"
-                },
-                {
-                    title: "Tokyo Shinjuku Cubic",
-                    url: "/cubic_views/Tokyo Shinjuku/mobile_f.jpg",
-                    tag: "Cubic View",
-                    type: "cubic"
-                },
-                {
-                    title: "Tokyo Tower 360°",
-                    url: "https://360stories.com/tokyo/place/Tokyo-Tower?mode=2&playerMode=2",
-                    tag: "360° View",
-                    type: "embed",
-                    embedUrl: "https://360stories.com/tokyo/place/Tokyo-Tower?mode=2&playerMode=2"
-                }
-            ]
-        },
-        {
-            id: "dubai",
-            name: "Dubai",
-            country: "UAE",
-            lat: 25.2048,
-            lon: 55.2708,
-            placeholders: [
-                {
-                    title: "Burj Khalifa 360°",
-                    url: "https://360stories.com/dubai/place/burj-khalifa?mode=2&playerMode=2",
-                    tag: "Interactive Tour",
-                    type: "embed",
-                    embedUrl: "https://360stories.com/dubai/place/burj-khalifa?mode=2&playerMode=2"
-                },
-                {
-                    title: "Dubai Burj Khalifa Cubic",
-                    url: "/cubic_views/Dubai Burj Khalifa/mobile_f.jpg",
-                    tag: "Cubic View",
-                    type: "cubic"
-                },
-                {
-                    title: "Dubai Marina 360°",
-                    url: "https://360stories.com/dubai/place/dubai-marina?mode=2&playerMode=2",
-                    tag: "360° View",
-                    type: "embed",
-                    embedUrl: "https://360stories.com/dubai/place/dubai-marina?mode=2&playerMode=2"
-                }
-            ]
-        },
-        {
-            id: "riyadh",
-            name: "Riyadh",
-            country: "Saudi Arabia",
-            lat: 24.7136,
-            lon: 46.6753,
-            placeholders: [
-                {
-                    title: "Kingdom Centre 360°",
-                    url: "https://360stories.com/riyadh/place/kingdom-centre?mode=2&playerMode=2",
-                    tag: "Interactive Tour",
-                    type: "embed",
-                    embedUrl: "https://360stories.com/riyadh/place/kingdom-centre?mode=2&playerMode=2"
-                },
-                {
-                    title: "Riyadh Kingdom Centre Cubic",
-                    url: "/cubic_views/Riyadh Kingdom Centre/mobile_f.jpg",
-                    tag: "Cubic View",
-                    type: "cubic"
-                },
-                {
-                    title: "Al Faisaliyah Tower 360°",
-                    url: "https://360stories.com/riyadh/place/al-faisaliyah-tower?mode=2&playerMode=2",
-                    tag: "360° View",
-                    type: "embed",
-                    embedUrl: "https://360stories.com/riyadh/place/al-faisaliyah-tower?mode=2&playerMode=2"
-                }
-            ]
-        },
-        {
-            id: "sydney",
-            name: "Sydney",
-            country: "Australia",
-            lat: -33.8688,
-            lon: 151.2093,
-            placeholders: [
-                {
-                    title: "Sydney Opera House 360°",
-                    url: "https://360stories.com/sydney/place/opera-house?mode=2&playerMode=2",
-                    tag: "Interactive Tour",
-                    type: "embed",
-                    embedUrl: "https://360stories.com/sydney/place/opera-house?mode=2&playerMode=2"
-                },
-                {
-                    title: "Sydney Opera House Cubic",
-                    url: "/cubic_views/Sydney Opera House/mobile_f.jpg",
-                    tag: "Cubic View",
-                    type: "cubic"
-                },
-                {
-                    title: "Harbour Bridge 360°",
-                    url: "https://360stories.com/sydney/place/harbour-bridge?mode=2&playerMode=2",
-                    tag: "360° View",
-                    type: "embed",
-                    embedUrl: "https://360stories.com/sydney/place/harbour-bridge?mode=2&playerMode=2"
-                }
-            ]
-        }
+        // {
+        //     id: "tokyo",
+        //     name: "Tokyo",
+        //     country: "Japan",
+        //     lat: 35.6762,
+        //     lon: 139.6503,
+        //     placeholders: [
+        //         {
+        //             title: "Tokyo Skytree 360°",
+        //             url: "https://360stories.com/tokyo/place/Tokyo-Skytree?mode=2&playerMode=2",
+        //             tag: "Interactive Tour",
+        //             type: "embed",
+        //             embedUrl: "https://360stories.com/tokyo/place/Tokyo-Skytree?mode=2&playerMode=2"
+        //         },
+        //         {
+        //             title: "Tokyo Shinjuku Cubic",
+        //             url: "/cubic_views/Tokyo Shinjuku/mobile_f.jpg",
+        //             tag: "Cubic View",
+        //             type: "cubic"
+        //         },
+        //         {
+        //             title: "Tokyo Tower 360°",
+        //             url: "https://360stories.com/tokyo/place/Tokyo-Tower?mode=2&playerMode=2",
+        //             tag: "360° View",
+        //             type: "embed",
+        //             embedUrl: "https://360stories.com/tokyo/place/Tokyo-Tower?mode=2&playerMode=2"
+        //         }
+        //     ]
+        // },
+        // {
+        //     id: "dubai",
+        //     name: "Dubai",
+        //     country: "UAE",
+        //     lat: 25.2048,
+        //     lon: 55.2708,
+        //     placeholders: [
+        //         {
+        //             title: "Burj Khalifa 360°",
+        //             url: "https://360stories.com/dubai/place/burj-khalifa?mode=2&playerMode=2",
+        //             tag: "Interactive Tour",
+        //             type: "embed",
+        //             embedUrl: "https://360stories.com/dubai/place/burj-khalifa?mode=2&playerMode=2"
+        //         },
+        //         {
+        //             title: "Dubai Burj Khalifa Cubic",
+        //             url: "/cubic_views/Dubai Burj Khalifa/mobile_f.jpg",
+        //             tag: "Cubic View",
+        //             type: "cubic"
+        //         },
+        //         {
+        //             title: "Dubai Marina 360°",
+        //             url: "https://360stories.com/dubai/place/dubai-marina?mode=2&playerMode=2",
+        //             tag: "360° View",
+        //             type: "embed",
+        //             embedUrl: "https://360stories.com/dubai/place/dubai-marina?mode=2&playerMode=2"
+        //         }
+        //     ]
+        // },
+        // {
+        //     id: "riyadh",
+        //     name: "Riyadh",
+        //     country: "Saudi Arabia",
+        //     lat: 24.7136,
+        //     lon: 46.6753,
+        //     placeholders: [
+        //         {
+        //             title: "Kingdom Centre 360°",
+        //             url: "https://360stories.com/riyadh/place/kingdom-centre?mode=2&playerMode=2",
+        //             tag: "Interactive Tour",
+        //             type: "embed",
+        //             embedUrl: "https://360stories.com/riyadh/place/kingdom-centre?mode=2&playerMode=2"
+        //         },
+        //         {
+        //             title: "Riyadh Kingdom Centre Cubic",
+        //             url: "/cubic_views/Riyadh Kingdom Centre/mobile_f.jpg",
+        //             tag: "Cubic View",
+        //             type: "cubic"
+        //         },
+        //         {
+        //             title: "Al Faisaliyah Tower 360°",
+        //             url: "https://360stories.com/riyadh/place/al-faisaliyah-tower?mode=2&playerMode=2",
+        //             tag: "360° View",
+        //             type: "embed",
+        //             embedUrl: "https://360stories.com/riyadh/place/al-faisaliyah-tower?mode=2&playerMode=2"
+        //         }
+        //     ]
+        // },
+        // {
+        //     id: "sydney",
+        //     name: "Sydney",
+        //     country: "Australia",
+        //     lat: -33.8688,
+        //     lon: 151.2093,
+        //     placeholders: [
+        //         {
+        //             title: "Sydney Opera House 360°",
+        //             url: "https://360stories.com/sydney/place/opera-house?mode=2&playerMode=2",
+        //             tag: "Interactive Tour",
+        //             type: "embed",
+        //             embedUrl: "https://360stories.com/sydney/place/opera-house?mode=2&playerMode=2"
+        //         },
+        //         {
+        //             title: "Sydney Opera House Cubic",
+        //             url: "/cubic_views/Sydney Opera House/mobile_f.jpg",
+        //             tag: "Cubic View",
+        //             type: "cubic"
+        //         },
+        //         {
+        //             title: "Harbour Bridge 360°",
+        //             url: "https://360stories.com/sydney/place/harbour-bridge?mode=2&playerMode=2",
+        //             tag: "360° View",
+        //             type: "embed",
+        //             embedUrl: "https://360stories.com/sydney/place/harbour-bridge?mode=2&playerMode=2"
+        //         }
+        //     ]
+        // }
     ];
 
     let containerEl = $state<HTMLElement | null>(null);
