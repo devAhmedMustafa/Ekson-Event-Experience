@@ -514,7 +514,7 @@
             {:else}
                 <div class="w-full h-full flex flex-col items-center justify-center p-6 text-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
                     <div class="size-16 rounded-3xl bg-white/10 backdrop-blur-md flex items-center justify-center mb-4 border border-white/10 shadow-xl">
-                        <span class="material-symbols-rounded text-4xl text-primary" style="color: {brand.primaryColor || '#009dd6'};">view_in_ar</span>
+                        <span class="material-symbols-rounded text-4xl text-primary">view_in_ar</span>
                     </div>
                     <h3 class="text-xl font-bold tracking-tight mb-1">{brand.name} Exhibition Island</h3>
                     <p class="text-xs text-white/60 max-w-xs">1:1 Scale 3D Architectural Model</p>
@@ -525,8 +525,7 @@
             <div class="absolute inset-0 bg-slate-950/40 backdrop-blur-xs opacity-0 hover:opacity-100 transition-all duration-300 flex flex-col items-center justify-center p-4">
                 <button
                     onclick={handleTryLive}
-                    class="px-6 py-3 rounded-full font-semibold text-xs text-white shadow-xl transition-all duration-200 hover:scale-105 active:scale-95 flex items-center gap-2 cursor-pointer border border-white/20"
-                    style="background-color: {brand.primaryColor || '#009dd6'};"
+                    class="px-6 py-3 rounded-full font-semibold text-xs text-white bg-primary shadow-xl transition-all duration-200 hover:scale-105 active:scale-95 flex items-center gap-2 cursor-pointer border border-white/20"
                 >
                     <span class="material-symbols-rounded text-base">
                         {!brand.isCustom ? 'auto_awesome' : 'play_arrow'}
@@ -580,7 +579,6 @@
                 <button
                     onclick={toggleLogoSlots}
                     class="size-7.5 rounded-full flex items-center justify-center transition cursor-pointer {showLogoSlots ? 'bg-primary text-white shadow-xs' : 'bg-black/5 hover:bg-black/10 text-text/80'}"
-                    style={showLogoSlots ? `background-color: ${brand.primaryColor};` : ''}
                     title={showLogoSlots ? "Hide Brand Logo Markers" : "Show Brand Logo Markers"}
                     aria-label="Toggle Brand Logo Markers"
                 >
@@ -626,7 +624,7 @@
         <!-- Loading Overlay -->
         {#if isLoading}
             <div class="absolute inset-0 bg-slate-900/80 backdrop-blur-md flex flex-col items-center justify-center text-white z-30 transition-opacity duration-300">
-                <div class="size-10 border-3 border-white/20 border-t-primary rounded-full animate-spin mb-3 shadow-lg" style="border-top-color: {brand.primaryColor};"></div>
+                <div class="size-10 border-3 border-white/20 border-t-primary rounded-full animate-spin mb-3 shadow-lg"></div>
                 <span class="text-xs font-bold uppercase tracking-widest text-white/90">
                     Assembling True Scale Stand…
                 </span>

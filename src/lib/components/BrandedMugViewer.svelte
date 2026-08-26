@@ -576,7 +576,7 @@
     <div class="relative z-20 flex items-center justify-between p-3 sm:p-4 bg-gradient-to-b from-black/80 via-black/40 to-transparent pointer-events-none">
         <div class="flex items-center gap-2 pointer-events-auto">
             <div class="bg-black/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/20 shadow-md flex items-center gap-2">
-                <span class="size-2 rounded-full {isARActive ? 'bg-emerald-400 animate-ping' : 'bg-primary'}" style="{!isARActive ? `background-color: ${brand.primaryColor};` : ''}"></span>
+                <span class="size-2 rounded-full {isARActive ? 'bg-emerald-400 animate-ping' : 'bg-primary'}"></span>
                 <span class="text-[10px] sm:text-xs font-mono font-bold uppercase text-white tracking-wider">
                     {isARActive ? "LIVE CAMERA AR" : "3D MERCHANDISE LENS"}
                 </span>
@@ -597,8 +597,7 @@
             <!-- Launch AR Passthrough Button -->
             <button
                 onclick={toggleARMode}
-                class="px-3.5 py-1.5 font-mono text-[10px] sm:text-xs font-bold uppercase tracking-wider rounded-full shadow-lg transition flex items-center gap-1.5 cursor-pointer border {isARActive ? 'bg-amber-500 hover:bg-amber-400 text-black border-amber-300' : 'text-white border-white/30'}"
-                style="{!isARActive ? `background-color: ${brand.primaryColor};` : ''}"
+                class="px-3.5 py-1.5 font-mono text-[10px] sm:text-xs font-bold uppercase tracking-wider rounded-full shadow-lg transition flex items-center gap-1.5 cursor-pointer border {isARActive ? 'bg-amber-500 hover:bg-amber-400 text-black border-amber-300' : 'bg-primary text-white border-white/30'}"
                 title={isARActive ? "Exit Camera AR" : "Preview in Physical Room"}
             >
                 <span class="material-symbols-rounded text-[16px]">

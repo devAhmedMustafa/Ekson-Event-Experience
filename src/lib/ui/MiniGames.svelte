@@ -196,8 +196,8 @@
                                         <img src={slide.imageSrc} alt={slide.title} class="absolute inset-0 w-full h-full object-cover" />
                                     {:else}
                                         <div class="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 flex flex-col items-center justify-center p-6 text-center text-white">
-                                            <div class="size-20 rounded-3xl bg-white/10 backdrop-blur-md flex items-center justify-center mb-4 border border-white/10 shadow-xl" style="background-color: {brand.darkColor};">
-                                                <span class="material-symbols-rounded text-4xl text-primary" style="color: {brand.primaryColor || '#009dd6'};">
+                                            <div class="size-20 rounded-3xl bg-white/10 backdrop-blur-md flex items-center justify-center mb-4 border border-white/10 shadow-xl">
+                                                <span class="material-symbols-rounded text-4xl text-primary">
                                                     {slide.icon}
                                                 </span>
                                             </div>
@@ -213,8 +213,7 @@
                                     <div class="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-all duration-300 flex flex-col items-center justify-center p-4 z-20">
                                         <button
                                             onclick={() => handleTryLive(slide.id)}
-                                            class="px-6 py-3 rounded-full font-semibold text-xs text-white shadow-xl transition-all duration-200 hover:scale-105 active:scale-95 flex items-center gap-2 cursor-pointer border border-white/20"
-                                            style="background-color: {brand.primaryColor || '#009dd6'};"
+                                            class="px-6 py-3 rounded-full font-semibold text-xs text-white bg-primary shadow-xl transition-all duration-200 hover:scale-105 active:scale-95 flex items-center gap-2 cursor-pointer border border-white/20"
                                         >
                                             <span class="material-symbols-rounded text-base">
                                                 {!brand.isCustom ? 'auto_awesome' : 'play_arrow'}
@@ -273,7 +272,6 @@
             <button
                 onclick={() => goToSlide(idx)}
                 class="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-center rounded-full transition-all duration-200 cursor-pointer text-xs font-semibold {currentIndex === idx ? 'bg-primary text-white shadow-xs' : 'text-text/70 hover:text-text hover:bg-black/5'}"
-                style={currentIndex === idx ? `background-color: ${brand.primaryColor};` : ''}
             >
                 <span class="material-symbols-rounded text-base shrink-0">
                     {slide.icon}

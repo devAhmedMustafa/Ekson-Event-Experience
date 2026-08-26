@@ -429,17 +429,17 @@
         </button>
     </div>
 
-    <!-- BOTTOM FLOATING LOCATION SLIDER BAR -->
-    <div class="relative z-20 p-4 sm:p-6 flex flex-col items-center justify-center pointer-events-none w-full">
-        <div class="bg-black/85 backdrop-blur-2xl border border-white/20 p-2.5 sm:p-3 rounded-full shadow-2xl flex items-center gap-3 sm:gap-4 pointer-events-auto max-w-xl w-full justify-between">
-            <!-- Left Slider Arrow Button -->
+    <!-- BOTTOM FLOATING CONTROLS (Location Selector & Controls) -->
+    <div class="relative z-10 p-4 sm:p-6 flex flex-col items-center pointer-events-none w-full mt-auto">
+        <div class="bg-black/75 backdrop-blur-xl border border-white/15 p-3 rounded-2xl shadow-2xl flex items-center gap-3 pointer-events-auto max-w-xl w-full">
+            <!-- Prev Location Button -->
             <button
                 onclick={prevPlace}
-                class="size-9 sm:size-10 rounded-full bg-white/10 hover:bg-white/25 active:scale-95 text-white flex items-center justify-center transition cursor-pointer shrink-0 border border-white/10"
+                disabled={city.placeholders.length <= 1}
+                class="size-9 rounded-xl bg-white/10 hover:bg-white/20 disabled:opacity-30 disabled:pointer-events-none text-white flex items-center justify-center transition cursor-pointer shrink-0"
                 title="Previous Location"
-                aria-label="Previous Location"
             >
-                <span class="material-symbols-rounded text-xl sm:text-2xl">chevron_left</span>
+                <span class="material-symbols-rounded text-xl">chevron_left</span>
             </button>
 
             <!-- Location Slider Card & Dot Indicators -->
@@ -449,8 +449,7 @@
                     {#each city.placeholders as _, idx}
                         <button
                             onclick={() => (activePlaceIndex = idx)}
-                            class="h-1.5 rounded-full transition-all duration-300 cursor-pointer {activePlaceIndex === idx ? 'w-6' : 'w-1.5 opacity-40 hover:opacity-75'}"
-                            style="background-color: {activePlaceIndex === idx ? (brand.primaryColor || '#009dd6') : '#ffffff'};"
+                            class="h-1.5 rounded-full transition-all duration-300 cursor-pointer {activePlaceIndex === idx ? 'w-6 bg-primary' : 'w-1.5 bg-white opacity-40 hover:opacity-75'}"
                             title="Go to location {idx + 1}"
                             aria-label="Go to location {idx + 1}"
                         ></button>

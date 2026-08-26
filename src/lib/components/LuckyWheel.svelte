@@ -238,8 +238,7 @@
     {#if !isSpinning && !showOverlay}
         <button
             onclick={spin}
-            class="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 px-8 py-2.5 rounded-full font-semibold text-xs text-white shadow-xl transition hover:scale-105 active:scale-95 cursor-pointer border border-white/20"
-            style="background-color: {brand.primaryColor || '#009dd6'};"
+            class="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 px-8 py-2.5 rounded-full font-semibold text-xs text-white bg-primary shadow-xl transition hover:scale-105 active:scale-95 cursor-pointer border border-white/20"
         >
             Spin
         </button>
@@ -256,8 +255,7 @@
             </p>
             <button
                 onclick={() => { showOverlay = false; promptText = "Tap spin to try your luck"; }}
-                class="px-6 py-2.5 rounded-full font-semibold text-xs text-white transition hover:scale-105 cursor-pointer border border-white/20"
-                style="background-color: {brand.primaryColor || '#009dd6'};"
+                class="px-6 py-2.5 rounded-full font-semibold text-xs text-white bg-primary transition hover:scale-105 cursor-pointer border border-white/20"
             >
                 Spin again
             </button>

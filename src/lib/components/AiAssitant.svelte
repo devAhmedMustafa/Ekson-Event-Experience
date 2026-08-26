@@ -430,7 +430,7 @@
                 {:else}
                     <div class="w-full h-full flex flex-col items-center justify-center p-6 text-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
                         <div class="size-24 rounded-3xl bg-white/10 backdrop-blur-md flex items-center justify-center mb-5 border border-white/10 shadow-2xl">
-                            <span class="material-symbols-rounded text-5xl text-primary" style="color: {brand.primaryColor || '#009dd6'};">
+                            <span class="material-symbols-rounded text-5xl text-primary">
                                 smart_toy
                             </span>
                         </div>
@@ -443,8 +443,7 @@
                 <div class="absolute inset-0 bg-slate-950/60 backdrop-blur-xs opacity-0 hover:opacity-100 transition-all duration-300 flex flex-col items-center justify-center p-4">
                     <button
                         onclick={handleTryLive}
-                        class="px-7 py-3.5 rounded-full font-semibold text-xs text-white shadow-2xl transition-all duration-200 hover:scale-105 active:scale-95 flex items-center gap-2.5 cursor-pointer border border-white/20"
-                        style="background-color: {brand.primaryColor || '#009dd6'};"
+                        class="px-7 py-3.5 rounded-full font-semibold text-xs text-white bg-primary shadow-2xl transition-all duration-200 hover:scale-105 active:scale-95 flex items-center gap-2.5 cursor-pointer border border-white/20"
                     >
                         <span class="material-symbols-rounded text-lg">
                             {!brand.isCustom ? 'auto_awesome' : 'play_arrow'}

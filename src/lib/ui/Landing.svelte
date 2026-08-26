@@ -47,14 +47,14 @@
         >
             <span
                 class="inline-block text-transparent bg-clip-text transition-all duration-300 drop-shadow-xs"
-                style="background-image: linear-gradient(135deg, var(--brand-primary, {brand.primaryColor || '#009dd6'}), var(--brand-secondary, {brand.darkColor || '#04547c'}), var(--brand-primary, {brand.primaryColor || '#009dd6'}));"
+                style="background-image: linear-gradient(135deg, var(--brand-primary, #009dd6), var(--brand-secondary, #04547c), var(--brand-primary, #009dd6));"
             >
                 {brand.name}
             </span>
             <br />
             <span
                 class="inline-block text-transparent bg-clip-text transition-all duration-300"
-                style="background-image: linear-gradient(135deg, #010104 0%, var(--brand-secondary, {brand.darkColor || '#04547c'}) 50%, #010104 100%);"
+                style="background-image: linear-gradient(135deg, #010104 0%, var(--brand-secondary, #04547c) 50%, #010104 100%);"
             >
                 Event Experiences.
             </span>

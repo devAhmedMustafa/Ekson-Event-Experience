@@ -200,8 +200,7 @@
             </p>
             <button
                 onclick={resetQuiz}
-                class="px-6 py-2.5 rounded-full font-semibold text-xs text-white transition hover:scale-105 cursor-pointer border border-white/20"
-                style="background-color: {brand.primaryColor || '#009dd6'};"
+                class="px-6 py-2.5 rounded-full font-semibold text-xs text-white bg-primary transition hover:scale-105 cursor-pointer border border-white/20"
             >
                 {overlayCta}
             </button>

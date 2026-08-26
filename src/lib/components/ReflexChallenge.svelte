@@ -305,7 +305,7 @@
     <div class="absolute top-11 left-3.5 right-12 z-20 flex items-center gap-1.5 pointer-events-none">
         <div class="flex-1 px-2 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-white text-center flex items-center justify-between">
             <span class="text-[9px] text-white/70 font-medium">Score</span>
-            <strong class="text-xs font-bold" style="color: {brand.primaryColor || '#009dd6'};">{score}</strong>
+            <strong class="text-xs font-bold text-primary">{score}</strong>
         </div>
         <div class="flex-1 px-2 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-white text-center flex items-center justify-between">
             <span class="text-[9px] text-white/70 font-medium">Time</span>
@@ -331,8 +331,7 @@
             </p>
             <button
                 onclick={reset}
-                class="px-6 py-2.5 rounded-full font-semibold text-xs text-white transition hover:scale-105 cursor-pointer border border-white/20"
-                style="background-color: {brand.primaryColor || '#009dd6'};"
+                class="px-6 py-2.5 rounded-full font-semibold text-xs text-white bg-primary transition hover:scale-105 cursor-pointer border border-white/20"
             >
                 {overlayCta}
             </button>

@@ -453,7 +453,7 @@
                     });
 
                     // 3. ATTACH 3D PIN MARKERS FOR CITIES
-                    const primaryColorHex = brand.primaryColor || "#009dd6";
+                    const primaryColorHex = "#009dd6";
                     const pinColor = new THREE.Color(primaryColorHex);
 
                     CITIES.forEach((city) => {
@@ -667,7 +667,7 @@
             >
                 <!-- Glassmorphic Pin Badge -->
                 <div class="bg-black/85 hover:bg-black backdrop-blur-md border border-white/20 hover:border-white/40 px-3 py-1.5 rounded-full shadow-xl flex items-center gap-1.5 transform group-hover:scale-110 transition duration-200 {selectedCity?.id === pin.id ? 'ring-2 ring-white scale-110' : ''}">
-                    <span class="size-2 rounded-full animate-ping shrink-0" style="background-color: {brand.primaryColor || '#009dd6'};"></span>
+                    <span class="size-2 rounded-full animate-ping shrink-0 bg-primary"></span>
                     <span class="text-xs font-bold text-white tracking-wide font-sans truncate">
                         {pin.name}
                     </span>

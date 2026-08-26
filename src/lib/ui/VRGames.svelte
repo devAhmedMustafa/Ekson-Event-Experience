@@ -73,14 +73,14 @@
                 <!-- Image Placeholder Area -->
                 <div class="relative w-full aspect-4/3 bg-linear-to-br from-slate-900 via-slate-950 to-slate-900 overflow-hidden flex items-center justify-center">
                     <!-- Top Left Number Badge -->
-                    <div class="absolute top-2 left-2 z-10 px-2 py-0.5 rounded-md text-[11px] font-extrabold text-white shadow-xs" style="background-color: {brand.primaryColor || '#009dd6'};">
+                    <div class="absolute top-2 left-2 z-10 px-2 py-0.5 rounded-md text-[11px] font-extrabold text-white shadow-xs bg-primary">
                         {game.code}
                     </div>
 
                     <!-- Placeholder Image Content Overlay -->
                     <div class="flex flex-col items-center justify-center p-3 text-center text-white/80 group-hover:scale-105 transition-transform duration-300">
                         <div class="size-10 rounded-xl bg-white/10 backdrop-blur-xs flex items-center justify-center mb-1.5 border border-white/10">
-                            <span class="material-symbols-rounded text-xl" style="color: {brand.primaryColor || '#009dd6'};">
+                            <span class="material-symbols-rounded text-xl text-primary">
                                 {game.icon}
                             </span>
                         </div>

@@ -159,9 +159,8 @@
                     {:else if !liveModels[app.id]}
                         <!-- State 2: Brand logo IS provided, standby state waiting for user click -->
                         <div class="absolute inset-0 bg-linear-to-br from-slate-900 via-slate-950 to-slate-900 flex flex-col items-center justify-center p-2 text-center">
-                            <span class="material-symbols-rounded text-3xl text-primary mb-1" style="color: {brand.primaryColor};">{app.icon}</span>
+                            <span class="material-symbols-rounded text-3xl text-primary mb-1">{app.icon}</span>
                             <span class="text-xs font-semibold text-white">{app.name}</span>
-                            
                         </div>
 
                         <button
