@@ -291,7 +291,7 @@
     }
 </script>
 
-<div class="relative w-full h-full min-h-[100dvh] md:h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-8 flex flex-col justify-between select-none overflow-hidden">
+<div class="relative w-full h-full min-h-[100dvh] md:h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-4 sm:py-8 flex flex-col justify-between select-none overflow-visible md:overflow-hidden">
     <!-- Top Header -->
     <div class="flex items-end justify-between pb-3 border-b border-black/5 shrink-0 w-full mb-3 sm:mb-4">
         <div>
@@ -306,7 +306,7 @@
     </div>
 
     <!-- 3 Pricing Cards Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6 items-stretch my-auto shrink-0 overflow-y-auto max-h-[60vh] md:max-h-none py-3 scrollbar-none">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6 items-stretch my-auto shrink-0 max-h-none md:max-h-none py-3 scrollbar-none">
         {#each plans as plan (plan.id)}
             <div
                 class="relative bg-white/70 backdrop-blur-xl rounded-3xl flex flex-col justify-between p-6 sm:p-7 transition-all duration-300 {plan.isPopular

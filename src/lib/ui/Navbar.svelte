@@ -57,8 +57,8 @@
 </script>
 
 <!-- Floating Glass Pill Navbar -->
-<header class="fixed top-3 sm:top-5 right-3 sm:right-8 z-50 select-none max-w-[95vw]">
-    <nav class="flex items-center gap-1 sm:gap-1.5 bg-white/70 backdrop-blur-xl border border-black/5 shadow-lg shadow-black/[0.03] p-1.5 sm:p-2 rounded-full overflow-x-auto scrollbar-none transition-all duration-300">
+<header class="fixed top-3 sm:top-5 left-1/2 -translate-x-1/2 sm:left-auto sm:translate-x-0 sm:right-8 z-50 select-none max-w-[92vw] sm:max-w-[95vw]">
+    <nav class="flex items-center gap-1 sm:gap-1.5 bg-white/80 backdrop-blur-xl border border-black/5 shadow-lg shadow-black/[0.03] p-1.5 sm:p-2 rounded-full overflow-x-auto scrollbar-none transition-all duration-300">
         {#each navItems as item}
             <button
                 onclick={() => scrollToSection(item.id)}

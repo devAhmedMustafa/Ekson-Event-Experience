@@ -20,11 +20,11 @@
 
 <Navbar />
 
-<section id="landing" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-hidden">
+<section id="landing" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-x-hidden md:overflow-hidden">
     <Landing />
 </section>
 
-<section id="about" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-hidden py-4">
+<section id="about" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-x-hidden md:overflow-hidden py-4 sm:py-6">
     <AboutUs />
 </section>
 
@@ -33,34 +33,34 @@
     <InteractionApplications />
 </section>
 
-<section id="active-floor" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-hidden py-4">
+<section id="active-floor" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-x-hidden md:overflow-hidden py-4 sm:py-6">
     <ActiveFloor />
 </section>
 
-<section id="minigames" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-hidden py-4">
+<section id="minigames" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-x-hidden md:overflow-hidden py-4 sm:py-6">
     <MiniGames />
 </section>
 
-<section id="vr-games" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-hidden py-4">
+<section id="vr-games" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-x-hidden md:overflow-hidden py-4 sm:py-6">
     <VRGames />
 </section>
 
-<section id="ai-assistant" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-hidden py-4">
+<section id="ai-assistant" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-x-hidden md:overflow-hidden py-4 sm:py-6">
     <AiAssitant />
 </section>
 
-<section id="ar-apps" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-hidden py-3">
+<section id="ar-apps" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-x-hidden md:overflow-hidden py-3 sm:py-6">
     <ARApps />
 </section>
 
-<section id="global-network" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-hidden py-4">
+<section id="global-network" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-x-hidden md:overflow-hidden py-4 sm:py-6">
     <GlobalCoverage />
 </section>
 
-<section id="plans" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-hidden py-4">
+<section id="plans" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-x-hidden md:overflow-hidden py-4 sm:py-6">
     <InvestmentPlans />
 </section>
 
-<section id="footer" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-hidden py-4">
+<section id="footer" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-x-hidden md:overflow-hidden py-4 sm:py-6">
     <Footer />
 </section>

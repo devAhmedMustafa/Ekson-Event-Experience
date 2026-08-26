@@ -64,36 +64,34 @@
     }
 </script>
 
-<div class="relative w-full h-full min-h-dvh md:h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-6 flex flex-col justify-between select-none overflow-hidden">
+<div class="relative w-full h-full min-h-dvh md:h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-4 sm:py-6 flex flex-col justify-between select-none overflow-visible md:overflow-hidden">
     
 
     <!-- Main Container Card (Matches Sketch Layout) -->
-    <div class="relative w-full my-auto backdrop-blur-xl p-6 sm:p-8 lg:p-10 overflow-hidden">
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12 items-center">
+    <div class="relative w-full my-auto backdrop-blur-xl p-4 sm:p-8 lg:p-10 overflow-hidden">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8 lg:gap-12 items-center">
             
             <!-- LEFT COLUMN: Sweeping Orbit Curve & Prominent Image Box -->
-            <div class="md:col-span-5 relative flex items-center justify-center min-h-75 sm:min-h-90">
+            <div class="md:col-span-5 relative flex items-center justify-center min-h-48 sm:min-h-75">
 
-                <!-- Prominent Solution Image Box (Center Card on Orbit Path as sketched) -->
-                <div class="relative z-20 w-48 sm:w-56 h-40 sm:h-48 p-4 flex flex-col items-center justify-center text-center transition-all duration-500 transform hover:scale-105">
-                    <div class="w-full flex items-center justify-center mb-3 shadow-inner">
-                        <img src={activeSolution.image} alt={activeSolution.name} class="object-contain" />
+                <!-- Prominent Solution Image Box -->
+                <div class="relative z-20 w-40 sm:w-56 h-32 sm:h-48 p-3 sm:p-4 flex flex-col items-center justify-center text-center transition-all duration-500 transform hover:scale-105">
+                    <div class="w-full flex items-center justify-center mb-2 sm:mb-3 shadow-inner">
+                        <img src={activeSolution.image} alt={activeSolution.name} class="object-contain max-h-24 sm:max-h-36" />
                     </div>
                 </div>
 
             </div>
 
-            <!-- RIGHT COLUMN: Text Lines (Top) & Solution Selector Buttons (Bottom) -->
-            <div class="md:col-span-7 flex flex-col justify-between space-y-6 sm:space-y-8">
+            <!-- RIGHT COLUMN: Text Lines & Solution Selector Buttons -->
+            <div class="md:col-span-7 flex flex-col justify-between space-y-4 sm:space-y-8">
                 
-                <!-- TOP RIGHT: Text Lines (Header, Subtitle, Description, Feature Tags) -->
-                <div class="space-y-3 sm:space-y-4">
-
+                <!-- TOP RIGHT: Text Lines -->
+                <div class="space-y-2 sm:space-y-4">
                     <div>
-                        <h3 class="text-3xl sm:text-5xl font-extrabold text-text tracking-tight leading-tight">
+                        <h3 class="text-2xl sm:text-4xl md:text-5xl font-extrabold text-text tracking-tight leading-tight">
                             Who Are We
                         </h3>
-                        
                     </div>
 
                     <p class="text-xs sm:text-sm text-text/75 leading-relaxed pt-1">
@@ -110,14 +108,14 @@
                     </p>
                 </div>
 
-                <!-- BOTTOM RIGHT: Wide Button Container Box (Matches Sketch Bottom-Right Pill Container) -->
-                <div class="w-full flex items-center justify-end gap-2">
+                <!-- BOTTOM RIGHT: Wide Button Container Box -->
+                <div class="w-full flex flex-wrap sm:flex-nowrap items-center justify-center sm:justify-end gap-1.5 sm:gap-2">
                     {#each solutions as sol, idx}
                         {@const isActive = activeSolutionIndex === idx}
                         <button
                             type="button"
                             onclick={() => selectSolution(idx)}
-                            class="py-3 px-4 rounded-xl text-xs font-bold transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer {isActive ? 'bg-primary text-white shadow-md scale-[1.02]' : 'bg-white/60 text-text/70 hover:text-text hover:bg-white'}"
+                            class="py-2.5 sm:py-3 px-3.5 sm:px-4 rounded-xl text-xs font-bold transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer {isActive ? 'bg-primary text-white shadow-md scale-[1.02]' : 'bg-white/60 text-text/70 hover:text-text hover:bg-white'}"
                         >
                             <span class="material-symbols-rounded text-base">{sol.icon}</span>
                             <span>{sol.name}</span>
@@ -131,14 +129,14 @@
     </div>
 
     <!-- Bottom Metrics Banner -->
-    <div class="w-full bg-white/60 backdrop-blur-xl rounded-3xl border border-black/5 p-4 sm:p-5 shadow-sm shrink-0">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center divide-x divide-black/5">
-            {#each metrics as m}
-                <div class="flex flex-col items-center px-2">
-                    <span class="text-xl sm:text-2xl md:text-3xl font-extrabold text-text tracking-tight">
+    <div class="w-full bg-white/60 backdrop-blur-xl rounded-3xl border border-black/5 p-3.5 sm:p-5 shadow-sm shrink-0 mt-3 md:mt-0">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 text-center">
+            {#each metrics as m, idx}
+                <div class="flex flex-col items-center px-2 {idx % 2 !== 0 ? 'border-l border-black/5 md:border-l' : 'md:border-l md:border-black/5'} {idx === 0 ? 'md:border-l-0' : ''}">
+                    <span class="text-lg sm:text-2xl md:text-3xl font-extrabold text-text tracking-tight">
                         {m.value}
                     </span>
-                    <span class="text-[10px] sm:text-xs font-medium text-text/50 uppercase tracking-wider mt-1">
+                    <span class="text-[9px] sm:text-xs font-medium text-text/50 uppercase tracking-wider mt-0.5 sm:mt-1">
                         {m.label}
                     </span>
                 </div>

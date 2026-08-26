@@ -585,7 +585,7 @@
     });
 </script>
 
-<div class="w-full h-full min-h-dvh md:h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-8 flex flex-col justify-between select-none overflow-hidden">
+<div class="w-full h-full min-h-dvh md:h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-4 sm:py-8 flex flex-col justify-between select-none overflow-visible md:overflow-hidden">
     <!-- Header Area -->
     <div class="w-full shrink-0 mb-3 sm:mb-4 pb-3 border-b border-black/5">
         <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-text tracking-tight">
@@ -597,7 +597,7 @@
     </div>
 
     <!-- 2 Column Split Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-auto w-full flex-1 max-h-[78vh] overflow-hidden items-center">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-auto w-full flex-1 max-h-none md:max-h-[78vh] overflow-hidden items-center">
         <!-- LEFT COLUMN: Content & Features -->
         <div class="flex flex-col justify-center space-y-5">
             <!-- SubTitle & Description -->
@@ -667,7 +667,7 @@
         <!-- RIGHT COLUMN: 3D Interactive Earth Globe Model -->
         <div
             bind:this={containerEl}
-            class="relative w-full h-[45vh] sm:h-[52vh] md:h-full min-h-87.5 rounded-3xl overflow-hidden flex items-center justify-center"
+            class="relative w-full h-[40vh] sm:h-[52vh] md:h-full min-h-64 sm:min-h-87.5 rounded-3xl overflow-hidden flex items-center justify-center"
         >
             <!-- 3D Interactive Canvas -->
             <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->

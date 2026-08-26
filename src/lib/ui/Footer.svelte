@@ -15,7 +15,7 @@
     }
 </script>
 
-<div class="relative w-full h-full min-h-dvh md:h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-8 flex flex-col justify-between select-none overflow-hidden">
+<div class="relative w-full h-full min-h-dvh md:h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-4 sm:py-8 flex flex-col justify-between select-none overflow-visible md:overflow-hidden">
     <!-- Top Headline Section -->
     <div class="relative z-10 flex items-end justify-between pb-3 border-b border-black/5 shrink-0 w-full mb-3">
         <div>
@@ -123,7 +123,7 @@
 
     <!-- Reference Style Huge Brand Title at Footer Bottom -->
     <div class="relative z-10 w-full pt-4 border-t border-black/5 flex flex-col items-center justify-center shrink-0">
-        <h1 class="text-6xl sm:text-8xl md:text-9xl font-black tracking-tighter text-text/90 uppercase text-center leading-none">
+        <h1 class="text-5xl sm:text-7xl md:text-9xl font-black tracking-tighter text-text/90 uppercase text-center leading-none">
             EKSON
         </h1>
         <div class="w-full flex flex-col sm:flex-row items-center justify-between gap-2 mt-4 text-xs text-text/50 font-medium">

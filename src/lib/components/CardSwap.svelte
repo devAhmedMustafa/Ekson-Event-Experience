@@ -56,8 +56,8 @@
 		});
 	}
 
-	const wStyle = $derived(typeof width === 'number' ? `${width}px` : width);
-	const hStyle = $derived(typeof height === 'number' ? `${height}px` : height);
+	const wStyle = $derived(typeof width === 'number' ? `min(${width}px, 86vw)` : width);
+	const hStyle = $derived(typeof height === 'number' ? `min(${height}px, 60vh)` : height);
 
 	let isAutoPlaying = $state(true);
 	let activeCardIndex = $state(0);

@@ -133,7 +133,7 @@
 
 <svelte:window onkeydown={handleKeyDown} />
 
-<div class="w-full min-h-dvh py-6 sm:py-8 max-w-6xl mx-auto px-4 sm:px-6 md:px-8 flex flex-col justify-between select-none overflow-hidden">
+<div class="w-full min-h-dvh py-4 sm:py-8 max-w-6xl mx-auto px-4 sm:px-6 md:px-8 flex flex-col justify-between select-none overflow-visible md:overflow-hidden">
     <!-- Clean Header -->
     <div class="flex items-end justify-between pb-3 border-b border-black/5 shrink-0 w-full mb-3">
         <div>
@@ -147,31 +147,31 @@
     </div>
 
     <!-- MAIN STAGE: PERSISTENT IPHONE PHONE DEVICE FRAME CONTAINER WITH SLIDER INSIDE -->
-    <div class="flex-1 w-full min-h-[520px] sm:min-h-[580px] flex items-center justify-center relative my-2 py-2">
+    <div class="flex-1 w-full min-h-[460px] sm:min-h-[580px] flex items-center justify-center relative my-2 py-2">
         <!-- Phone Stage Wrapper with Side Navigation Controls -->
         <div class="relative flex items-center justify-center">
             <!-- Left Slide Button on Side of Phone -->
             <button
                 onclick={prevSlide}
-                class="absolute -left-5 sm:-left-7 md:-left-8 top-1/2 -translate-y-1/2 z-40 size-10 sm:size-11 rounded-full bg-white/85 hover:bg-white text-text shadow-lg border border-black/5 backdrop-blur-xl flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 cursor-pointer"
+                class="absolute -left-3 sm:-left-7 md:-left-8 top-1/2 -translate-y-1/2 z-40 size-8 sm:size-11 rounded-full bg-white/90 hover:bg-white text-text shadow-lg border border-black/5 backdrop-blur-xl flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 cursor-pointer"
                 aria-label="Previous Game"
                 title="Previous Game"
             >
-                <span class="material-symbols-rounded text-2xl text-text/80">chevron_left</span>
+                <span class="material-symbols-rounded text-lg sm:text-2xl text-text/80">chevron_left</span>
             </button>
 
             <!-- iPhone Device Frame Silhouette -->
-            <div class="relative flex flex-col w-[min(330px,88vw)] sm:w-[350px] md:w-[370px] h-[520px] sm:h-[580px] md:h-[610px] p-3 rounded-[44px] bg-gradient-to-b from-slate-800 via-slate-900 to-slate-950 shadow-2xl ring-1 ring-white/10 border border-slate-700/40">
+            <div class="relative flex flex-col w-[min(320px,88vw)] sm:w-[350px] md:w-[370px] h-[480px] sm:h-[580px] md:h-[610px] p-2.5 sm:p-3 rounded-[38px] sm:rounded-[44px] bg-gradient-to-b from-slate-800 via-slate-900 to-slate-950 shadow-2xl ring-1 ring-white/10 border border-slate-700/40">
                 <!-- Top Speaker Notch / Dynamic Island Cut-Out -->
-                <div class="absolute top-4 left-1/2 -translate-x-1/2 z-40 w-24 h-5 rounded-full bg-slate-950 flex items-center justify-center gap-2 border border-slate-800 shadow-inner">
-                    <span class="size-2 rounded-full bg-slate-900 border border-slate-800"></span>
-                    <span class="size-1.5 rounded-full bg-blue-950/80"></span>
+                <div class="absolute top-3.5 sm:top-4 left-1/2 -translate-x-1/2 z-40 w-20 sm:w-24 h-4 sm:h-5 rounded-full bg-slate-950 flex items-center justify-center gap-2 border border-slate-800 shadow-inner">
+                    <span class="size-1.5 sm:size-2 rounded-full bg-slate-900 border border-slate-800"></span>
+                    <span class="size-1 sm:size-1.5 rounded-full bg-blue-950/80"></span>
                 </div>
 
                 <!-- Inner Bezel Screen Viewport -->
                 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
                 <div
-                    class="relative flex-1 w-full h-full rounded-[34px] overflow-hidden bg-slate-950 border border-black/50 cursor-grab active:cursor-grabbing"
+                    class="relative flex-1 w-full h-full rounded-[28px] sm:rounded-[34px] overflow-hidden bg-slate-950 border border-black/50 cursor-grab active:cursor-grabbing"
                     ontouchstart={handleTouchStart}
                     ontouchmove={handleTouchMove}
                     ontouchend={handleTouchEnd}
@@ -257,11 +257,11 @@
             <!-- Right Slide Button on Side of Phone -->
             <button
                 onclick={nextSlide}
-                class="absolute -right-5 sm:-right-7 md:-right-8 top-1/2 -translate-y-1/2 z-40 size-10 sm:size-11 rounded-full bg-white/85 hover:bg-white text-text shadow-lg border border-black/5 backdrop-blur-xl flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 cursor-pointer"
+                class="absolute -right-3 sm:-right-7 md:-right-8 top-1/2 -translate-y-1/2 z-40 size-8 sm:size-11 rounded-full bg-white/90 hover:bg-white text-text shadow-lg border border-black/5 backdrop-blur-xl flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 cursor-pointer"
                 aria-label="Next Game"
                 title="Next Game"
             >
-                <span class="material-symbols-rounded text-2xl text-text/80">chevron_right</span>
+                <span class="material-symbols-rounded text-lg sm:text-2xl text-text/80">chevron_right</span>
             </button>
         </div>
     </div>

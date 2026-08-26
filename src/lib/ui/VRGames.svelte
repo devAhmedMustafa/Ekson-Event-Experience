@@ -236,7 +236,7 @@
     </div>
 {/snippet}
 
-<div class="w-full h-full min-h-dvh md:h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-8 flex flex-col justify-between select-none overflow-hidden">
+<div class="w-full h-full min-h-dvh md:h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-4 sm:py-8 flex flex-col justify-between select-none overflow-visible md:overflow-hidden">
     <!-- Header Area -->
     <div class="w-full shrink-0 mb-3 sm:mb-4 pb-3 border-b border-black/5">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -252,10 +252,10 @@
     </div>
 
     <!-- Main Content Area: Left Details & Right 3D CardSwap Deck -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center my-auto w-full flex-1 max-h-[78vh] py-2">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center my-auto w-full flex-1 max-h-none lg:max-h-[78vh] py-2">
         <!-- LEFT COLUMN: Bundle Overview & Included Games Checklist -->
         <div class="lg:col-span-6 flex flex-col justify-center space-y-6">
-            <div class="bg-white/70 backdrop-blur-xl rounded-3xl p-6 sm:p-8 border border-black/5 shadow-sm space-y-4">
+            <div class="bg-white/70 backdrop-blur-xl rounded-3xl p-4 sm:p-8 border border-black/5 shadow-sm space-y-4">
                 <div class="flex items-center justify-between">
                     <span class="px-3 py-1 rounded-full text-xs font-extrabold bg-primary text-white shadow-xs">
                         5 VR Experiences
@@ -273,33 +273,33 @@
                 </div>
 
                 <!-- Included Hardware Specs Badges -->
-                <div class="grid grid-cols-2 gap-3 pt-2">
-                    <div class="bg-white/80 border border-black/5 rounded-2xl p-3 flex items-center gap-2.5 shadow-2xs">
-                        <span class="material-symbols-rounded text-primary text-xl">headset</span>
+                <div class="grid grid-cols-2 gap-2.5 sm:gap-3 pt-2">
+                    <div class="bg-white/80 border border-black/5 rounded-2xl p-2.5 sm:p-3 flex items-center gap-2 sm:gap-2.5 shadow-2xs">
+                        <span class="material-symbols-rounded text-primary text-lg sm:text-xl">headset</span>
                         <div class="flex flex-col">
-                            <span class="text-xs font-extrabold text-text">6x VR Headsets</span>
-                            <span class="text-[10px] text-text/60">Standalone Wireless</span>
+                            <span class="text-[11px] sm:text-xs font-extrabold text-text">6x VR Headsets</span>
+                            <span class="text-[9px] sm:text-[10px] text-text/60">Standalone Wireless</span>
                         </div>
                     </div>
-                    <div class="bg-white/80 border border-black/5 rounded-2xl p-3 flex items-center gap-2.5 shadow-2xs">
-                        <span class="material-symbols-rounded text-primary text-xl">bolt</span>
+                    <div class="bg-white/80 border border-black/5 rounded-2xl p-2.5 sm:p-3 flex items-center gap-2 sm:gap-2.5 shadow-2xs">
+                        <span class="material-symbols-rounded text-primary text-lg sm:text-xl">bolt</span>
                         <div class="flex flex-col">
-                            <span class="text-xs font-extrabold text-text">Power Charging Hub</span>
-                            <span class="text-[10px] text-text/60">Non-stop 24/7 Dwell</span>
+                            <span class="text-[11px] sm:text-xs font-extrabold text-text">Power Charging Hub</span>
+                            <span class="text-[9px] sm:text-[10px] text-text/60">Non-stop 24/7 Dwell</span>
                         </div>
                     </div>
-                    <div class="bg-white/80 border border-black/5 rounded-2xl p-3 flex items-center gap-2.5 shadow-2xs">
-                        <span class="material-symbols-rounded text-primary text-xl">tv</span>
+                    <div class="bg-white/80 border border-black/5 rounded-2xl p-2.5 sm:p-3 flex items-center gap-2 sm:gap-2.5 shadow-2xs">
+                        <span class="material-symbols-rounded text-primary text-lg sm:text-xl">tv</span>
                         <div class="flex flex-col">
-                            <span class="text-xs font-extrabold text-text">Spectator Screen</span>
-                            <span class="text-[10px] text-text/60">Live Video Cast</span>
+                            <span class="text-[11px] sm:text-xs font-extrabold text-text">Spectator Screen</span>
+                            <span class="text-[9px] sm:text-[10px] text-text/60">Live Video Cast</span>
                         </div>
                     </div>
-                    <div class="bg-white/80 border border-black/5 rounded-2xl p-3 flex items-center gap-2.5 shadow-2xs">
-                        <span class="material-symbols-rounded text-primary text-xl">support_agent</span>
+                    <div class="bg-white/80 border border-black/5 rounded-2xl p-2.5 sm:p-3 flex items-center gap-2 sm:gap-2.5 shadow-2xs">
+                        <span class="material-symbols-rounded text-primary text-lg sm:text-xl">support_agent</span>
                         <div class="flex flex-col">
-                            <span class="text-xs font-extrabold text-text">Turnkey Staffing</span>
-                            <span class="text-[10px] text-text/60">On-site Support</span>
+                            <span class="text-[11px] sm:text-xs font-extrabold text-text">Turnkey Staffing</span>
+                            <span class="text-[9px] sm:text-[10px] text-text/60">On-site Support</span>
                         </div>
                     </div>
                 </div>
@@ -307,7 +307,7 @@
         </div>
 
         <!-- RIGHT COLUMN: Interactive GSAP 3D CardSwap Component -->
-        <div class="lg:col-span-6 relative h-95 sm:h-110 flex items-center justify-center overflow-visible">
+        <div class="lg:col-span-6 relative h-72 sm:h-95 md:h-110 flex items-center justify-center overflow-visible">
             <CardSwap
                 cards={[
                     { content: card0 },

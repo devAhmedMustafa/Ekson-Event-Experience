@@ -75,7 +75,7 @@
     }
 </script>
 
-<div class="w-full h-full min-h-dvh md:h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-8 flex flex-col justify-between select-none overflow-hidden">
+<div class="w-full h-full min-h-dvh md:h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-4 sm:py-8 flex flex-col justify-between select-none overflow-visible md:overflow-hidden">
     <!-- Header -->
     <div class="flex items-end justify-between pb-3 border-b border-black/5 shrink-0 w-full mb-3 sm:mb-4">
         <div>
@@ -90,25 +90,25 @@
     </div>
 
     <!-- 4 Quarters Grid (2x2 Screen Division) -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 my-auto w-full flex-1 max-h-[82vh] py-2">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 my-auto w-full flex-1 max-h-none md:max-h-[82vh] py-2">
         {#each arApps as app}
-            <div class="group relative bg-white/70 backdrop-blur-xl border border-black/5 hover:border-black/15 transition-all duration-300 p-5 rounded-3xl shadow-sm flex flex-row items-stretch justify-between gap-4 overflow-hidden">
+            <div class="group relative bg-white/70 backdrop-blur-xl border border-black/5 hover:border-black/15 transition-all duration-300 p-4 sm:p-5 rounded-3xl shadow-sm flex flex-row items-stretch justify-between gap-3 sm:gap-4 overflow-hidden">
                 
                 <!-- Left Details & Big QR Code Panel -->
                 <div class="flex-1 flex flex-col justify-between overflow-hidden">
                     <!-- Title & Tagline -->
                     <div>
-                        <h3 class="text-base sm:text-lg font-bold text-text tracking-tight truncate">
+                        <h3 class="text-sm sm:text-lg font-bold text-text tracking-tight truncate">
                             {brand.name} {app.name}
                         </h3>
-                        <p class="text-xs font-medium text-primary mt-0.5 truncate">
+                        <p class="text-[11px] sm:text-xs font-medium text-primary mt-0.5 truncate">
                             {app.tagline}
                         </p>
                     </div>
 
                     <!-- Center Big QR Code Container -->
                     <div class="flex items-center gap-3 my-auto py-2">
-                        <div class="relative size-24 sm:size-28 p-2 bg-white border border-black/10 rounded-2xl shrink-0 shadow-sm flex items-center justify-center overflow-hidden">
+                        <div class="relative size-20 sm:size-28 p-1.5 sm:p-2 bg-white border border-black/10 rounded-2xl shrink-0 shadow-sm flex items-center justify-center overflow-hidden">
                             {#if !brand.logo}
                                 <img
                                     src={getQrCodeUrl(app.id)}
@@ -121,8 +121,8 @@
                                     class="absolute inset-0 bg-slate-950/75 backdrop-blur-xs flex flex-col items-center justify-center p-1 text-center cursor-pointer group/qr"
                                     title="Unlock AR Scan"
                                 >
-                                    <span class="material-symbols-rounded text-amber-400 text-xl mb-0.5 group-hover/qr:scale-110 transition">lock</span>
-                                    <span class="text-[9px] font-semibold text-white uppercase tracking-wider">Unlock AR</span>
+                                    <span class="material-symbols-rounded text-amber-400 text-lg sm:text-xl mb-0.5 group-hover/qr:scale-110 transition">lock</span>
+                                    <span class="text-[8px] sm:text-[9px] font-semibold text-white uppercase tracking-wider">Unlock AR</span>
                                 </button>
                             {:else}
                                 <img
@@ -138,7 +138,7 @@
                 </div>
 
                 <!-- Right Interactive 3D Stage (In-Place 3D Live Preview) -->
-                <div class="w-32 sm:w-44 md:w-52 h-full min-h-28 relative  overflow-hidden rounded-2xl border border-black/10 shrink-0 group/vid flex flex-col justify-end">
+                <div class="w-28 sm:w-44 md:w-52 h-full min-h-32 sm:min-h-28 relative overflow-hidden rounded-2xl border border-black/10 shrink-0 group/vid flex flex-col justify-end">
                     {#if !brand.logo}
                         <!-- State 1: Brand logo NOT provided -->
                         <div class="absolute inset-0 bg-linear-to-br from-slate-900 via-slate-950 to-slate-900 flex flex-col items-center justify-center p-2 text-center">

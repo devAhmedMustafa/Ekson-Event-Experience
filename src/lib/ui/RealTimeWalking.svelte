@@ -906,7 +906,7 @@
 
 <div class="w-full flex flex-col">
     <!-- Combined Section: True Scale Demo (Left Column) & 3D Walkthrough (Right Column) -->
-    <div class="w-full min-h-dvh md:h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-8 flex flex-col justify-between select-none overflow-hidden">
+    <div class="w-full min-h-dvh md:h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-4 sm:py-8 flex flex-col justify-between select-none overflow-visible md:overflow-hidden">
         <!-- Section Header -->
         <div class="flex items-end justify-between pb-3 border-b border-black/5 shrink-0 w-full mb-3 sm:mb-4">
             <div>
@@ -920,15 +920,15 @@
         </div>
 
         <!-- 50/50 Split 3D Viewports Container (2 Columns) -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 flex-1 w-full my-auto max-h-[74vh] md:max-h-[78vh] overflow-hidden">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 flex-1 w-full my-auto max-h-none md:max-h-[78vh] overflow-hidden">
             <!-- Column 1: True Scale Demo (Left Half) -->
-            <div class="w-full h-[38vh] md:h-full relative overflow-hidden rounded-3xl border border-black/5 shadow-sm bg-white/70 backdrop-blur-xl">
+            <div class="w-full h-64 sm:h-80 md:h-full relative overflow-hidden rounded-3xl border border-black/5 shadow-sm bg-white/70 backdrop-blur-xl">
                 <TrueScaleDemo />
             </div>
 
             <!-- Column 2: 3D Walkthrough (Right Half) -->
             <div
-                class="w-full h-[38vh] md:h-full relative overflow-hidden rounded-3xl border border-black/10 shadow-lg bg-slate-950 group flex items-center justify-center"
+                class="w-full h-64 sm:h-80 md:h-full relative overflow-hidden rounded-3xl border border-black/10 shadow-lg bg-slate-950 group flex items-center justify-center"
                 bind:this={modalContainerEl}
             >
                 {#if !is3DActive}
