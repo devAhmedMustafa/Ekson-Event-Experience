@@ -11,6 +11,7 @@
         { id: "landing", label: "Home", icon: "home" },
         { id: "about", label: "About Us", icon: "info" },
         { id: "interactive", label: "Spatial Tech", icon: "view_in_ar" },
+        { id: "active-floor", label: "Active Floor", icon: "layers" },
         { id: "minigames", label: "Mini Games", icon: "joystick" },
         { id: "vr-games", label: "VR Games", icon: "sports_esports" },
         { id: "ai-assistant", label: "AI Voice", icon: "mic" },

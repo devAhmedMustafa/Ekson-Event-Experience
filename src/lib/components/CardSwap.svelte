@@ -227,7 +227,7 @@
 		{#each cards as card, i (i)}
 			<div
 				bind:this={cardEls[i]}
-				class="absolute top-1/2 left-1/2 rounded-3xl border border-white/20 shadow-2xl overflow-hidden [transform-style:preserve-3d] [will-change:transform] [backface-visibility:hidden] cursor-pointer {card.class ?? ''}"
+				class="absolute top-1/2 left-1/2 rounded-3xl border border-white/20 shadow-2xl overflow-hidden transform-3d will-change-transform backface-hidden cursor-pointer {card.class ?? ''}"
 				style="width:{wStyle};height:{hStyle};{card.style ?? ''}"
 				onclick={() => onCardClick?.(i)}
 				role="button"

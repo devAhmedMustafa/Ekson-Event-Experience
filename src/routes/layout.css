@@ -14,6 +14,8 @@
     --brand-background: #ebe9fc;
     --brand-light-tint: rgba(0, 157, 214, 0.12);
     --brand-contrast-text: #ffffff;
+}
+
 html, body {
     overflow-x: hidden;
     max-width: 100vw;

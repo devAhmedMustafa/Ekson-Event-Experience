@@ -585,65 +585,136 @@
     });
 </script>
 
-<div
-    bind:this={containerEl}
-    class="relative w-full h-full min-h-dvh flex items-center justify-center select-none overflow-hidden"
->
-    <!-- TOP CENTER TITLE -->
-    <div class="absolute top-6 sm:top-10 inset-x-0 z-30 flex flex-col items-center justify-center pointer-events-none text-center px-4">
-        
-        <h2 class="text-3xl sm:text-4xl md:text-5xl font-black text-text tracking-tight drop-shadow-xs">
+<div class="w-full h-full min-h-dvh md:h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-8 flex flex-col justify-between select-none overflow-hidden">
+    <!-- Header Area -->
+    <div class="w-full shrink-0 mb-3 sm:mb-4 pb-3 border-b border-black/5">
+        <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-text tracking-tight">
             Virtual Tours
         </h2>
-        <p class="text-xs sm:text-sm font-medium text-text/60 mt-1 max-w-md">
-            Click on any city pin to view 360° virtual tour.
+        <p class="text-xs sm:text-sm text-text/70 mt-1 max-w-xl leading-relaxed">
+            Step into breathtaking places and unforgettable moments with immersive VR tours.
         </p>
     </div>
 
-    <!-- 3D Interactive Canvas -->
-    <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-    <div
-        class="absolute inset-0 w-full h-full z-10 cursor-grab active:cursor-grabbing"
-        onmousedown={handlePointerDown}
-        onmousemove={handlePointerMove}
-        onmouseup={handlePointerUp}
-        ontouchstart={handlePointerDown}
-        ontouchmove={handlePointerMove}
-        ontouchend={handlePointerUp}
-        role="region"
-        aria-label="3D Earth Model Viewer"
-    >
-        <canvas bind:this={canvasEl} class="w-full h-full block"></canvas>
-    </div>
+    <!-- 2 Column Split Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-auto w-full flex-1 max-h-[78vh] overflow-hidden items-center">
+        <!-- LEFT COLUMN: Content & Features -->
+        <div class="flex flex-col justify-center space-y-5">
+            <!-- SubTitle & Description -->
+            <div>
+                <h3 class="text-xl sm:text-2xl md:text-3xl font-extrabold text-text tracking-tight">
+                    Explore, Discover, Experience.
+                </h3>
+                <p class="text-xs sm:text-sm text-text/75 leading-relaxed mt-3 max-w-lg font-medium">
+                    Step into breathtaking places and unforgettable moments with immersive VR tours. Experience iconic destinations and world landmarks with photorealistic spatial realism.
+                </p>
+            </div>
 
-    <!-- Projected 2D Pin Point Labels -->
-    <div class="absolute inset-0 z-20 pointer-events-none overflow-hidden">
-        {#each visibleScreenPins as pin (pin.id)}
-            <div
-                class="absolute -translate-x-1/2 -translate-y-full transition-all duration-75 ease-out flex flex-col items-center group pointer-events-auto cursor-pointer"
-                style="left: {pin.x}px; top: {pin.y - 12}px;"
-                onmouseenter={() => { if (!selectedCity) hoveredPinId = pin.id; }}
-                onmouseleave={() => (hoveredPinId = null)}
-                onclick={() => selectCity(pin.cityData)}
-                role="button"
-                tabindex="0"
-                onkeydown={(e) => e.key === "Enter" && selectCity(pin.cityData)}
-            >
-                <!-- Glassmorphic Pin Badge -->
-                <div class="bg-black/85 hover:bg-black backdrop-blur-md border border-white/20 hover:border-white/40 px-3 py-1.5 rounded-full shadow-xl flex items-center gap-1.5 transform group-hover:scale-110 transition duration-200 {selectedCity?.id === pin.id ? 'ring-2 ring-white scale-110' : ''}">
-                    <span class="size-2 rounded-full animate-ping shrink-0 bg-primary"></span>
-                    <span class="text-xs font-bold text-white tracking-wide font-sans truncate">
-                        {pin.name}
-                    </span>
-                    <span class="text-[10px] text-white/50 font-mono font-normal hidden sm:inline">
-                        • {pin.country}
-                    </span>
+            <!-- 4 Features Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                <!-- Feature 1: 360 Experience -->
+                <div class="bg-white/70 backdrop-blur-xl border border-black/5 rounded-2xl p-3.5 flex items-center gap-3 shadow-2xs">
+                    <div class="size-9 rounded-xl bg-primary flex items-center justify-center shrink-0" style="color: {brand.primaryColor}">
+                        <span class="material-symbols-rounded text-xl">360</span>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-extrabold text-text">360 Experience</h4>
+                        <p class="text-[10px] text-text/60">Panoramic exploration</p>
+                    </div>
                 </div>
 
-                <!-- Downward Arrow Pointer Stem -->
-                <div class="w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-t-[6px] border-t-black/85"></div>
+                <!-- Feature 2: Iconic Destinations -->
+                <div class="bg-white/70 backdrop-blur-xl border border-black/5 rounded-2xl p-3.5 flex items-center gap-3 shadow-2xs">
+                    <div class="size-9 rounded-xl bg-primary flex items-center justify-center shrink-0" style="color: {brand.primaryColor}">
+                        <span class="material-symbols-rounded text-xl">map</span>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-extrabold text-text">Iconic Destinations</h4>
+                        <p class="text-[10px] text-text/60">World landmarks</p>
+                    </div>
+                </div>
+
+                <!-- Feature 3: Realistic Immersion -->
+                <div class="bg-white/70 backdrop-blur-xl border border-black/5 rounded-2xl p-3.5 flex items-center gap-3 shadow-2xs">
+                    <div class="size-9 rounded-xl bg-primary flex items-center justify-center shrink-0" style="color: {brand.primaryColor}">
+                        <span class="material-symbols-rounded text-xl">view_in_ar</span>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-extrabold text-text">Realistic Immersion</h4>
+                        <p class="text-[10px] text-text/60">Photorealistic VR</p>
+                    </div>
+                </div>
+
+                <!-- Feature 4: Unforgettable Memories -->
+                <div class="bg-white/70 backdrop-blur-xl border border-black/5 rounded-2xl p-3.5 flex items-center gap-3 shadow-2xs">
+                    <div class="size-9 rounded-xl bg-primary flex items-center justify-center shrink-0" style="color: {brand.primaryColor}">
+                        <span class="material-symbols-rounded text-xl">auto_awesome</span>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-extrabold text-text">Unforgettable Memories</h4>
+                        <p class="text-[10px] text-text/60">Memorable activation</p>
+                    </div>
+                </div>
             </div>
-        {/each}
+
+            <!-- Helper Badge Pill -->
+            <div class="inline-flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-white/80 backdrop-blur-md border border-black/5 text-xs text-text/70 shadow-2xs w-fit">
+                <span class="size-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>Click city pins on the globe to launch 360° virtual tours</span>
+            </div>
+        </div>
+
+        <!-- RIGHT COLUMN: 3D Interactive Earth Globe Model -->
+        <div
+            bind:this={containerEl}
+            class="relative w-full h-[45vh] sm:h-[52vh] md:h-full min-h-87.5 rounded-3xl overflow-hidden flex items-center justify-center"
+        >
+            <!-- 3D Interactive Canvas -->
+            <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+            <div
+                class="absolute inset-0 w-full h-full z-10 cursor-grab active:cursor-grabbing"
+                onmousedown={handlePointerDown}
+                onmousemove={handlePointerMove}
+                onmouseup={handlePointerUp}
+                ontouchstart={handlePointerDown}
+                ontouchmove={handlePointerMove}
+                ontouchend={handlePointerUp}
+                role="region"
+                aria-label="3D Earth Model Viewer"
+            >
+                <canvas bind:this={canvasEl} class="w-full h-full block"></canvas>
+            </div>
+
+            <!-- Projected 2D Pin Point Labels over Globe -->
+            <div class="absolute inset-0 z-20 pointer-events-none overflow-hidden">
+                {#each visibleScreenPins as pin (pin.id)}
+                    <div
+                        class="absolute -translate-x-1/2 -translate-y-full transition-all duration-75 ease-out flex flex-col items-center group pointer-events-auto cursor-pointer"
+                        style="left: {pin.x}px; top: {pin.y - 12}px;"
+                        onmouseenter={() => { if (!selectedCity) hoveredPinId = pin.id; }}
+                        onmouseleave={() => (hoveredPinId = null)}
+                        onclick={() => selectCity(pin.cityData)}
+                        role="button"
+                        tabindex="0"
+                        onkeydown={(e) => e.key === "Enter" && selectCity(pin.cityData)}
+                    >
+                        <!-- Glassmorphic Pin Badge -->
+                        <div class="backdrop-blur-md border border-white/20 hover:border-white/40 px-3 py-1.5 rounded-full shadow-xl flex items-center gap-1.5 transform group-hover:scale-110 transition duration-200 {selectedCity?.id === pin.id ? 'ring-2 ring-white scale-110' : ''}">
+                            <span class="size-2 rounded-full animate-ping shrink-0 bg-primary"></span>
+                            <span class="text-xs font-bold text-white tracking-wide font-sans truncate">
+                                {pin.name}
+                            </span>
+                            <span class="text-[10px] text-white/50 font-mono font-normal hidden sm:inline">
+                                • {pin.country}
+                            </span>
+                        </div>
+
+                        <!-- Downward Arrow Pointer Stem -->
+                        <div class="w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-t-[6px] border-t-black/85"></div>
+                    </div>
+                {/each}
+            </div>
+        </div>
     </div>
 
     <!-- 360° PANORAMA FULL-SCREEN MODAL (Appears when a city pin is clicked) -->

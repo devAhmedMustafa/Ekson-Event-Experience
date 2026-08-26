@@ -4,6 +4,7 @@
     import Landing from "$lib/ui/Landing.svelte";
     import AboutUs from "$lib/ui/AboutUs.svelte";
     import InteractionApplications from "$lib/ui/InteractionApplications.svelte";
+    import ActiveFloor from "$lib/ui/ActiveFloor.svelte";
     import MiniGames from "$lib/ui/MiniGames.svelte";
     import VRGames from "$lib/ui/VRGames.svelte";
     import AiAssitant from "$lib/components/AiAssitant.svelte";
@@ -30,6 +31,10 @@
 <!-- NO overflow-hidden on interactive section so position:sticky works for Tour360 & TrueScaleDemo, but overflow-x-hidden prevents horizontal scrollbars -->
 <section id="interactive" class="relative w-full overflow-x-hidden">
     <InteractionApplications />
+</section>
+
+<section id="active-floor" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-hidden py-4">
+    <ActiveFloor />
 </section>
 
 <section id="minigames" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-hidden py-4">
