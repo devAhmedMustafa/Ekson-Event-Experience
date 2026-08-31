@@ -18,6 +18,9 @@ export default defineConfig(({ mode }) => {
 				adapter: adapter()
 			})
 		],
+		ssr: {
+			noExternal: ['gsap']
+		},
 		server: {
 			proxy: {
 				'/api': {
