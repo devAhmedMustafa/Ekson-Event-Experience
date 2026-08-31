@@ -882,7 +882,7 @@
                     entries.forEach((entry) => {
                         if (entry.isIntersecting) {
                             if (!videoPreviewSrc) {
-                                videoPreviewSrc = "/Walkthrough-demo.mp4";
+                                videoPreviewSrc = "https://pixabay.com/videos/download/x-173899_medium.mp4";
                             }
                             videoPreviewEl?.play().catch(() => {});
                         } else {
@@ -895,7 +895,7 @@
             if (videoPreviewEl) videoObserver.observe(videoPreviewEl);
             return () => videoObserver.disconnect();
         } else {
-            videoPreviewSrc = "/Walkthrough-demo.mp4";
+            videoPreviewSrc = "https://pixabay.com/videos/download/x-173899_medium.mp4";
         }
     });
 
