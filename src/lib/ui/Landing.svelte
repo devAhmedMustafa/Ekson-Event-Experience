@@ -34,8 +34,8 @@
 
 <div class="grid grid-cols-1 md:grid-cols-2 relative w-full h-full min-h-dvh md:h-screen gap-6 md:gap-8 max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-8 items-center">
     <div class="flex flex-col justify-between items-start h-full select-none overflow-hidden py-4 sm:py-6">
-        <!-- Top Spacer for Floating Navbar -->
-        <div class="h-10 sm:h-12"></div>
+        <!-- Top Spacer for Fixed Header -->
+        <div class="h-14 sm:h-16"></div>
 
         <!-- Center Hero Title & Subtitle & Brand CTA -->
         <div class="relative z-10 flex flex-col items-start justify-center my-auto text-left max-w-5xl">
