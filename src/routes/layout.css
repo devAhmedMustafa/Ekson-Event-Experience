@@ -11,9 +11,20 @@
     --brand-primary: #009dd6;
     --brand-secondary: #04547c;
     --brand-text: #010104;
-    --brand-background: #ebe9fc;
+    --brand-background: #fcfcff;
     --brand-light-tint: rgba(0, 157, 214, 0.12);
     --brand-contrast-text: #ffffff;
+}
+
+/* Global Text Selection in Brand Primary Color */
+::selection {
+    background-color: var(--brand-primary, #009dd6) !important;
+    color: #ffffff !important;
+}
+
+::-moz-selection {
+    background-color: var(--brand-primary, #009dd6) !important;
+    color: #ffffff !important;
 }
 
 html, body {

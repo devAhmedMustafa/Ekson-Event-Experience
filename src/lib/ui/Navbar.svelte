@@ -81,7 +81,7 @@
 </script>
 
 <!-- Full-width Top Navbar Header -->
-<header class="fixed top-0 left-0 right-0 w-full z-50 select-none bg-white/85 backdrop-blur-xl border-b border-black/5 shadow-xs transition-all duration-300">
+<header class="fixed top-0 left-0 right-0 w-full z-50 bg-white/85 backdrop-blur-xl border-b border-black/5 shadow-xs transition-all duration-300">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-3 flex items-center justify-between gap-4">
         
         <!-- Left: Logo -->
@@ -153,17 +153,17 @@
             >
                 Pricings
             </button>
-        </nav>
-
-        <!-- Right: Book a Demo Button (Scrolls to Investment Plans) -->
-        <div class="flex items-center gap-3">
-            <button
+            
+            <!-- Right: Book a Demo Button (Scrolls to Investment Plans) -->
+            <div class="flex items-center gap-3">
+                <button
                 onclick={() => scrollToSection('plans')}
                 class="px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold tracking-wide bg-primary text-white shadow-md shadow-primary/25 hover:bg-primary/90 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 cursor-pointer flex items-center gap-1.5"
             >
                 <span>Book a demo</span>
                 <span class="material-symbols-rounded text-base">arrow_forward</span>
-            </button>
-        </div>
+                </button>
+            </div>
+        </nav>
     </div>
 </header>

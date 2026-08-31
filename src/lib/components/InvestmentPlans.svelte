@@ -291,22 +291,19 @@
     }
 </script>
 
-<div class="relative w-full h-full min-h-[100dvh] md:h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-4 sm:py-8 flex flex-col justify-between select-none overflow-visible md:overflow-hidden">
+<div class="relative w-full h-full min-h-dvh md:h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-4 sm:py-8 flex flex-col overflow-visible md:overflow-hidden">
     <!-- Top Header -->
-    <div class="flex items-end justify-between pb-3 border-b border-black/5 shrink-0 w-full mb-3 sm:mb-4">
-        <div>
-
-            <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-text tracking-tight">
-                Investment Plans
-            </h2>
-            <p class="text-xs sm:text-sm text-text/70 mt-1 max-w-xl leading-relaxed">
-                Turnkey spatial tech packages tailored for exhibition booths.
-            </p>
-        </div>
+    <div class="flex items-start mt-10 pb-3 border-b border-black/5 shrink-0 w-full flex-col">
+        <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-text tracking-tight">
+            Investment Plans
+        </h2>
+        <p class="text-xs sm:text-sm text-text/70 mt-1 max-w-xl leading-relaxed">
+            Turnkey spatial tech packages tailored for exhibition booths.
+        </p>
     </div>
 
     <!-- 3 Pricing Cards Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6 items-stretch my-auto shrink-0 max-h-none md:max-h-none py-3 scrollbar-none">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6 items-stretch max-h-none md:max-h-none py-3 scrollbar-none">
         {#each plans as plan (plan.id)}
             <div
                 class="relative bg-white/70 backdrop-blur-xl rounded-3xl flex flex-col justify-between p-6 sm:p-7 transition-all duration-300 {plan.isPopular
@@ -386,9 +383,9 @@
             </span>
         </div>
 
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-1.5 sm:gap-2 text-left">
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-1.5 sm:gap-2 text-center">
             {#each bottomInclusions as item}
-                <div class="flex items-start gap-1 sm:gap-1.5">
+                <div class="flex items-center gap-1 sm:gap-1.5">
                     <span class="material-symbols-rounded text-[15px] sm:text-[17px] text-primary shrink-0 mt-0.5">
                         {item.icon}
                     </span>

@@ -388,7 +388,7 @@
 
     <!-- Phone Prompt Bar at Bottom -->
     {#if isRunning && !showOverlay}
-        <div class="absolute bottom-6 left-3.5 right-3.5 z-20 px-3.5 py-1.5 rounded-full bg-slate-900/80 backdrop-blur-md border border-white/10 text-white text-xs font-medium text-center pointer-events-none">
+        <div class="absolute bottom-1 left-3.5 right-3.5 z-20 px-3.5 py-1.5 rounded-full bg-slate-900/80 backdrop-blur-md border border-white/10 text-white text-xs font-medium text-center pointer-events-none">
             Drag to move bag
         </div>
     {/if}

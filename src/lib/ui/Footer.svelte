@@ -15,9 +15,9 @@
     }
 </script>
 
-<div class="relative w-full h-full min-h-dvh md:h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-4 sm:py-8 flex flex-col justify-between select-none overflow-visible md:overflow-hidden">
+<div class="relative w-full h-full min-h-dvh md:h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-4 sm:py-8 flex flex-col justify-between overflow-visible md:overflow-hidden">
     <!-- Top Headline Section -->
-    <div class="relative z-10 flex items-end justify-between pb-3 border-b border-black/5 shrink-0 w-full mb-3">
+    <div class="relative z-10 flex items-end justify-between pb-3 border-b border-black/5 shrink-0 w-full mt-16">
         <div>
 
             <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-text tracking-tight">

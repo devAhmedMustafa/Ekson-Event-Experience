@@ -34,7 +34,7 @@
     }
 </script>
 
-<div class="w-full h-full flex flex-col md:flex-row items-center justify-between p-2 sm:p-4 md:p-6 gap-3 md:gap-6 select-none font-sans overflow-hidden">
+<div class="w-full h-full flex flex-col md:flex-row items-center justify-between p-2 sm:p-4 md:p-6 gap-3 md:gap-6 font-sans overflow-hidden">
     <!-- BIG INTERACTIVE MAIN STAGE (LEADERBOARD - FULL VIEWPORT ON MOBILE) -->
     <div class="flex-1 w-full h-full flex flex-col justify-between p-2.5 sm:p-3.5 bg-white/40 border border-black/5 rounded-2xl overflow-hidden font-mono">
         <!-- Table Header & Controls -->

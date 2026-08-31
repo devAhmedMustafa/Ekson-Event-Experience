@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <defs>
+    <linearGradient id="engGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ec4899"/>
+      <stop offset="50%" stop-color="#f43f5e"/>
+      <stop offset="100%" stop-color="#8b5cf6"/>
+    </linearGradient>
+  </defs>
+  <circle cx="100" cy="100" r="90" fill="url(#engGrad)" fill-opacity="0.1" stroke="url(#engGrad)" stroke-width="2" stroke-dasharray="8 6"/>
+  <!-- Glowing Heart / Interaction Target -->
+  <path d="M100 150 L60 110 C45 95, 45 70, 65 55 C80 45, 95 55, 100 65 C105 55, 120 45, 135 55 C155 70, 155 95, 140 110 Z" fill="url(#engGrad)" fill-opacity="0.75" stroke="#ffffff" stroke-width="3" stroke-linejoin="round"/>
+  <!-- Pulses -->
+  <circle cx="100" cy="95" r="25" stroke="#ffffff" stroke-width="2" stroke-dasharray="4 4" fill="none"/>
+  <circle cx="100" cy="95" r="40" stroke="url(#engGrad)" stroke-width="2" stroke-dasharray="6 6" fill="none"/>
+  <!-- Sparkles -->
+  <path d="M100 35 L103 45 L113 48 L103 51 L100 61 L97 51 L87 48 L97 45 Z" fill="#f43f5e"/>
+  <path d="M45 125 L47 132 L54 134 L47 136 L45 143 L43 136 L36 134 L43 132 Z" fill="#ec4899"/>
+  <path d="M155 125 L157 132 L164 134 L157 136 L155 143 L153 136 L146 134 L153 132 Z" fill="#8b5cf6"/>
+</svg>
