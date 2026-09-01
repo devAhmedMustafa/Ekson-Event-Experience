@@ -157,7 +157,7 @@
 
 <svelte:window onkeydown={handleKeyDown} />
 
-<div class="w-full py-4 gap-5 sm:py-8 max-w-6xl mx-auto px-4 sm:px-6 md:px-8 flex flex-col overflow-visible md:overflow-hidden">
+<div class="w-full max-w-6xl mx-auto px-4 sm:px-6 md:px-8 flex flex-col overflow-visible">
     
     <!-- MAIN 2-COLUMN STAGE: LEFT = TITLE + DESC + STAGGERED IMAGES (5/12) | RIGHT = KIOSK DISPLAY (7/12) -->
     <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center justify-between flex-1 w-full my-auto">
@@ -165,7 +165,7 @@
         <!-- LEFT COLUMN (Taller col-span-5 with staggered image card heights) -->
         <div class="md:col-span-5 flex flex-col justify-between space-y-5 sm:space-y-6">
             <div>
-                <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-text tracking-tight leading-tight">
+                <h2 class="text-4xl sm:text-5xl lg:text-6xl font-black text-text tracking-tight leading-tight">
                     Mini Games <span class="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">Suite</span>
                 </h2>
                 

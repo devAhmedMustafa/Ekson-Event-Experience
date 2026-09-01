@@ -21,52 +21,51 @@
 
 <Navbar />
 
-<section id="landing" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-x-hidden md:overflow-hidden">
+<section id="landing" class="relative w-full min-h-dvh flex flex-col justify-center items-center overflow-x-hidden py-12 sm:py-16 md:py-20">
     <Landing />
 </section>
 
-<section id="about" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-x-hidden md:overflow-hidden py-4 sm:py-6">
+<section id="about" class="relative w-full min-h-dvh flex flex-col justify-center items-center overflow-x-hidden py-12 sm:py-16 md:py-20">
     <AboutUs />
 </section>
 
 <!-- NO overflow-hidden on interactive section so position:sticky works for Tour360 & TrueScaleDemo, but overflow-x-hidden prevents horizontal scrollbars -->
-<section id="interactive" class="relative w-full overflow-x-hidden">
+<section id="interactive" class="relative w-full min-h-dvh flex flex-col justify-center items-center overflow-x-hidden py-12 sm:py-16 md:py-20">
     <InteractionApplications />
 </section>
 
-<section id="active-floor" class="relative w-full flex flex-col justify-center items-center overflow-x-hidden md:overflow-hidden py-4 sm:py-6">
+<section id="active-floor" class="relative w-full min-h-dvh flex flex-col justify-center items-center overflow-x-hidden py-12 sm:py-16 md:py-20">
     <ActiveFloor />
 </section>
 
-<section id="vr-games" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-x-hidden md:overflow-hidden py-4 sm:py-6">
+<section id="vr-games" class="relative w-full min-h-dvh flex flex-col justify-center items-center overflow-x-hidden py-12 sm:py-16 md:py-20">
     <VRGames />
 </section>
 
-<section id="real-time-walking" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-x-hidden md:overflow-hidden py-4 sm:py-6">
+<section id="real-time-walking" class="relative w-full min-h-dvh flex flex-col justify-center items-center overflow-x-hidden py-12 sm:py-16 md:py-20">
     <RealTimeWalking />
 </section>
 
-<section id="minigames" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-x-hidden md:overflow-hidden py-4 sm:py-6">
+<section id="minigames" class="relative w-full min-h-dvh flex flex-col justify-center items-center overflow-x-hidden py-12 sm:py-16 md:py-20">
     <MiniGames />
 </section>
 
-
-<section id="ai-assistant" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-x-hidden md:overflow-hidden py-4 sm:py-6">
+<section id="ai-assistant" class="relative w-full min-h-dvh flex flex-col justify-center items-center overflow-x-hidden py-12 sm:py-16 md:py-20">
     <AiAssitant />
 </section>
 
-<section id="ar-apps" class="relative w-full min-h-dvh lg:h-screen flex flex-col justify-center items-center overflow-x-hidden lg:overflow-hidden py-3 sm:py-6">
+<section id="ar-apps" class="relative w-full min-h-dvh flex flex-col justify-center items-center overflow-x-hidden py-12 sm:py-16 md:py-20">
     <ARApps />
 </section>
 
-<section id="plans" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-x-hidden md:overflow-hidden py-4 sm:py-6">
+<section id="plans" class="relative w-full min-h-dvh flex flex-col justify-center items-center overflow-x-hidden py-12 sm:py-16 md:py-20">
     <InvestmentPlans />
 </section>
 
-<section id="contact" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-x-hidden md:overflow-hidden py-4 sm:py-6">
+<section id="contact" class="relative w-full min-h-dvh flex flex-col justify-center items-center overflow-x-hidden py-12 sm:py-16 md:py-20">
     <ContactUs />
 </section>
 
-<section id="footer" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-x-hidden md:overflow-hidden py-4 sm:py-6">
+<section id="footer" class="relative w-full min-h-dvh flex flex-col justify-center items-center overflow-x-hidden py-12 sm:py-16 md:py-20">
     <Footer />
 </section>

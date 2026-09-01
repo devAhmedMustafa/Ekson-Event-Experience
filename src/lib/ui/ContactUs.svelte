@@ -113,12 +113,12 @@
     }
 </script>
 
-<div id="contact-form" class="relative w-full h-full min-h-dvh max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-8 sm:py-12 flex flex-col justify-center overflow-visible">
+<div id="contact-form" class="relative w-full h-full max-w-6xl mx-auto px-4 sm:px-6 md:px-8 flex flex-col justify-center overflow-visible">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center my-auto">
         <!-- Left Column: Contact Information & Headline -->
         <div class="lg:col-span-5 flex flex-col space-y-6">
 
-            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-text tracking-tight leading-[1.1]">
+            <h2 class="text-4xl sm:text-5xl lg:text-6xl font-black text-text tracking-tight leading-[1.1]">
                 Let's Build Your Next <span class="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">Experience</span>
             </h2>
 

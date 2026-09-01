@@ -16,7 +16,7 @@
     let activeFeatureIndex = $state<number | null>(null);
 </script>
 
-<div class="relative w-full h-full min-h-dvh md:h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 sm:py-8 flex flex-col justify-between overflow-hidden">
+<div class="relative w-full h-full max-w-6xl mx-auto px-4 sm:px-6 md:px-8 flex flex-col justify-between overflow-visible">
 
     <!-- Main Container Card -->
     <div class="relative w-full my-auto backdrop-blur-xl overflow-hidden flex-1 flex flex-col justify-center">

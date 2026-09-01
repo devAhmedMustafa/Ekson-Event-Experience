@@ -181,7 +181,7 @@
             >
                 <!-- Card Header Area -->
                 <div class="relative z-10 shrink-0 flex items-center justify-between pb-2">
-                    <h2 class="text-4xl sm:text-5xl font-black text-text tracking-tight">
+                    <h2 class="text-4xl sm:text-5xl lg:text-6xl font-black text-text tracking-tight leading-tight">
                         360° <span class="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">Tours</span>
                     </h2>
                 </div>

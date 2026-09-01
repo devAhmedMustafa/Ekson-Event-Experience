@@ -845,12 +845,12 @@
     });
 </script>
 
-<div class="w-full flex flex-col pt-22">
-    <div class="w-full min-h-dvh md:h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-4 sm:py-6 flex flex-col justify-between overflow-visible md:overflow-hidden">
+<div class="w-full flex flex-col">
+    <div class="w-full max-w-6xl mx-auto px-4 sm:px-6 md:px-8 flex flex-col justify-between overflow-visible">
         
         <!-- Top Full-Width Header Card (Title & Desc Box) -->
         <div class="w-full">
-            <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-text tracking-tight">
+            <h2 class="text-4xl sm:text-5xl lg:text-6xl font-black text-text tracking-tight leading-tight">
                 Virtual Exhibition & Indoor <span class="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">Navigation</span>
             </h2>
             <p class="text-xs sm:text-sm text-text/70 mt-1 mb-6 max-w-2xl leading-relaxed">

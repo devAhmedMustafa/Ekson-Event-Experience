@@ -75,11 +75,11 @@
     }
 </script>
 
-<div class="w-full h-full min-h-dvh lg:h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-4 sm:py-8 flex flex-col justify-between overflow-visible lg:overflow-hidden">
+<div class="w-full h-full max-w-6xl mx-auto px-4 sm:px-6 md:px-8 flex flex-col justify-between overflow-visible">
     <!-- Header -->
     <div class="flex items-end justify-between pb-3 border-b border-black/5 shrink-0 w-full mb-3 sm:mb-4">
         <div>
-            <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-text tracking-tight">
+            <h2 class="text-4xl sm:text-5xl lg:text-6xl font-black text-text tracking-tight leading-tight">
                 AR <span class="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">Items</span>
             </h2>
             <p class="text-xs sm:text-sm text-text/70 mt-1 max-w-xl leading-relaxed">

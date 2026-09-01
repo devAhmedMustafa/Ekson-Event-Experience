@@ -29,14 +29,14 @@
     });
 </script>
 
-<div class="relative w-full h-full min-h-dvh md:h-screen gap-6 md:gap-8 max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-8 items-center">
+<div class="relative w-full h-full max-w-6xl mx-auto px-4 sm:px-6 md:px-8 gap-6 md:gap-8 flex flex-col items-center justify-center">
     <div class="flex flex-col justify-between items-center h-full overflow-hidden py-4 sm:py-6">
 
         <!-- Center Hero Title & Subtitle & Brand CTA -->
         <div class="relative z-10 flex flex-col items-center justify-center my-auto max-w-5xl">
             <!-- Main Headline -->
             <h1
-                class="text-center text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[1.05] transition-all duration-1000 ease-out {isLoaded ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-8 scale-95'}"
+                class="text-center text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.05] transition-all duration-1000 ease-out {isLoaded ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-8 scale-95'}"
             >
                 <span
                     class="inline-block text-transparent bg-clip-text transition-all duration-300"

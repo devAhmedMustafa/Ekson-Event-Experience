@@ -203,7 +203,7 @@
 
 <svelte:window onkeydown={handleKeyDown} />
 
-<div class="w-full min-h-dvh max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-8 flex flex-col justify-center">
+<div class="w-full max-w-6xl mx-auto px-4 sm:px-6 md:px-8 flex flex-col justify-center">
     
     <!-- 2-COLUMN GRID LAYOUT -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full items-stretch my-auto">
@@ -291,7 +291,7 @@
             
             <!-- TOP RIGHT CARD: MiniGames Header & Description -->
             <div class="flex flex-col justify-center space-y-3 p-6 sm:p-8 ">
-                <h2 class="text-2xl sm:text-3xl font-extrabold text-text tracking-tight leading-tight">
+                <h2 class="text-4xl sm:text-5xl lg:text-6xl font-black text-text tracking-tight leading-tight">
                     VR Gaming <span class="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">Experiences</span>
                 </h2>
                 <p class="text-xs sm:text-sm text-text/75 leading-relaxed font-medium">
@@ -320,7 +320,7 @@
 
                         <!-- Card Body -->
                         <div class="relative z-10 space-y-3 my-4">
-                            <h3 class="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight drop-shadow-sm">
+                            <h3 class="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight drop-shadow-sm">
                                 {game.title}
                             </h3>
                             <p class="text-xs sm:text-sm leading-relaxed font-medium">
