@@ -390,7 +390,7 @@
 
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4 md:gap-5 items-center">
             {#each bottomInclusions as item}
-                <div class="flex items-center gap-2.5">
+                <div class="flex flex-col items-center gap-2.5">
                     <div class="size-8 sm:size-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
                         <span class="material-symbols-rounded text-base sm:text-lg">
                             {item.icon}
