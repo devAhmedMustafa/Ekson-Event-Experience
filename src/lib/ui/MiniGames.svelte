@@ -222,7 +222,7 @@
                 <!-- Left Slide Button on Side of Kiosk -->
                 <button
                     onclick={prevSlide}
-                    class="absolute left-0 top-1/2 -translate-y-1/2 z-40 size-9 sm:size-11 rounded-full bg-white/90 hover:bg-white text-text shadow-lg border border-black/5 backdrop-blur-xl flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 cursor-pointer"
+                    class="absolute left-20 top-1/2 -translate-y-1/2 z-40 size-9 sm:size-11 rounded-full bg-white/90 hover:bg-white text-text shadow-lg border border-black/5 backdrop-blur-xl flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 cursor-pointer"
                     aria-label="Previous Game"
                     title="Previous Game"
                 >
@@ -341,7 +341,7 @@
                 <!-- Right Slide Button on Side of Kiosk -->
                 <button
                     onclick={nextSlide}
-                    class="absolute right-0 top-1/2 -translate-y-1/2 z-40 size-9 sm:size-11 rounded-full bg-white/90 hover:bg-white text-text shadow-lg border border-black/5 backdrop-blur-xl flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 cursor-pointer"
+                    class="absolute right-20 top-1/2 -translate-y-1/2 z-40 size-9 sm:size-11 rounded-full bg-white/90 hover:bg-white text-text shadow-lg border border-black/5 backdrop-blur-xl flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 cursor-pointer"
                     aria-label="Next Game"
                     title="Next Game"
                 >
@@ -365,21 +365,6 @@
             </div>
         </div>
 
-    </div>
-
-    <!-- MINIMIZED KIOSK FEATURES ROW (AT THE BOTTOM) -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3 pt-3 border-t border-black/10 shrink-0 w-full">
-        {#each kioskFeatures as feat}
-            <div class="p-2 sm:p-2.5 rounded-xl bg-white/50 backdrop-blur-md border border-black/5 flex items-center gap-2 sm:gap-2.5 transition-all hover:bg-white/70">
-                <div class="size-6.5 sm:size-7 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0 font-bold">
-                    <span class="material-symbols-rounded text-xs sm:text-sm">{feat.icon}</span>
-                </div>
-                <div class="flex flex-col min-w-0">
-                    <h3 class="text-[11px] sm:text-xs font-bold text-text truncate tracking-tight">{feat.title}</h3>
-                    <p class="text-[9.5px] sm:text-[10px] text-text/65 leading-tight truncate mt-0.5">{feat.description}</p>
-                </div>
-            </div>
-        {/each}
     </div>
 
 </div>
