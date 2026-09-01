@@ -64,7 +64,7 @@
             });
         }, observerOptions);
 
-        const allIds = ["landing", "plans", ...featureItems.map(item => item.id)];
+        const allIds = ["landing", "plans", "contact", ...featureItems.map(item => item.id)];
         allIds.forEach((id) => {
             const el = document.getElementById(id);
             if (el) observer.observe(el);
@@ -378,7 +378,7 @@
                         <span>Live Demo Request</span>
                     </div>
                     <h3 class="text-base sm:text-lg font-black text-text uppercase tracking-tight">
-                        Book a Live Demo
+                        Book a Live <span class="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">Demo</span>
                     </h3>
                 </div>
                 <button

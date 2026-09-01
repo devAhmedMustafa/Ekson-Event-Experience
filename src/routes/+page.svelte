@@ -11,12 +11,13 @@
     import ARApps from "$lib/ui/AR_Apps.svelte";
     import GlobalCoverage from "$lib/ui/GlobalCoverage.svelte";
     import InvestmentPlans from "$lib/components/InvestmentPlans.svelte";
+    import ContactUs from "$lib/ui/ContactUs.svelte";
     import Footer from "$lib/ui/Footer.svelte";
     import RealTimeWalking from "$lib/ui/RealTimeWalking.svelte";
 </script>
 
 <svelte:head>
-    <title>Kubix Event Experiences</title>
+    <title>Ekson Event Experiences</title>
 </svelte:head>
 
 <Navbar />
@@ -61,6 +62,10 @@
 
 <section id="plans" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-x-hidden md:overflow-hidden py-4 sm:py-6">
     <InvestmentPlans />
+</section>
+
+<section id="contact" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-x-hidden md:overflow-hidden py-4 sm:py-6">
+    <ContactUs />
 </section>
 
 <section id="footer" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-x-hidden md:overflow-hidden py-4 sm:py-6">

@@ -298,7 +298,7 @@
     <!-- Top Header -->
     <div class="flex items-start mb-10 pb-3 border-b border-black/5 shrink-0 w-full flex-col">
         <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-text tracking-tight">
-            Investment Plans
+            Investment <span class="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">Plans</span>
         </h2>
         <p class="text-xs sm:text-sm text-text/70 mt-1 max-w-xl leading-relaxed">
             Turnkey spatial tech packages tailored for exhibition booths.

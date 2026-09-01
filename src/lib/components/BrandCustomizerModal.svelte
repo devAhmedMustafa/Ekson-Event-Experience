@@ -255,7 +255,7 @@
                             <span>Brand Customization Studio</span>
                         </div>
                         <h2 class="text-base sm:text-lg md:text-xl font-extrabold text-text uppercase tracking-tight">
-                            Try It For Your Brand
+                            Try It For Your <span class="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">Brand</span>
                         </h2>
                     </div>
                 </div>

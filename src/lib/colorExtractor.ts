@@ -25,14 +25,14 @@ export interface ExtractedBrandColors {
 }
 
 export const FALLBACK_COLOR: ExtractedBrandColors = {
-    primary: "#4abbff",
-    primaryRgb: [74, 187, 255],
-    hsl: { h: 203, s: 1.0, l: 0.65 },
+    primary: "#ffa349",
+    primaryRgb: [255, 163, 73],
+    hsl: { h: 30, s: 1.0, l: 0.64 },
     contrastText: "#ffffff",
-    darkShade: "#ba5fff",
-    lightTint: "rgba(74, 187, 255, 0.12)",
-    accent: "#ba5fff",
-    palette: ["#4abbff", "#ba5fff", "#1b7ec2"]
+    darkShade: "#f06f42",
+    lightTint: "rgba(255, 163, 73, 0.12)",
+    accent: "#f06f42",
+    palette: ["#ffa349", "#f06f42", "#d9552b"]
 };
 
 // Convert RGB to HSL

@@ -6,7 +6,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { gsap } from 'gsap';
-	import { brand } from '$lib/brand.svelte';
 
 	type Props = {
 		cards: CardSwapItem[];
@@ -254,8 +253,7 @@
 		<!-- Toggle Auto-Rotate Button -->
 		<button
 			onclick={() => toggleAutoFn?.()}
-			class="size-8 rounded-full flex items-center justify-center transition cursor-pointer shadow-xs hover:scale-105 active:scale-95"
-			style="background-color: {brand.primaryColor};"
+			class="size-8 rounded-full flex items-center justify-center transition cursor-pointer shadow-xs hover:scale-105 active:scale-95 bg-primary text-white"
 			title={isAutoPlaying ? "Pause Auto-Rotation" : "Start Auto-Rotation"}
 			aria-label="Toggle Auto-Rotation"
 		>
@@ -282,7 +280,6 @@
 						if (idx !== activeCardIndex) swapFn?.();
 					}}
 					class="size-2 rounded-full transition-all duration-300 cursor-pointer {idx === activeCardIndex ? 'w-4 bg-primary' : 'bg-black/20 hover:bg-black/40'}"
-					style={idx === activeCardIndex ? `background-color: ${brand.primaryColor};` : ''}
 					title="Jump to Card {idx + 1}"
 					aria-label="Jump to Card {idx + 1}"
 				></button>

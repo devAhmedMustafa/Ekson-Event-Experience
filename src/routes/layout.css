@@ -1,29 +1,29 @@
 @import 'tailwindcss';
 
 @theme {
-    --color-primary: var(--brand-primary, #4abbff);
-    --color-secondary: var(--brand-secondary, #ba5fff);
+    --color-primary: var(--brand-primary, #ffa349);
+    --color-secondary: var(--brand-secondary, #f06f42);
     --color-text: var(--brand-text, #010104);
     --color-background: var(--brand-background, #ffffff);
 }
 
 :root {
-    --brand-primary: #4abbff;
-    --brand-secondary: #ba5fff;
+    --brand-primary: #ffa349;
+    --brand-secondary: #f06f42;
     --brand-text: #010104;
     --brand-background: #ffffff;
-    --brand-light-tint: rgba(74, 187, 255, 0.12);
+    --brand-light-tint: rgba(255, 163, 73, 0.12);
     --brand-contrast-text: #ffffff;
 }
 
 /* Global Text Selection in Brand Primary Color */
 ::selection {
-    background-color: var(--brand-primary, #4abbff) !important;
+    background-color: var(--brand-primary, #ffa349) !important;
     color: #ffffff !important;
 }
 
 ::-moz-selection {
-    background-color: var(--brand-primary, #4abbff) !important;
+    background-color: var(--brand-primary, #ffa349) !important;
     color: #ffffff !important;
 }
 
@@ -36,9 +36,9 @@ html, body {
 body {
     background-color: var(--brand-background, #ffffff);
     background-image: 
-        radial-gradient(at 15% 15%, rgba(74, 187, 255, 0.12) 0px, transparent 50%),
-        radial-gradient(at 85% 25%, rgba(186, 95, 255, 0.08) 0px, transparent 50%),
-        radial-gradient(at 50% 80%, rgba(74, 187, 255, 0.06) 0px, transparent 50%);
+        radial-gradient(at 15% 15%, rgba(255, 163, 73, 0.12) 0px, transparent 50%),
+        radial-gradient(at 85% 25%, rgba(240, 111, 66, 0.08) 0px, transparent 50%),
+        radial-gradient(at 50% 80%, rgba(255, 163, 73, 0.06) 0px, transparent 50%);
     background-attachment: fixed;
     color: var(--brand-text, #010104);
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;

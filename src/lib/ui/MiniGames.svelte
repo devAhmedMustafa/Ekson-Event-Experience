@@ -11,13 +11,14 @@
         code: string;
         icon: string;
         imageSrc?: string;
+        heightClass: string;
     }
 
     const slides: GameSlide[] = [
-        { id: "lucky-wheel", title: "Lucky Wheel", code: "01", icon: "rotate_right", imageSrc: "https://images.unsplash.com/photo-1518609878373-06d740f60d8b?w=600&auto=format&fit=crop&q=80" },
-        { id: "reflex-challenge", title: "Reflex Speed", code: "02", icon: "bolt", imageSrc: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&auto=format&fit=crop&q=80" },
-        { id: "catch-collect", title: "Catch & Collect", code: "03", icon: "token", imageSrc: "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&auto=format&fit=crop&q=80" },
-        { id: "product-quiz", title: "Product Quiz", code: "04", icon: "quiz", imageSrc: "https://images.unsplash.com/photo-1606326608606-aa0b62935f2b?w=600&auto=format&fit=crop&q=80" },
+        { id: "lucky-wheel", title: "Lucky Wheel", code: "01", icon: "rotate_right", imageSrc: "https://images.unsplash.com/photo-1518609878373-06d740f60d8b?w=600&auto=format&fit=crop&q=80", heightClass: "h-44 sm:h-52 md:h-56" },
+        { id: "reflex-challenge", title: "Reflex Speed", code: "02", icon: "bolt", imageSrc: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&auto=format&fit=crop&q=80", heightClass: "h-32 sm:h-36 md:h-40" },
+        { id: "catch-collect", title: "Catch & Collect", code: "03", icon: "token", imageSrc: "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&auto=format&fit=crop&q=80", heightClass: "h-36 sm:h-40 md:h-44" },
+        { id: "product-quiz", title: "Product Quiz", code: "04", icon: "quiz", imageSrc: "https://images.unsplash.com/photo-1606326608606-aa0b62935f2b?w=600&auto=format&fit=crop&q=80", heightClass: "h-48 sm:h-56 md:h-64" },
     ];
 
     const kioskFeatures = [
@@ -158,65 +159,68 @@
 
 <div class="w-full py-4 gap-5 sm:py-8 max-w-6xl mx-auto px-4 sm:px-6 md:px-8 flex flex-col overflow-visible md:overflow-hidden">
     
-    <!-- MAIN 2-COLUMN STAGE: LEFT = TITLE + DESC + FEATURES (33%) | RIGHT = KIOSK DISPLAY (67%) -->
+    <!-- MAIN 2-COLUMN STAGE: LEFT = TITLE + DESC + STAGGERED IMAGES (5/12) | RIGHT = KIOSK DISPLAY (7/12) -->
     <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center justify-between flex-1 w-full my-auto">
         
-        <!-- LEFT COLUMN (Compact 1/3 width: col-span-4 out of 12) -->
-        <div class="md:col-span-4 flex flex-col justify-center space-y-4">
+        <!-- LEFT COLUMN (Taller col-span-5 with staggered image card heights) -->
+        <div class="md:col-span-5 flex flex-col justify-between space-y-5 sm:space-y-6">
             <div>
-
                 <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-text tracking-tight leading-tight">
                     Mini Games <span class="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">Suite</span>
                 </h2>
                 
-                <p class="text-xs sm:text-sm text-text/75 mt-2 leading-relaxed font-medium">
+                <p class="text-xs sm:text-sm text-text/75 mt-2.5 leading-relaxed font-medium">
                     Boost attendee foot traffic and lead generation with interactive trade show touchscreen kiosk challenges.
                 </p>
             </div>
 
-            <!-- 4 IMAGES GRID (GAME PREVIEW THUMBNAILS) -->
-            <div class="grid grid-cols-2 gap-2.25 sm:gap-2 pt-2">
-                {#each slides as slide, idx}
-                    <button
-                        onclick={() => goToSlide(idx)}
-                        class="group relative h-24 sm:h-28 rounded-2xl overflow-hidden border transition-all duration-300 cursor-pointer text-left flex flex-col justify-end p-2.5 sm:p-3 shadow-xs hover:shadow-md {currentIndex === idx ? 'border-primary ring-2 ring-primary/40 scale-[1.02]' : 'border-black/10 hover:border-black/25 opacity-85 hover:opacity-100'}"
-                        aria-label="Select {slide.title}"
-                    >
-                        <!-- Card Background Image -->
-                        {#if slide.imageSrc}
-                            <img
-                                src={slide.imageSrc}
-                                alt={slide.title}
-                                class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                            />
-                            <div class="absolute inset-0 bg-linear-to-t from-slate-950/90 via-slate-950/40 to-black/20"></div>
-                        {:else}
-                            <div class="absolute inset-0 bg-linear-to-br from-slate-900 to-slate-950"></div>
-                        {/if}
+            <!-- 4 IMAGES GRID (STAGGERED BENTO LAYOUT WITH DIFFERENT HEIGHTS) -->
+            <div class="grid grid-cols-2 gap-3 sm:gap-3.5 pt-1">
+                {#each [[0, 2], [1, 3]] as columnIndices}
+                    <div class="flex flex-col gap-3 sm:gap-3.5">
+                        {#each columnIndices as idx}
+                            {@const slide = slides[idx]}
+                            <button
+                                onclick={() => goToSlide(idx)}
+                                class="group relative {slide.heightClass} rounded-2xl overflow-hidden border transition-all duration-300 cursor-pointer text-left flex flex-col justify-end p-3 sm:p-3.5 shadow-xs hover:shadow-md {currentIndex === idx ? 'border-primary ring-2 ring-primary/40 scale-[1.02]' : 'border-black/10 hover:border-black/25 opacity-85 hover:opacity-100'}"
+                                aria-label="Select {slide.title}"
+                            >
+                                <!-- Card Background Image -->
+                                {#if slide.imageSrc}
+                                    <img
+                                        src={slide.imageSrc}
+                                        alt={slide.title}
+                                        class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                    />
+                                    <div class="absolute inset-0 bg-linear-to-t from-slate-950/90 via-slate-950/40 to-black/20"></div>
+                                {:else}
+                                    <div class="absolute inset-0 bg-linear-to-br from-slate-900 to-slate-950"></div>
+                                {/if}
 
-                        <!-- Active Indicator / Icon Header -->
-                        <div class="relative z-10 flex items-center justify-between w-full mb-auto">
-                            
-                            {#if currentIndex === idx}
-                                <span class="px-1.5 py-0.5 rounded-md bg-primary text-white text-[9px] font-black uppercase tracking-wider shadow-xs">
-                                    Active
-                                </span>
-                            {/if}
-                        </div>
+                                <!-- Active Indicator / Icon Header -->
+                                <div class="relative z-10 flex items-center justify-between w-full mb-auto">
+                                    {#if currentIndex === idx}
+                                        <span class="px-2 py-0.5 rounded-md bg-primary text-white text-[9px] font-black uppercase tracking-wider shadow-xs">
+                                            Active
+                                        </span>
+                                    {/if}
+                                </div>
 
-                        <!-- Title & Code -->
-                        <div class="relative z-10">
-                            <h3 class="text-xs sm:text-sm font-bold text-white tracking-tight leading-tight group-hover:text-primary transition-colors truncate">
-                                {slide.title}
-                            </h3>
-                        </div>
-                    </button>
+                                <!-- Title -->
+                                <div class="relative z-10">
+                                    <h3 class="text-xs sm:text-sm font-bold text-white tracking-tight leading-tight group-hover:text-primary transition-colors truncate">
+                                        {slide.title}
+                                    </h3>
+                                </div>
+                            </button>
+                        {/each}
+                    </div>
                 {/each}
             </div>
         </div>
 
-        <!-- RIGHT COLUMN (col-span-8 out of 12): TALL REALISTIC TRADE SHOW KIOSK TOTEM -->
-        <div class="md:col-span-8 flex flex-col items-center justify-center relative">
+        <!-- RIGHT COLUMN (col-span-7 out of 12): TALL REALISTIC TRADE SHOW KIOSK TOTEM -->
+        <div class="md:col-span-7 flex flex-col items-center justify-center relative">
             <!-- Kiosk Stage Wrapper with Side Navigation Controls -->
             <div class="relative flex items-center justify-center w-full">
                 <!-- Left Slide Button on Side of Kiosk -->

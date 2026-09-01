@@ -81,7 +81,7 @@
         <div>
 
             <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-text tracking-tight">
-                AR Giveaway Items
+                AR Giveaway <span class="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">Items</span>
             </h2>
             <p class="text-xs sm:text-sm text-text/70 mt-1 max-w-xl leading-relaxed">
                 Scan QR codes to preview branded 3D giveaways on mobile devices.
@@ -108,7 +108,7 @@
 
                     <!-- Center Big QR Code Container -->
                     <div class="flex items-center gap-3 my-auto py-2">
-                        <div class="relative size-20 sm:size-28 p-1.5 sm:p-2 bg-white border border-black/10 rounded-2xl shrink-0 shadow-sm flex items-center justify-center overflow-hidden">
+                        <div class="relative p-1.5 sm:p-2 bg-white rounded-2xl shrink-0 flex items-center justify-center overflow-hidden">
                             {#if !brand.logo}
                                 <img
                                     src={getQrCodeUrl(app.id)}

@@ -851,7 +851,7 @@
         <!-- Top Full-Width Header Card (Title & Desc Box) -->
         <div class="w-full">
             <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-text tracking-tight">
-                Virtual Exhibition & Indoor Navigation
+                Virtual Exhibition & Indoor <span class="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">Navigation</span>
             </h2>
             <p class="text-xs sm:text-sm text-text/70 mt-1 mb-6 max-w-2xl leading-relaxed">
                 1:1 Metric scale 3D booth configurator combined with real-time first-person hall navigation and turn-by-turn guidance.
@@ -936,7 +936,7 @@
                         <!-- LIVE 3D WALKTHROUGH -->
                         {#if is3DLoading}
                             <div class="absolute inset-0 bg-slate-950/85 backdrop-blur-md flex flex-col items-center justify-center text-white z-30 transition-opacity duration-300">
-                                <div class="size-8 border-2 border-white/20 border-t-primary rounded-full animate-spin mb-2 shadow-lg" style="border-top-color: {brand.primaryColor};"></div>
+                                <div class="size-8 border-2 border-white/20 border-t-primary rounded-full animate-spin mb-2 shadow-lg"></div>
                                 <span class="text-[10px] font-bold uppercase tracking-widest text-white/90">
                                     Assembling 3D Hall…
                                 </span>
@@ -952,7 +952,7 @@
                         <!-- Control Pill Bar -->
                         <div class="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between pointer-events-none z-20">
                             <div class="hidden sm:flex items-center gap-1.5 bg-white/80 backdrop-blur-xl px-3 py-1 rounded-full border border-black/5 shadow-xs pointer-events-auto">
-                                <span class="size-2 rounded-full animate-pulse" style="background-color: {brand.primaryColor};"></span>
+                                <span class="size-2 rounded-full animate-pulse bg-primary"></span>
                                 <span class="text-[11px] font-bold text-text">{brand.name} Stand</span>
                                 <span class="text-[11px] text-text/40">•</span>
                                 <span class="text-[11px] font-medium text-text/70">{distanceToBooth}m</span>
@@ -962,7 +962,6 @@
                                 <button
                                     onclick={triggerAutoWalk}
                                     class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold transition flex items-center gap-1 cursor-pointer {isAutoWalking ? 'bg-primary text-white' : 'bg-black/5 hover:bg-black/10 text-text/80'}"
-                                    style={isAutoWalking ? `background-color: ${brand.primaryColor};` : ''}
                                     title="Autopilot"
                                     aria-label="Autopilot Navigation"
                                 >

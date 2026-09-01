@@ -406,7 +406,7 @@
         <div>
 
             <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-text tracking-tight">
-                {brand.name} AI Voice Concierge
+                {brand.name} AI Voice <span class="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">Concierge</span>
             </h2>
             <p class="text-xs sm:text-sm text-text/70 mt-1 max-w-xl leading-relaxed">
                 Interactive voice guide for your exhibition booth.

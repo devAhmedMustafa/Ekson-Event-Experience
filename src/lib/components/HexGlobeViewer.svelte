@@ -589,7 +589,7 @@
     <!-- Header Area -->
     <div class="w-full shrink-0 mb-3 sm:mb-4 pb-3 border-b border-black/5">
         <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-text tracking-tight">
-            Virtual Tours
+            Virtual <span class="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">Tours</span>
         </h2>
         <p class="text-xs sm:text-sm text-text/70 mt-1 max-w-xl leading-relaxed">
             Step into breathtaking places and unforgettable moments with immersive VR tours.
@@ -603,7 +603,7 @@
             <!-- SubTitle & Description -->
             <div>
                 <h3 class="text-xl sm:text-2xl md:text-3xl font-extrabold text-text tracking-tight">
-                    Explore, Discover, Experience.
+                    Explore, Discover, <span class="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">Experience.</span>
                 </h3>
                 <p class="text-xs sm:text-sm text-text/75 leading-relaxed mt-3 max-w-lg font-medium">
                     Step into breathtaking places and unforgettable moments with immersive VR tours. Experience iconic destinations and world landmarks with photorealistic spatial realism.
@@ -614,7 +614,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                 <!-- Feature 1: 360 Experience -->
                 <div class="bg-white/70 backdrop-blur-xl border border-black/5 rounded-2xl p-3.5 flex items-center gap-3 shadow-2xs">
-                    <div class="size-9 rounded-xl flex items-center justify-center shrink-0" style="color: {brand.primaryColor}">
+                    <div class="size-9 rounded-xl flex items-center justify-center shrink-0 text-primary">
                         <span class="material-symbols-rounded text-xl">360</span>
                     </div>
                     <div>
@@ -625,7 +625,7 @@
 
                 <!-- Feature 2: Iconic Destinations -->
                 <div class="bg-white/70 backdrop-blur-xl border border-black/5 rounded-2xl p-3.5 flex items-center gap-3 shadow-2xs">
-                    <div class="size-9 rounded-xl flex items-center justify-center shrink-0" style="color: {brand.primaryColor}">
+                    <div class="size-9 rounded-xl flex items-center justify-center shrink-0 text-primary">
                         <span class="material-symbols-rounded text-xl">map</span>
                     </div>
                     <div>
@@ -636,7 +636,7 @@
 
                 <!-- Feature 3: Realistic Immersion -->
                 <div class="bg-white/70 backdrop-blur-xl border border-black/5 rounded-2xl p-3.5 flex items-center gap-3 shadow-2xs">
-                    <div class="size-9 rounded-xl flex items-center justify-center shrink-0" style="color: {brand.primaryColor}">
+                    <div class="size-9 rounded-xl flex items-center justify-center shrink-0 text-primary">
                         <span class="material-symbols-rounded text-xl">view_in_ar</span>
                     </div>
                     <div>
@@ -647,7 +647,7 @@
 
                 <!-- Feature 4: Unforgettable Memories -->
                 <div class="bg-white/70 backdrop-blur-xl border border-black/5 rounded-2xl p-3.5 flex items-center gap-3 shadow-2xs">
-                    <div class="size-9 rounded-xl flex items-center justify-center shrink-0" style="color: {brand.primaryColor}">
+                    <div class="size-9 rounded-xl flex items-center justify-center shrink-0 text-primary">
                         <span class="material-symbols-rounded text-xl">auto_awesome</span>
                     </div>
                     <div>

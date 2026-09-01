@@ -30,7 +30,7 @@
                 <div>
                     <h2 class="text-4xl sm:text-5xl lg:text-6xl font-black text-text tracking-tight uppercase leading-none">
                         ACTIVE<br />
-                        <span class="text-primary">FLOOR.</span>
+                        <span class="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">FLOOR.</span>
                     </h2>
                     <p class="text-sm sm:text-base font-extrabold text-text/80 tracking-wider uppercase mt-3">
                         MOVE. PLAY. LEARN.
@@ -73,16 +73,6 @@
                 
                 <!-- Slide-matching Custom Tech Frame Container -->
                 <div class="relative w-full h-full rounded-4xl p-2 bg-linear-to-br from-primary/30 via-slate-200/50 to-primary/10 border border-primary/30 shadow-xl overflow-hidden group">
-                    
-                    <!-- Decorative Curved Border Overlay SVG with Dots -->
-                    <svg class="absolute inset-0 w-full h-full pointer-events-none z-20" preserveAspectRatio="none" viewBox="0 0 100 100">
-                        <!-- Curved outline stroke -->
-                        <path d="M 5,2 C 25,2 35,50 38,98" stroke="var(--brand-primary, #4abbff)" stroke-width="0.6" fill="none" stroke-dasharray="2,2" opacity="0.8" />
-                        <!-- Node points along the frame line -->
-                        <circle cx="20" cy="2" r="1" fill="var(--brand-primary, #4abbff)" />
-                        <circle cx="36.5" cy="74" r="1.2" fill="var(--brand-primary, #4abbff)" />
-                        <circle cx="38" cy="98" r="1" fill="var(--brand-primary, #4abbff)" />
-                    </svg>
 
                     <!-- Inner Image Container with Soft Shadow & Rounded Corners -->
                     <div class="relative w-full h-80 sm:h-100 lg:h-107.5 rounded-3xl overflow-hidden bg-slate-900 shadow-inner flex items-center justify-center">
@@ -94,32 +84,11 @@
 
                         <!-- Subtle Lighting Gradient Overlay -->
                         <div class="absolute inset-0 bg-linear-to-t from-slate-950/40 via-transparent to-black/10 pointer-events-none"></div>
-
-                        <!-- Corner Matrix Tech Dots Accent (Top Right) -->
-                        <div class="absolute top-4 right-4 z-10 flex flex-col gap-1.5 opacity-60">
-                            <div class="flex gap-1.5">
-                                <span class="size-1 rounded-full bg-primary"></span>
-                                <span class="size-1 rounded-full bg-primary"></span>
-                                <span class="size-1 rounded-full bg-primary"></span>
-                            </div>
-                            <div class="flex gap-1.5">
-                                <span class="size-1 rounded-full bg-primary"></span>
-                                <span class="size-1 rounded-full bg-primary"></span>
-                                <span class="size-1 rounded-full bg-primary"></span>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
             </div>
 
-        </div>
-
-        <!-- Bottom Right Slanted Tech Accent Pills (Matching Slide) -->
-        <div class="absolute bottom-4 right-6 flex items-center gap-1 z-10">
-            <div class="w-2.5 h-5 bg-primary/50 rounded-xs transform skew-x-[-20deg]"></div>
-            <div class="w-2.5 h-5 bg-primary/80 rounded-xs transform skew-x-[-20deg]"></div>
-            <div class="w-2.5 h-5 bg-primary rounded-xs transform skew-x-[-20deg]"></div>
         </div>
 
     </div>

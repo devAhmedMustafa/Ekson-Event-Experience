@@ -40,7 +40,7 @@
             >
                 <span
                     class="inline-block text-transparent bg-clip-text transition-all duration-300"
-                    style="background-image: linear-gradient(135deg, #f1f1f4 0%, var(--brand-primary, #4abbff) 50%, #f1f1f4 100%);"
+                    style="background-image: linear-gradient(135deg, #f1f1f4 0%, var(--brand-primary, #ffa349) 50%, #f1f1f4 100%);"
                 >
                     The Future Of Event Experiences.
                 </span>
