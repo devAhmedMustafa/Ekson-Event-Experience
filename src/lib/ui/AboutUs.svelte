@@ -47,7 +47,7 @@
             
 
             <!-- Staggered Large Headline -->
-            <h2 class="text-4xl sm:text-5xl lg:text-6xl font-black text-text tracking-tight leading-[1.08]">
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-text tracking-tight leading-[1.08]">
                 Who are <span class="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">Kubix</span>
             </h2>
 

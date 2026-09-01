@@ -36,7 +36,7 @@
         <div class="relative z-10 flex flex-col items-center justify-center my-auto max-w-5xl">
             <!-- Main Headline -->
             <h1
-                class="text-center text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.05] transition-all duration-1000 ease-out {isLoaded ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-8 scale-95'}"
+                class="text-center text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-[1.05] transition-all duration-1000 ease-out {isLoaded ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-8 scale-95'}"
             >
                 <span
                     class="inline-block text-transparent bg-clip-text transition-all duration-300"

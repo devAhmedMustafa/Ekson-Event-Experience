@@ -19,7 +19,7 @@
     <!-- Top Headline Section -->
     <div class="relative z-10 flex items-end justify-between pb-3 border-b border-black/5 shrink-0 w-full">
         <div>
-            <h2 class="text-4xl sm:text-5xl lg:text-6xl font-black text-text tracking-tight leading-tight">
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-text tracking-tight leading-tight">
                 Build the Future of <span class="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">Events</span>
             </h2>
             <p class="text-xs sm:text-sm text-text/70 mt-1 max-w-xl leading-relaxed">

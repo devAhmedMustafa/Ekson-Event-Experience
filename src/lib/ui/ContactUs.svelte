@@ -118,7 +118,7 @@
         <!-- Left Column: Contact Information & Headline -->
         <div class="lg:col-span-5 flex flex-col space-y-6">
 
-            <h2 class="text-4xl sm:text-5xl lg:text-6xl font-black text-text tracking-tight leading-[1.1]">
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-text tracking-tight leading-[1.1]">
                 Let's Build Your Next <span class="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">Experience</span>
             </h2>
 

@@ -165,7 +165,7 @@
         <!-- LEFT COLUMN (Taller col-span-5 with staggered image card heights) -->
         <div class="md:col-span-5 flex flex-col justify-between space-y-5 sm:space-y-6">
             <div>
-                <h2 class="text-4xl sm:text-5xl lg:text-6xl font-black text-text tracking-tight leading-tight">
+                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-text tracking-tight leading-tight">
                     Mini Games <span class="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">Suite</span>
                 </h2>
                 

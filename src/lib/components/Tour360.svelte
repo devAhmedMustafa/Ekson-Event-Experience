@@ -246,50 +246,10 @@
     <!-- Floating Glass Toolbar Header (Minimized & Auto-adapts to small & large screens) -->
     <div class="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none z-10">
         <!-- Title Badge (Hidden on tiny screens) -->
-        <div class="hidden sm:flex bg-white/80 backdrop-blur-xl px-3.5 py-1.5 rounded-full border border-black/5 shadow-sm pointer-events-auto">
+        <div class="hidden sm:flex bg-white/30 backdrop-blur-xl px-3.5 py-1.5 rounded-full border border-black/5 shadow-sm pointer-events-auto">
             <span class="text-xs font-bold text-text tracking-tight">
                 360° Panorama View
             </span>
-        </div>
-
-        <!-- Single Consolidated Control Pill -->
-        <div class="flex items-center gap-1 bg-white/85 backdrop-blur-xl p-1.5 rounded-full border border-black/5 shadow-md pointer-events-auto ml-auto">
-            <!-- Compass Direction Dropdown -->
-            <div class="relative flex items-center px-2.5 py-1 rounded-full bg-black/5 hover:bg-black/10 transition cursor-pointer">
-                <span class="material-symbols-rounded text-base text-text/70 mr-1 shrink-0">explore</span>
-                <select
-                    onchange={(e) => jumpDirection(Number((e.target as HTMLSelectElement).value))}
-                    class="bg-transparent text-xs w-30 font-semibold text-text focus:outline-none cursor-pointer pr-1"
-                    aria-label="Jump Compass Direction"
-                >
-                    <option value="0">North</option>
-                    <option value={Math.PI / 2}>East</option>
-                    <option value={Math.PI}>South</option>
-                    <option value={-Math.PI / 2}>West</option>
-                </select>
-            </div>
-
-            <!-- Auto-Rotate Toggle Button -->
-            <button
-                onclick={toggleAutoRotate}
-                class="size-7.5 rounded-full flex items-center justify-center transition cursor-pointer {autoRotate ? 'bg-primary/10 text-primary font-bold' : 'bg-black/5 hover:bg-black/10 text-text/80'}"
-                title={autoRotate ? "Pause Auto Rotation" : "Start Auto Rotation"}
-                aria-label="Toggle Auto Rotation"
-            >
-                <span class="material-symbols-rounded text-base">
-                    {autoRotate ? 'sync' : 'sync_disabled'}
-                </span>
-            </button>
-
-            <!-- Reset Camera View Button -->
-            <button
-                onclick={resetView}
-                class="size-7.5 rounded-full bg-black/5 hover:bg-black/10 text-text/80 flex items-center justify-center transition cursor-pointer"
-                title="Reset View"
-                aria-label="Reset View"
-            >
-                <span class="material-symbols-rounded text-base">refresh</span>
-            </button>
         </div>
     </div>
 </div>

@@ -405,7 +405,7 @@
     <div class="flex items-end justify-between pb-3 border-b border-black/5 shrink-0 w-full mb-3">
         <div>
 
-            <h2 class="text-4xl sm:text-5xl lg:text-6xl font-black text-text tracking-tight leading-tight">
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-text tracking-tight leading-tight">
                 {brand.name} AI Voice <span class="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">Concierge</span>
             </h2>
             <p class="text-xs sm:text-sm text-text/70 mt-1 max-w-xl leading-relaxed">

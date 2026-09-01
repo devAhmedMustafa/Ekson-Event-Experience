@@ -28,7 +28,7 @@
                 
                 <!-- Main Header & Subtitle -->
                 <div>
-                    <h2 class="text-4xl sm:text-5xl lg:text-6xl font-black text-text tracking-tight uppercase leading-none">
+                    <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-text tracking-tight uppercase leading-none">
                         ACTIVE<br />
                         <span class="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">FLOOR.</span>
                     </h2>

@@ -21,7 +21,7 @@
 
 <Navbar />
 
-<section id="landing" class="relative w-full min-h-dvh flex flex-col justify-center items-center overflow-x-hidden py-12 sm:py-16 md:py-20">
+<section id="landing" class="relative w-full min-h-dvh mb-30 flex flex-col justify-center items-center overflow-x-hidden py-12 sm:py-16 md:py-20">
     <Landing />
 </section>
 

@@ -181,7 +181,7 @@
             >
                 <!-- Card Header Area -->
                 <div class="relative z-10 shrink-0 flex items-center justify-between pb-2">
-                    <h2 class="text-4xl sm:text-5xl lg:text-6xl font-black text-text tracking-tight leading-tight">
+                    <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-text tracking-tight leading-tight">
                         360° <span class="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">Tours</span>
                     </h2>
                 </div>
@@ -205,9 +205,6 @@
                 <!-- Card Body Content -->
                 <div class="relative z-10 flex-1 flex flex-col justify-center my-2 space-y-3 transition-all duration-300">
                     <div class="flex items-center gap-3">
-                        <div class="size-11 sm:size-12 rounded-2xl bg-primary text-white flex items-center justify-center font-bold text-lg shadow-md shrink-0">
-                            <span class="material-symbols-rounded text-2xl">{workflowSteps[currentStepIndex].icon}</span>
-                        </div>
                         <div class="flex flex-col">
                             <span class="text-[10px] font-extrabold uppercase tracking-widest text-primary font-mono">
                                 {workflowSteps[currentStepIndex].subtitle}
@@ -229,7 +226,7 @@
                         {#each workflowSteps as stepItem, idx}
                             <button
                                 onclick={() => setStep(idx)}
-                                class="px-2.5 py-1 rounded-xl text-xs font-bold font-mono transition-all cursor-pointer flex items-center gap-1.5 {idx === currentStepIndex ? 'bg-primary text-white shadow-md scale-105' : 'bg-black/5 hover:bg-black/10 text-text/70'}"
+                                class="px-2.5 py-1 rounded-xl text-xs font-bold font-mono transition-all cursor-pointer flex items-center gap-1.5 {idx === currentStepIndex ? 'bg-primary text-white shadow-md scale-105' : 'bg-white border border-black/40 hover:bg-black/10 text-text'}"
                                 title={stepItem.title}
                             >
                                 <span>{stepItem.step}</span>
@@ -242,7 +239,7 @@
                     <div class="flex items-center gap-1 shrink-0">
                         <button
                             onclick={prevStep}
-                            class="p-1.5 rounded-lg bg-black/5 hover:bg-black/10 text-text/70 hover:text-text transition cursor-pointer"
+                            class="p-1.5 rounded-lg bg-white border border-black/40 hover:bg-black/10 text-text/70 hover:text-text transition cursor-pointer"
                             title="Previous Feature"
                             aria-label="Previous Feature"
                         >
@@ -250,7 +247,7 @@
                         </button>
                         <button
                             onclick={nextStep}
-                            class="p-1.5 rounded-lg bg-black/5 hover:bg-black/10 text-text/70 hover:text-text transition cursor-pointer"
+                            class="p-1.5 rounded-lg bg-white border border-black/40 hover:bg-black/10 text-text/70 hover:text-text transition cursor-pointer"
                             title="Next Feature"
                             aria-label="Next Feature"
                         >
@@ -267,31 +264,19 @@
         <div class="w-full space-y-2 pt-10 shrink-0">
             <div class="flex items-center justify-between px-1 pt-2.5">
                 <div class="flex items-center gap-2">
-                    <span class="material-symbols-rounded text-primary text-base">sell</span>
                     <h3 class="font-mono text-xs font-bold text-text uppercase tracking-wider">
-                        360° Tour Area Pricing Scope
+                        Area Scopes
                     </h3>
                 </div>
-                <span class="text-[9.5px] font-bold text-emerald-600 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
-                    Area-Based Pricing
-                </span>
             </div>
 
             <!-- 4-Column Standard Pricing Component Cards -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                 {#each pricingPlans as plan}
-                    <div class="p-3.5 rounded-3xl bg-white/60 hover:bg-white/90 border {plan.badge === 'Popular' ? 'border-primary ring-2 ring-primary/20 bg-white/90 shadow-md' : 'border-black/10'} shadow-sm flex flex-col justify-between transition-all duration-300 hover:-translate-y-0.5">
+                    <div class="p-3.5 rounded-3xl bg-white/60 hover:bg-white/90 border border-black/10 shadow-sm flex flex-col justify-between transition-all duration-300 hover:-translate-y-0.5">
                         <div>
                             <div class="flex items-center justify-between mb-1.5">
-                                <h4 class="text-xs font-black text-text tracking-tight">{plan.tier}</h4>
-                                {#if plan.badge}
-                                    <span class="text-[8.5px] font-bold text-white bg-primary px-2 py-0.5 rounded-full uppercase shadow-2xs">
-                                        {plan.badge}
-                                    </span>
-                                {/if}
-                            </div>
-                            <div class="font-mono text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-lg w-fit mb-2">
-                                {plan.area}
+                                <h4 class="text-xs font-black text-text tracking-tight">{plan.area}</h4>
                             </div>
                             <ul class="space-y-1 text-[11px] text-text/75">
                                 {#each plan.features as feat}

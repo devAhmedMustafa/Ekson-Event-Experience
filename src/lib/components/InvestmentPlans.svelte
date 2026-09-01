@@ -297,7 +297,7 @@
 <div class="relative w-full h-full max-w-6xl mx-auto px-4 sm:px-6 md:px-8 flex flex-col overflow-visible">
     <!-- Top Header -->
     <div class="flex items-start mb-10 pb-3 border-b border-black/5 shrink-0 w-full flex-col">
-        <h2 class="text-4xl sm:text-5xl lg:text-6xl font-black text-text tracking-tight leading-tight">
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-text tracking-tight leading-tight">
             Investment <span class="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">Plans</span>
         </h2>
         <p class="text-xs sm:text-sm text-text/70 mt-1 max-w-xl leading-relaxed">

@@ -850,7 +850,7 @@
         
         <!-- Top Full-Width Header Card (Title & Desc Box) -->
         <div class="w-full">
-            <h2 class="text-4xl sm:text-5xl lg:text-6xl font-black text-text tracking-tight leading-tight">
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-text tracking-tight leading-tight">
                 Virtual Exhibition & Indoor <span class="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">Navigation</span>
             </h2>
             <p class="text-xs sm:text-sm text-text/70 mt-1 mb-6 max-w-2xl leading-relaxed">

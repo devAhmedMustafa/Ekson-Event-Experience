@@ -588,7 +588,7 @@
 <div class="w-full h-full min-h-dvh md:h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-4 sm:py-8 flex flex-col justify-between select-none overflow-visible md:overflow-hidden">
     <!-- Header Area -->
     <div class="w-full shrink-0 mb-3 sm:mb-4 pb-3 border-b border-black/5">
-        <h2 class="text-4xl sm:text-5xl lg:text-6xl font-black text-text tracking-tight leading-tight">
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-text tracking-tight leading-tight">
             Virtual <span class="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">Tours</span>
         </h2>
         <p class="text-xs sm:text-sm text-text/70 mt-1 max-w-xl leading-relaxed">
