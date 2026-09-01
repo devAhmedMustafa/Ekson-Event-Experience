@@ -128,7 +128,7 @@
 
             <!-- Direct Contact Methods -->
             <div class="space-y-4 pt-2">
-                <div class="flex items-center gap-3 p-3.5 bg-white/60 backdrop-blur-md border border-black/5 rounded-2xl shadow-xs">
+                <div class="flex items-center gap-3 p-3.5 rounded-2xl">
                     <div class="size-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
                         <span class="material-symbols-rounded text-xl">mail</span>
                     </div>
@@ -140,7 +140,7 @@
                     </div>
                 </div>
 
-                <div class="flex items-center gap-3 p-3.5 bg-white/60 backdrop-blur-md border border-black/5 rounded-2xl shadow-xs">
+                <div class="flex items-center gap-3 p-3.5 rounded-2xl">
                     <div class="size-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
                         <span class="material-symbols-rounded text-xl">call</span>
                     </div>

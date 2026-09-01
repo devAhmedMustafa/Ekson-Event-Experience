@@ -1,5 +1,4 @@
 <script>
-    import { brand } from "$lib/brand.svelte";
     import Navbar from "$lib/ui/Navbar.svelte";
     import Landing from "$lib/ui/Landing.svelte";
     import AboutUs from "$lib/ui/AboutUs.svelte";
@@ -17,7 +16,7 @@
 </script>
 
 <svelte:head>
-    <title>Ekson Event Experiences</title>
+    <title>Kubix Event Experiences</title>
 </svelte:head>
 
 <Navbar />

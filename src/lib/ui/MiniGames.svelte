@@ -15,7 +15,7 @@
     }
 
     const slides: GameSlide[] = [
-        { id: "lucky-wheel", title: "Lucky Wheel", code: "01", icon: "rotate_right", imageSrc: "https://images.unsplash.com/photo-1518609878373-06d740f60d8b?w=600&auto=format&fit=crop&q=80", heightClass: "h-44 sm:h-52 md:h-56" },
+        { id: "lucky-wheel", title: "Lucky Wheel", code: "01", icon: "rotate_right", imageSrc: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfy06lIEdQyVUohbOLC-JheEoVglFyvsGrf_fDc_Sjtw&s=10", heightClass: "h-44 sm:h-52 md:h-56" },
         { id: "reflex-challenge", title: "Reflex Speed", code: "02", icon: "bolt", imageSrc: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&auto=format&fit=crop&q=80", heightClass: "h-32 sm:h-36 md:h-40" },
         { id: "catch-collect", title: "Catch & Collect", code: "03", icon: "token", imageSrc: "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&auto=format&fit=crop&q=80", heightClass: "h-36 sm:h-40 md:h-44" },
         { id: "product-quiz", title: "Product Quiz", code: "04", icon: "quiz", imageSrc: "https://images.unsplash.com/photo-1606326608606-aa0b62935f2b?w=600&auto=format&fit=crop&q=80", heightClass: "h-48 sm:h-56 md:h-64" },

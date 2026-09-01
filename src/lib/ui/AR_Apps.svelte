@@ -81,7 +81,7 @@
         <div>
 
             <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-text tracking-tight">
-                AR Giveaway <span class="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">Items</span>
+                AR <span class="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">Items</span>
             </h2>
             <p class="text-xs sm:text-sm text-text/70 mt-1 max-w-xl leading-relaxed">
                 Scan QR codes to preview branded 3D giveaways on mobile devices.

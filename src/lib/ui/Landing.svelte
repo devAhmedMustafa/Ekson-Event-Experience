@@ -65,7 +65,7 @@
                 <span class="text-[10px] sm:text-xs font-mono font-bold uppercase tracking-widest text-white/60 group-hover:text-primary transition-colors">
                     Scroll Down
                 </span>
-                <div class="size-9 sm:size-10 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-lg group-hover:bg-primary group-hover:border-primary group-hover:scale-110 transition-all duration-300 animate-bounce">
+                <div class="size-6 sm:size-8 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-lg group-hover:bg-primary group-hover:border-primary group-hover:scale-110 transition-all duration-300 animate-bounce translate-y-1">
                     <span class="material-symbols-rounded text-xl group-hover:translate-y-0.5 transition-transform">
                         keyboard_arrow_down
                     </span>

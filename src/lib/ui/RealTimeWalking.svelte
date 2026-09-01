@@ -46,12 +46,12 @@
     const navigationFeatures = [
         {
             title: "Direct Booth Guidance",
-            description: "Turn-by-turn AR paths take attendees directly from the venue entrance to specific exhibitor booths.",
+            description: "Turn-by-turn AR paths take attendees directly from the venue entrance to specific booths.",
             icon: "turn_right"
         },
         {
             title: "Smart Search & Filters",
-            description: "Instantly look up exhibitors by company name, industry, or product type to highlight their location.",
+            description: "Instantly look up exhibitors by company name, industry, or product to highlight their location.",
             icon: "search"
         },
         {
@@ -61,7 +61,7 @@
         },
         {
             title: "Sponsor & Promo Highlights",
-            description: "Sponsored exhibitors stand out with custom map pins and proximity alerts as attendees walk by.",
+            description: "Sponsored exhibitors stand out with custom map pins and proximity alerts as attendees walk.",
             icon: "star"
         }
     ];
