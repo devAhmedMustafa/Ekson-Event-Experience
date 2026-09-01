@@ -54,6 +54,24 @@
                 </p>
             </div>
         </div>
+
+        <!-- Animated Scroll Down Button at Bottom -->
+        <div class="relative z-10 pb-2 sm:pb-4 transition-all duration-1000 delay-500 ease-out {isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}">
+            <button
+                onclick={scrollToExplore}
+                class="group flex flex-col items-center gap-2 text-white/80 hover:text-white transition-all cursor-pointer focus:outline-none"
+                aria-label="Scroll down to explore"
+            >
+                <span class="text-[10px] sm:text-xs font-mono font-bold uppercase tracking-widest text-white/60 group-hover:text-primary transition-colors">
+                    Scroll Down
+                </span>
+                <div class="size-9 sm:size-10 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-lg group-hover:bg-primary group-hover:border-primary group-hover:scale-110 transition-all duration-300 animate-bounce">
+                    <span class="material-symbols-rounded text-xl group-hover:translate-y-0.5 transition-transform">
+                        keyboard_arrow_down
+                    </span>
+                </div>
+            </button>
+        </div>
     </div>
     
 </div>

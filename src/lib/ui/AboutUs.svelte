@@ -71,17 +71,7 @@
             
             <!-- Grid Container with Offset Cards -->
             <div class="grid grid-cols-2 gap-4 sm:gap-5 w-full max-w-md md:max-w-none relative">
-                
-                <!-- Floating Analytics Badge Widget -->
-                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 bg-white/95 backdrop-blur-xl border border-black/10 shadow-2xl rounded-2xl p-3 flex items-center gap-3 transform hover:scale-105 transition-transform pointer-events-none">
-                    <div class="size-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold">
-                        <span class="material-symbols-rounded text-xl">trending_up</span>
-                    </div>
-                    <div class="flex flex-col">
-                        <span class="text-[10px] text-text/50 font-bold uppercase tracking-wider">Team Growth</span>
-                        <span class="text-base font-black text-text">+34%</span>
-                    </div>
-                </div>
+            
 
                 <!-- Column 1 (Left Offset Downwards or Standard Stack) -->
                 <div class="flex flex-col gap-4 sm:gap-5">
