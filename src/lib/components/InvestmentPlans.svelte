@@ -119,6 +119,9 @@
         meetingTime: "10:00 AM UTC"
     });
 
+    // Selected Plan for modal view
+    let selectedPlan = $derived(plans.find((p) => p.name === formData.plan) || plans[1]);
+
     // Validation errors state
     let errors = $state<{
         name?: string;
@@ -293,7 +296,7 @@
 
 <div class="relative w-full h-full min-h-dvh md:h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-4 sm:py-8 flex flex-col overflow-visible md:overflow-hidden">
     <!-- Top Header -->
-    <div class="flex items-start mt-10 pb-3 border-b border-black/5 shrink-0 w-full flex-col">
+    <div class="flex items-start mb-10 pb-3 border-b border-black/5 shrink-0 w-full flex-col">
         <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-text tracking-tight">
             Investment Plans
         </h2>
@@ -303,17 +306,18 @@
     </div>
 
     <!-- 3 Pricing Cards Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6 items-stretch max-h-none md:max-h-none py-3 scrollbar-none">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 items-stretch py-6 sm:py-8 scrollbar-none">
         {#each plans as plan (plan.id)}
             <div
-                class="relative bg-white/70 backdrop-blur-xl rounded-3xl flex flex-col justify-between p-6 sm:p-7 transition-all duration-300 {plan.isPopular
-                    ? 'border-2 border-primary shadow-lg ring-1 ring-primary/20 scale-102 bg-white'
-                    : 'border border-black/5 shadow-sm hover:shadow-md'}"
+                class="relative rounded-3xl flex flex-col justify-between transition-all duration-300 {plan.isPopular
+                    ? 'bg-white border-2 border-primary shadow-2xl ring-2 ring-primary/20 scale-105 md:scale-108 -translate-y-2 md:-translate-y-3 z-10 p-7 sm:p-8'
+                    : 'bg-white/70 backdrop-blur-xl border border-black/5 shadow-sm hover:shadow-md p-6 sm:p-7'}"
             >
                 <!-- Top Badge Pill -->
                 {#if plan.isPopular}
-                    <div class="absolute -top-3.5 left-1/2 -translate-x-1/2">
-                        <span class="px-3.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-primary text-white shadow-md">
+                    <div class="absolute -top-4 left-1/2 -translate-x-1/2 z-20">
+                        <span class="px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wider bg-primary text-white shadow-lg flex items-center gap-1">
+                            <span class="material-symbols-rounded text-sm">star</span>
                             {plan.name}
                         </span>
                     </div>
@@ -323,16 +327,16 @@
                     <div>
                         <!-- Header -->
                         <div class="flex items-center justify-between mb-3">
-                            <h3 class="text-lg font-bold text-text tracking-tight">{plan.name}</h3>
-                            <div class="size-10 rounded-2xl flex items-center justify-center {plan.isPopular ? 'bg-primary/10 text-primary' : 'bg-black/5 text-text/70'}">
-                                <span class="material-symbols-rounded text-xl">
+                            <h3 class="{plan.isPopular ? 'text-xl font-extrabold' : 'text-lg font-bold'} text-text tracking-tight">{plan.name}</h3>
+                            <div class="{plan.isPopular ? 'size-12 rounded-2xl bg-primary/10 text-primary' : 'size-10 rounded-2xl bg-black/5 text-text/70'} flex items-center justify-center">
+                                <span class="material-symbols-rounded {plan.isPopular ? 'text-2xl' : 'text-xl'}">
                                     {plan.icon}
                                 </span>
                             </div>
                         </div>
 
                         <!-- Tagline -->
-                        <p class="text-xs text-text/70 leading-relaxed mb-4 min-h-10">
+                        <p class="{plan.isPopular ? 'text-sm font-medium' : 'text-xs'} text-text/70 leading-relaxed mb-4 min-h-10">
                             {plan.tagline}
                             {#if plan.highlightText}
                                 <span class="text-primary font-bold">{plan.highlightText}</span>
@@ -341,19 +345,19 @@
 
                         <!-- Price Section -->
                         <div class="my-3 py-3 border-y border-black/5">
-                            <div class="text-3xl font-extrabold text-text tracking-tight">
+                            <div class="{plan.isPopular ? 'text-4xl font-black text-primary' : 'text-3xl font-extrabold text-text'} tracking-tight">
                                 {plan.price}
                             </div>
-                            <span class="text-[10px] font-medium text-text/50 uppercase tracking-wider block mt-0.5">
+                            <span class="{plan.isPopular ? 'text-xs font-semibold text-text/60' : 'text-[10px] font-medium text-text/50'} uppercase tracking-wider block mt-0.5">
                                 {plan.priceSub}
                             </span>
                         </div>
 
                         <!-- Features Checklist -->
-                        <ul class="space-y-2 text-xs text-text/80 my-4">
+                        <ul class="{plan.isPopular ? 'space-y-3 text-sm my-5' : 'space-y-2 text-xs my-4'} text-text/80">
                             {#each plan.features as feat}
                                 <li class="flex items-center gap-2">
-                                    <span class="material-symbols-rounded text-base text-primary shrink-0">
+                                    <span class="material-symbols-rounded {plan.isPopular ? 'text-lg text-primary' : 'text-base text-primary'} shrink-0">
                                         check_circle
                                     </span>
                                     <span class="font-medium">{feat}</span>
@@ -362,13 +366,13 @@
                         </ul>
                     </div>
 
-                    <!-- Subscribe Button -->
+                    <!-- View More Button -->
                     <button
                         onclick={() => openModal(plan.name)}
-                        class="w-full mt-4 py-3 px-4 rounded-full text-xs font-semibold tracking-wide transition cursor-pointer flex items-center justify-center gap-2 {plan.isPopular ? 'bg-black hover:bg-slate-900 text-white shadow-md' : 'bg-black/5 hover:bg-black/10 text-text border border-black/5'}"
+                        class="w-full mt-4 rounded-full font-semibold tracking-wide transition cursor-pointer flex items-center justify-center gap-2 {plan.isPopular ? 'py-3.5 px-5 text-sm font-bold bg-primary hover:bg-primary/90 text-white shadow-lg' : 'py-3 px-4 text-xs bg-black/5 hover:bg-black/10 text-text border border-black/5'}"
                     >
-                        <span>Subscribe</span>
-                        <span class="material-symbols-rounded text-base">arrow_forward</span>
+                        <span>View More</span>
+                        <span class="material-symbols-rounded {plan.isPopular ? 'text-lg' : 'text-base'}">arrow_forward</span>
                     </button>
                 </div>
             </div>
@@ -376,22 +380,25 @@
     </div>
 
     <!-- Bottom Highlights: ALL PLANS INCLUDE -->
-    <div class="w-full bg-white/70 backdrop-blur-md rounded-2xl border border-black/5 p-3 sm:p-4 shadow-xs shrink-0 mt-1 sm:mt-2">
-        <div class="text-center mb-1">
-            <span class="font-mono text-[8px] sm:text-[9px] text-text/50 font-bold uppercase tracking-widest bg-black/3 px-3 py-0.5 rounded-full border border-black/5">
+    <div class="relative w-full bg-white/70 backdrop-blur-md rounded-2xl border border-black/5 p-4 sm:p-5 pt-6 sm:pt-7 shadow-sm shrink-0 mt-4 sm:mt-6">
+        <!-- Absolute Top Pill Badge -->
+        <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 z-10">
+            <span class="font-mono text-[9px] sm:text-[10px] text-text/60 font-bold uppercase tracking-widest bg-white px-3.5 py-1 rounded-full border border-black/10 shadow-xs">
                 All Plans Include
             </span>
         </div>
 
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-1.5 sm:gap-2 text-center">
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4 md:gap-5 items-center">
             {#each bottomInclusions as item}
-                <div class="flex items-center gap-1 sm:gap-1.5">
-                    <span class="material-symbols-rounded text-[15px] sm:text-[17px] text-primary shrink-0 mt-0.5">
-                        {item.icon}
-                    </span>
-                    <div class="flex flex-col">
-                        <span class="text-[10px] sm:text-[11px] font-bold text-text leading-tight">{item.title}</span>
-                        <span class="text-[8px] sm:text-[9px] text-text/50 leading-tight mt-0.5">{item.subtitle}</span>
+                <div class="flex items-center gap-2.5">
+                    <div class="size-8 sm:size-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                        <span class="material-symbols-rounded text-base sm:text-lg">
+                            {item.icon}
+                        </span>
+                    </div>
+                    <div class="flex flex-col text-left">
+                        <span class="text-xs font-bold text-text leading-tight">{item.title}</span>
+                        <span class="text-[9px] sm:text-[10px] text-text/50 leading-tight mt-0.5">{item.subtitle}</span>
                     </div>
                 </div>
             {/each}
@@ -399,7 +406,7 @@
     </div>
 </div>
 
-<!-- SUBSCRIPTION REQUEST MODAL FORM -->
+<!-- PLAN DETAILS & REQUEST MODAL FORM -->
 {#if isModalOpen}
     <!-- svelte-ignore a11y_click_events_have_key_events -->
     <!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -413,10 +420,10 @@
                 <div>
                     <div class="flex items-center gap-1.5 font-mono text-[9px] sm:text-[10px] uppercase tracking-widest text-primary font-bold">
                         <span class="size-1.5 bg-primary"></span>
-                        <span>Plan Reservation</span>
+                        <span>Plan Details & Request</span>
                     </div>
                     <h3 class="text-base sm:text-lg font-black text-text uppercase tracking-tight">
-                        Subscribe & Schedule Meeting
+                        {formData.plan} PLAN
                     </h3>
                 </div>
                 <button
@@ -429,16 +436,16 @@
             </div>
 
             <!-- Modal Body -->
-            <div class="p-4 sm:p-6 overflow-y-auto">
+            <div class="p-4 sm:p-6 overflow-y-auto space-y-4">
                 {#if submitSuccess}
                     <!-- Success Confirmation Screen -->
                     <div class="flex flex-col items-center text-center py-4 sm:py-6 gap-3">
                         <div class="size-14 sm:size-16 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-200">
                             <span class="material-symbols-rounded text-[32px] sm:text-[36px]">check_circle</span>
                         </div>
-                        <h4 class="text-lg sm:text-xl font-bold text-text">Subscription Request Received!</h4>
+                        <h4 class="text-lg sm:text-xl font-bold text-text">Plan Request Received!</h4>
                         <p class="text-xs text-text/70 max-w-sm">
-                            Thank you, <strong class="text-text">{formData.name}</strong>. Your reservation for the <strong class="text-primary">{formData.plan}</strong> has been received. Our team will meet you on <strong class="text-text">{formData.meetingDate} at {formData.meetingTime}</strong>.
+                            Thank you, <strong class="text-text">{formData.name}</strong>. Your request for the <strong class="text-primary">{formData.plan}</strong> has been received. Our team will meet you on <strong class="text-text">{formData.meetingDate} at {formData.meetingTime}</strong>.
                         </p>
                         <button
                             onclick={closeModal}
@@ -448,7 +455,42 @@
                         </button>
                     </div>
                 {:else}
-                    <!-- Subscription Form -->
+                    <!-- Selected Plan Summary Card -->
+                    {#if selectedPlan}
+                        <div class="p-4 rounded-2xl bg-slate-50/80 border border-black/10 flex flex-col gap-2.5">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-sm font-extrabold text-text">{selectedPlan.name}</span>
+                                    {#if selectedPlan.isPopular}
+                                        <span class="px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase bg-primary text-white shadow-xs">Most Popular</span>
+                                    {/if}
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-lg font-black text-primary block leading-none">{selectedPlan.price}</span>
+                                    <span class="text-[9px] font-medium text-text/50 uppercase tracking-wider">{selectedPlan.priceSub}</span>
+                                </div>
+                            </div>
+                            <p class="text-xs text-text/70 leading-relaxed">
+                                {selectedPlan.tagline}
+                                {#if selectedPlan.highlightText}
+                                    <span class="text-primary font-bold">{selectedPlan.highlightText}</span>
+                                {/if}
+                            </p>
+                            <div class="pt-2 border-t border-black/5">
+                                <span class="block font-mono text-[9px] font-bold text-text/50 uppercase tracking-widest mb-1.5">Features Included:</span>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-xs text-text/80">
+                                    {#each selectedPlan.features as feat}
+                                        <span class="flex items-center gap-1.5">
+                                            <span class="material-symbols-rounded text-sm text-primary">check_circle</span>
+                                            <span>{feat}</span>
+                                        </span>
+                                    {/each}
+                                </div>
+                            </div>
+                        </div>
+                    {/if}
+
+                    <!-- Plan Request & Meeting Form -->
                     <form onsubmit={handleSubmit} novalidate class="space-y-3">
                         {#if submitError}
                             <div class="p-2.5 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 text-xs flex items-center gap-2">
