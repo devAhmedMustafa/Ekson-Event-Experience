@@ -14,10 +14,10 @@
     }
 
     const slides: GameSlide[] = [
-        { id: "lucky-wheel", title: "Lucky Wheel", code: "01", icon: "rotate_right", imageSrc: "" },
-        { id: "reflex-challenge", title: "Reflex Speed", code: "02", icon: "bolt", imageSrc: "" },
-        { id: "catch-collect", title: "Catch & Collect", code: "03", icon: "token", imageSrc: "" },
-        { id: "product-quiz", title: "Product Quiz", code: "04", icon: "quiz", imageSrc: "" },
+        { id: "lucky-wheel", title: "Lucky Wheel", code: "01", icon: "rotate_right", imageSrc: "https://images.unsplash.com/photo-1518609878373-06d740f60d8b?w=600&auto=format&fit=crop&q=80" },
+        { id: "reflex-challenge", title: "Reflex Speed", code: "02", icon: "bolt", imageSrc: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&auto=format&fit=crop&q=80" },
+        { id: "catch-collect", title: "Catch & Collect", code: "03", icon: "token", imageSrc: "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&auto=format&fit=crop&q=80" },
+        { id: "product-quiz", title: "Product Quiz", code: "04", icon: "quiz", imageSrc: "https://images.unsplash.com/photo-1606326608606-aa0b62935f2b?w=600&auto=format&fit=crop&q=80" },
     ];
 
     const kioskFeatures = [
@@ -156,17 +156,17 @@
 
 <svelte:window onkeydown={handleKeyDown} />
 
-<div class="w-full min-h-dvh py-4 sm:py-8 max-w-6xl mx-auto px-4 sm:px-6 md:px-8 flex flex-col justify-between overflow-visible md:overflow-hidden">
+<div class="w-full py-4 gap-5 sm:py-8 max-w-6xl mx-auto px-4 sm:px-6 md:px-8 flex flex-col overflow-visible md:overflow-hidden">
     
     <!-- MAIN 2-COLUMN STAGE: LEFT = TITLE + DESC + FEATURES (33%) | RIGHT = KIOSK DISPLAY (67%) -->
-    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center flex-1 w-full my-auto">
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center justify-between flex-1 w-full my-auto">
         
         <!-- LEFT COLUMN (Compact 1/3 width: col-span-4 out of 12) -->
         <div class="md:col-span-4 flex flex-col justify-center space-y-4">
             <div>
 
                 <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-text tracking-tight leading-tight">
-                    Mini Games <span class="text-transparent bg-clip-text bg-linear-to-r from-primary via-sky-500 to-indigo-600">Suite</span>
+                    Mini Games <span class="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">Suite</span>
                 </h2>
                 
                 <p class="text-xs sm:text-sm text-text/75 mt-2 leading-relaxed font-medium">
@@ -174,18 +174,43 @@
                 </p>
             </div>
 
-            <!-- KIOSK FEATURES LIST -->
-            <div class="space-y-2.5 pt-2 border-t border-black/10">
-                {#each kioskFeatures as feat}
-                    <div class="p-2.5 flex items-start gap-2.5 transition-all">
-                        <div class="size-7.5 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0 mt-0.5 font-bold">
-                            <span class="material-symbols-rounded text-sm">{feat.icon}</span>
+            <!-- 4 IMAGES GRID (GAME PREVIEW THUMBNAILS) -->
+            <div class="grid grid-cols-2 gap-2.25 sm:gap-2 pt-2">
+                {#each slides as slide, idx}
+                    <button
+                        onclick={() => goToSlide(idx)}
+                        class="group relative h-24 sm:h-28 rounded-2xl overflow-hidden border transition-all duration-300 cursor-pointer text-left flex flex-col justify-end p-2.5 sm:p-3 shadow-xs hover:shadow-md {currentIndex === idx ? 'border-primary ring-2 ring-primary/40 scale-[1.02]' : 'border-black/10 hover:border-black/25 opacity-85 hover:opacity-100'}"
+                        aria-label="Select {slide.title}"
+                    >
+                        <!-- Card Background Image -->
+                        {#if slide.imageSrc}
+                            <img
+                                src={slide.imageSrc}
+                                alt={slide.title}
+                                class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                            />
+                            <div class="absolute inset-0 bg-linear-to-t from-slate-950/90 via-slate-950/40 to-black/20"></div>
+                        {:else}
+                            <div class="absolute inset-0 bg-linear-to-br from-slate-900 to-slate-950"></div>
+                        {/if}
+
+                        <!-- Active Indicator / Icon Header -->
+                        <div class="relative z-10 flex items-center justify-between w-full mb-auto">
+                            
+                            {#if currentIndex === idx}
+                                <span class="px-1.5 py-0.5 rounded-md bg-primary text-white text-[9px] font-black uppercase tracking-wider shadow-xs">
+                                    Active
+                                </span>
+                            {/if}
                         </div>
-                        <div class="flex flex-col min-w-0">
-                            <h3 class="text-xs font-black text-text tracking-wide">{feat.title}</h3>
-                            <p class="text-[10.5px] text-text/70 leading-snug mt-0.5">{feat.description}</p>
+
+                        <!-- Title & Code -->
+                        <div class="relative z-10">
+                            <h3 class="text-xs sm:text-sm font-bold text-white tracking-tight leading-tight group-hover:text-primary transition-colors truncate">
+                                {slide.title}
+                            </h3>
                         </div>
-                    </div>
+                    </button>
                 {/each}
             </div>
         </div>
@@ -197,36 +222,20 @@
                 <!-- Left Slide Button on Side of Kiosk -->
                 <button
                     onclick={prevSlide}
-                    class="absolute -left-3 sm:-left-6 top-1/2 -translate-y-1/2 z-40 size-9 sm:size-11 rounded-full bg-white/90 hover:bg-white text-text shadow-lg border border-black/5 backdrop-blur-xl flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 cursor-pointer"
+                    class="absolute left-0 top-1/2 -translate-y-1/2 z-40 size-9 sm:size-11 rounded-full bg-white/90 hover:bg-white text-text shadow-lg border border-black/5 backdrop-blur-xl flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 cursor-pointer"
                     aria-label="Previous Game"
                     title="Previous Game"
                 >
                     <span class="material-symbols-rounded text-lg sm:text-2xl text-text/80">chevron_left</span>
                 </button>
 
-                <!-- REAL TRADE SHOW INTERACTIVE KIOSK TOTEM STAND (TALLER SCREEN + SOLID METALLIC BASE) -->
+                <!-- REAL TRADE SHOW INTERACTIVE KIOSK TOTEM STAND (60% SCREEN / 40% METALLIC BASE) -->
                 <div class="relative flex flex-col w-[min(380px,90vw)] sm:w-102.5 md:w-110 h-140 sm:h-157.5 md:h-167.5 p-3 sm:p-4 rounded-4xl bg-slate-900 shadow-2xl ring-1 ring-white/10 border-2 border-slate-700/60 overflow-hidden">
-                    
-                    <!-- Kiosk Top Bezel & Camera Sensor Bar -->
-                    <div class="relative w-full pb-2 px-2 flex items-center justify-between border-b border-slate-800/80 mb-2 shrink-0">
-                        <div class="flex items-center gap-2">
-                            <span class="size-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                            <span class="font-mono text-[10px] font-bold text-slate-300 uppercase tracking-widest">
-                                TOUCH KIOSK DISPLAY
-                            </span>
-                        </div>
 
-                        <!-- Top Optical Sensor & Camera Bar -->
-                        <div class="flex items-center gap-2 text-slate-500">
-                            <span class="material-symbols-rounded text-sm" title="NFC Scanner Ready">contactless</span>
-                            <div class="size-2 rounded-full bg-slate-700 border border-slate-600"></div>
-                        </div>
-                    </div>
-
-                    <!-- TALL TOUCHSCREEN VIEWPORT (UPPER 70%) -->
+                    <!-- TOUCHSCREEN VIEWPORT (UPPER HALF / ~50% HEIGHT) -->
                     <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
                     <div
-                        class="relative flex-1 w-full rounded-2xl overflow-hidden bg-slate-950 border border-black/60 cursor-grab active:cursor-grabbing shadow-inner"
+                        class="relative h-1/2 w-full rounded-2xl overflow-hidden bg-slate-950 border border-black/60 cursor-grab active:cursor-grabbing shadow-inner shrink-0"
                         ontouchstart={handleTouchStart}
                         ontouchmove={handleTouchMove}
                         ontouchend={handleTouchEnd}
@@ -307,35 +316,23 @@
                         </div>
                     </div>
 
-                    <!-- SOLID METALLIC PEDESTAL BASE (LOWER BODY OF KIOSK DEVICE) -->
-                    <div class="w-full shrink-0 p-2 sm:p-2.5 mt-2.5 rounded-2xl bg-linear-to-b from-slate-800 via-slate-850 to-slate-900 border border-slate-750/80 shadow-md flex flex-col gap-2 relative overflow-hidden">
-                        <!-- Brushed Metal Glow Accent -->
-                        <div class="absolute inset-0 bg-linear-to-r from-transparent via-white/5 to-transparent pointer-events-none"></div>
+                    <div class="w-full flex-1 p-3 mt-2.5 rounded-2xl flex flex-col items-center justify-center gap-3 relative overflow-hidden text-center">
 
-                        <!-- Top NFC Scanner & Speaker Grille -->
-                        <div class="flex items-center justify-between w-full px-1 relative z-10">
-                            <!-- Speaker Grille Slots -->
-                            <div class="flex gap-1 opacity-40">
-                                <div class="w-0.5 h-2 bg-slate-400 rounded-full"></div>
-                                <div class="w-0.5 h-2 bg-slate-400 rounded-full"></div>
-                                <div class="w-0.5 h-2 bg-slate-400 rounded-full"></div>
-                                <div class="w-0.5 h-2 bg-slate-400 rounded-full"></div>
+                        <!-- NFC Scanner & Speaker Grille -->
+                        <div class="flex items-center justify-center gap-3 opacity-60 relative z-10">
+                            <div class="flex gap-1">
+                                <div class="w-1 h-3 bg-slate-400 rounded-full"></div>
+                                <div class="w-1 h-3 bg-slate-400 rounded-full"></div>
+                                <div class="w-1 h-3 bg-slate-400 rounded-full"></div>
+                                <div class="w-1 h-3 bg-slate-400 rounded-full"></div>
                             </div>
-                        </div>
-
-                        <!-- Game Selector Bar INSIDE Device Pedestal Body -->
-                        <div class="columns-2 gap-2 bg-slate-950/80 p-1 rounded-xl border border-white/10 w-full relative z-10">
-                            {#each slides as slide, idx}
-                                <button
-                                    onclick={() => goToSlide(idx)}
-                                    class="w-full flex items-center justify-center gap-1 sm:gap-1.5 px-2 py-1.5 text-center rounded-lg transition-all duration-200 cursor-pointer text-[11px] font-semibold {currentIndex === idx ? 'bg-primary text-white shadow-xs' : 'text-white/60 hover:text-white hover:bg-white/5'}"
-                                >
-                                    <span class="material-symbols-rounded text-sm sm:text-base shrink-0">
-                                        {slide.icon}
-                                    </span>
-                                    <span class="hidden sm:inline truncate">{slide.title}</span>
-                                </button>
-                            {/each}
+                            <span class="material-symbols-rounded text-base text-slate-400">sensors</span>
+                            <div class="flex gap-1">
+                                <div class="w-1 h-3 bg-slate-400 rounded-full"></div>
+                                <div class="w-1 h-3 bg-slate-400 rounded-full"></div>
+                                <div class="w-1 h-3 bg-slate-400 rounded-full"></div>
+                                <div class="w-1 h-3 bg-slate-400 rounded-full"></div>
+                            </div>
                         </div>
                     </div>
 
@@ -344,15 +341,45 @@
                 <!-- Right Slide Button on Side of Kiosk -->
                 <button
                     onclick={nextSlide}
-                    class="absolute -right-3 sm:-right-6 top-1/2 -translate-y-1/2 z-40 size-9 sm:size-11 rounded-full bg-white/90 hover:bg-white text-text shadow-lg border border-black/5 backdrop-blur-xl flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 cursor-pointer"
+                    class="absolute right-0 top-1/2 -translate-y-1/2 z-40 size-9 sm:size-11 rounded-full bg-white/90 hover:bg-white text-text shadow-lg border border-black/5 backdrop-blur-xl flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 cursor-pointer"
                     aria-label="Next Game"
                     title="Next Game"
                 >
                     <span class="material-symbols-rounded text-lg sm:text-2xl text-text/80">chevron_right</span>
                 </button>
             </div>
+
+            <!-- EXTERNAL GAMES SELECTOR (MOVED OUTSIDE DEVICE INTO NORMAL UI) -->
+            <div class="mt-3.5 sm:mt-4 flex items-center justify-center gap-1.5 sm:gap-2 p-1.5 bg-white/80 backdrop-blur-md rounded-2xl border border-black/10 shadow-sm max-w-full overflow-x-auto">
+                {#each slides as slide, idx}
+                    <button
+                        onclick={() => goToSlide(idx)}
+                        class="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer whitespace-nowrap {currentIndex === idx ? 'bg-primary text-white shadow-sm scale-102' : 'text-text/75 hover:text-text hover:bg-black/5'}"
+                    >
+                        <span class="material-symbols-rounded text-sm sm:text-base shrink-0">
+                            {slide.icon}
+                        </span>
+                        <span>{slide.title}</span>
+                    </button>
+                {/each}
+            </div>
         </div>
 
+    </div>
+
+    <!-- MINIMIZED KIOSK FEATURES ROW (AT THE BOTTOM) -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3 pt-3 border-t border-black/10 shrink-0 w-full">
+        {#each kioskFeatures as feat}
+            <div class="p-2 sm:p-2.5 rounded-xl bg-white/50 backdrop-blur-md border border-black/5 flex items-center gap-2 sm:gap-2.5 transition-all hover:bg-white/70">
+                <div class="size-6.5 sm:size-7 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0 font-bold">
+                    <span class="material-symbols-rounded text-xs sm:text-sm">{feat.icon}</span>
+                </div>
+                <div class="flex flex-col min-w-0">
+                    <h3 class="text-[11px] sm:text-xs font-bold text-text truncate tracking-tight">{feat.title}</h3>
+                    <p class="text-[9.5px] sm:text-[10px] text-text/65 leading-tight truncate mt-0.5">{feat.description}</p>
+                </div>
+            </div>
+        {/each}
     </div>
 
 </div>

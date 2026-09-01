@@ -1,8 +1,5 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { brand } from "$lib/brand.svelte";
-    import BackgroundLanding from "./BackgroundLanding.svelte";
-    import BrandCustomizerModal from "$lib/components/BrandCustomizerModal.svelte";
 
     let mouseX = $state(0);
     let mouseY = $state(0);
@@ -43,17 +40,16 @@
             >
                 <span
                     class="inline-block text-transparent bg-clip-text transition-all duration-300"
-                    style="background-image: linear-gradient(135deg, #010104 0%, var(--brand-secondary, #04547c) 50%, #010104 100%);"
+                    style="background-image: linear-gradient(135deg, #f1f1f4 0%, var(--brand-primary, #4abbff) 50%, #f1f1f4 100%);"
                 >
                     The Future Of Event Experiences.
                 </span>
             </h1>
 
-            <!-- Animated Subtitle -->
             <div
                 class="mt-4 sm:mt-6 max-w-xl transition-all duration-1000 delay-200 ease-out {isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}"
             >
-                <p class="text-sm sm:text-base md:text-lg font-medium text-text/70 leading-relaxed">
+                <p class="text-sm sm:text-base md:text-lg font-medium text-white/70 leading-relaxed">
                     Make your brand impossible to ignore.
                 </p>
             </div>
@@ -65,11 +61,6 @@
 <!-- Interactive Background Visual Layer -->
 <div class="absolute h-full w-full overflow-hidden border border-black/10 -z-10">
     <!-- svelte-ignore a11y_media_has_caption -->
-    <video class="w-full h-full object-cover" controls src="https://www.pexels.com/download/video/16953737/"></video>
+    <video class="w-full h-full object-cover" autoplay muted src="https://pixabay.com/videos/download/x-371424_medium.mp4"></video>
+    <div class="absolute inset-0 bg-linear-to-t from-black/80 to-transparent"></div>
 </div>
-
-<!-- Brand Customization Studio Modal -->
-<BrandCustomizerModal
-    isOpen={isBrandModalOpen}
-    onClose={() => (isBrandModalOpen = false)}
-/>

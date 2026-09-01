@@ -2,9 +2,9 @@
 import { extractDominantColor, FALLBACK_COLOR, type ExtractedBrandColors } from "./colorExtractor";
 
 const STORAGE_KEY = "ekson_brand_profile";
-export const DEFAULT_BRAND = "Ekson";
+export const DEFAULT_BRAND = "Kubix";
 export const DEFAULT_DESCRIPTION =
-    "Ekson is an innovative technology company specializing in modern digital platforms, event management and tracking systems, and smart AI workflow automation integrations with scalable cloud backends.";
+    "Kubix is an innovative technology company specializing in modern digital platforms, event management and tracking systems, and smart AI workflow automation integrations with scalable cloud backends.";
 
 class BrandStore {
     name = $state(DEFAULT_BRAND);

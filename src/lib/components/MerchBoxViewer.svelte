@@ -56,7 +56,7 @@
             shadowMesh = null;
         }
 
-        const accentColor = brand.primaryColor || "#009dd6";
+        const accentColor = brand.primaryColor || "#4abbff";
 
         activeModelGroup = createMerchModel(id, {
             logoMap,
@@ -156,7 +156,7 @@
         fillLight.position.set(-1.8, 1.2, -1.0);
         scene.add(fillLight);
 
-        const rimLight = new THREE.DirectionalLight(new THREE.Color(brand.primaryColor || "#009dd6"), 1.2);
+        const rimLight = new THREE.DirectionalLight(new THREE.Color(brand.primaryColor || "#4abbff"), 1.2);
         rimLight.position.set(0, 1.8, -1.6);
         scene.add(rimLight);
 

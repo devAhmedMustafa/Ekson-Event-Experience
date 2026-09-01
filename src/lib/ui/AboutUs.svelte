@@ -48,9 +48,7 @@
 
             <!-- Staggered Large Headline -->
             <h2 class="text-3xl sm:text-5xl lg:text-6xl font-black text-text tracking-tight leading-[1.08]">
-                Who are
-                
-                <img src="logo_name.png" alt="Ekson name" class="w-45 inline -translate-y-1 ml-1">
+                Who are Kubix
                 
             </h2>
 

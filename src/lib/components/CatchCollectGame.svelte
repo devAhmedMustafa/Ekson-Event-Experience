@@ -103,7 +103,7 @@
         ctx.fillRect(-topHalf, bodyTop, topHalf * 2, 8);
 
         // Accent Band
-        ctx.fillStyle = brand.primaryColor || "#009dd6";
+        ctx.fillStyle = brand.primaryColor || "#4abbff";
         ctx.fillRect(-bottomHalf + 4, bodyBottom - 18, bottomHalf * 2 - 8, 8);
 
         // Logo / Name
@@ -111,7 +111,7 @@
             const box = w * 0.48;
             ctx.drawImage(logoImg, -box / 2, bodyTop + 12, box, box * 0.65);
         } else {
-            ctx.fillStyle = brand.primaryColor || "#009dd6";
+            ctx.fillStyle = brand.primaryColor || "#4abbff";
             ctx.font = "800 22px sans-serif";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
@@ -207,14 +207,14 @@
             ctx.fillStyle = "#ffffff";
             ctx.fill();
             ctx.lineWidth = 2.5;
-            ctx.strokeStyle = brand.primaryColor || "#009dd6";
+            ctx.strokeStyle = brand.primaryColor || "#4abbff";
             ctx.stroke();
 
             if (logoImg) {
                 const box = r * 1.3;
                 ctx.drawImage(logoImg, -box / 2, -box / 2, box, box);
             } else {
-                ctx.fillStyle = brand.primaryColor || "#009dd6";
+                ctx.fillStyle = brand.primaryColor || "#4abbff";
                 ctx.font = `800 ${Math.round(r * 0.8)}px sans-serif`;
                 ctx.textAlign = "center";
                 ctx.textBaseline = "middle";
@@ -279,7 +279,7 @@
                 // Catch Collision with Bag Mouth
                 if (dy >= -15 && dy <= 30 && dx <= basketWidth * 0.55) {
                     c.alive = false;
-                    particles.push(...createParticles(c.x, c.y, c.hazard ? "#f43f5e" : (brand.primaryColor || "#009dd6"), 16));
+                    particles.push(...createParticles(c.x, c.y, c.hazard ? "#f43f5e" : (brand.primaryColor || "#4abbff"), 16));
 
                     if (c.hazard) {
                         lives--;
@@ -375,7 +375,7 @@
     <canvas bind:this={canvasEl} class="absolute inset-0 w-full h-full block z-10"></canvas>
 
     <!-- Phone Top HUD Stats Bar Overlay -->
-    <div class="absolute top-11 left-3.5 right-12 z-20 flex items-center gap-1.5 pointer-events-none">
+    <div class="absolute top-2.5 left-3 right-11 z-20 flex items-center gap-1.5 pointer-events-none">
         <div class="flex-1 px-2 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-white text-center flex items-center justify-between">
             <span class="text-[9px] text-white/70 font-medium">Score</span>
             <strong class="text-xs font-bold text-primary">{score}</strong>

@@ -72,7 +72,7 @@
             } else if (finish === "black") {
                 ctx.fillStyle = "#18181b";
             } else {
-                ctx.fillStyle = brandColor || "#009dd6";
+                ctx.fillStyle = brandColor || "#4abbff";
             }
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -124,7 +124,7 @@
     }
 
     function drawFallbackCrest(ctx: CanvasRenderingContext2D, cx: number, cy: number, brandColor: string, finish: string) {
-        ctx.fillStyle = finish === "brand" ? "#ffffff" : brandColor || "#009dd6";
+        ctx.fillStyle = finish === "brand" ? "#ffffff" : brandColor || "#4abbff";
         ctx.beginPath();
         ctx.arc(cx, cy, 45, 0, Math.PI * 2);
         ctx.fill();
@@ -141,7 +141,7 @@
     async function buildMug(root: THREE.Group) {
         root.clear();
 
-        const finishColor = selectedFinish === "white" ? "#f8fafc" : selectedFinish === "black" ? "#18181b" : (brand.primaryColor || "#009dd6");
+        const finishColor = selectedFinish === "white" ? "#f8fafc" : selectedFinish === "black" ? "#18181b" : (brand.primaryColor || "#4abbff");
         const roughness = selectedFinish === "black" ? 0.35 : 0.12;
 
         mugBodyMat = new THREE.MeshPhysicalMaterial({
@@ -213,7 +213,7 @@
         root.add(handleMesh);
 
         // 6. BRAND PRINT DECAL (Curved overlay on front of mug)
-        const decalTex = await createMugDecalTexture(brand.name, brand.primaryColor || "#009dd6", brand.logo, selectedFinish);
+        const decalTex = await createMugDecalTexture(brand.name, brand.primaryColor || "#4abbff", brand.logo, selectedFinish);
         const decalGeo = new THREE.CylinderGeometry(0.422, 0.382, 0.75, 36, 1, true, -Math.PI * 0.35, Math.PI * 0.70);
         decalMat = new THREE.MeshStandardMaterial({
             map: decalTex,
@@ -259,7 +259,7 @@
         // 9. AR PLACEMENT RETICLE RING (Visible in AR mode)
         const reticleGeo = new THREE.RingGeometry(0.48, 0.52, 48);
         const reticleMat = new THREE.MeshBasicMaterial({
-            color: brand.primaryColor || "#009dd6",
+            color: brand.primaryColor || "#4abbff",
             side: THREE.DoubleSide,
             transparent: true,
             opacity: 0.75

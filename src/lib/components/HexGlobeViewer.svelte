@@ -417,7 +417,7 @@
                     });
 
                     // 3. ATTACH 3D PIN MARKERS FOR CITIES
-                    const primaryColorHex = "#009dd6";
+                    const primaryColorHex = brand.primaryColor || "#4abbff";
                     const pinColor = new THREE.Color(primaryColorHex);
 
                     CITIES.forEach((city) => {

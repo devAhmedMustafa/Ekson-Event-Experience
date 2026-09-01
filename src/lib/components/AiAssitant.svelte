@@ -33,6 +33,7 @@
     let mediaRecorder: MediaRecorder | null = null;
     let audioChunks: Blob[] = [];
     let recordTimerInterval: any = null;
+    const MAX_RECORD_SECONDS = 5;
 
     const quickPrompts = $derived([
         `Tell me about ${brand.name}'s interactive booth experiences.`,
@@ -225,10 +226,13 @@
 
             mediaRecorder.start(150);
             isRecording = true;
-            statusMessage = `Listening... Speak your question for ${brand.name}.`;
+            statusMessage = `Listening... Speak your question for ${brand.name} (max 5s).`;
 
             recordTimerInterval = setInterval(() => {
                 recordDuration += 1;
+                if (recordDuration >= MAX_RECORD_SECONDS) {
+                    stopRecording();
+                }
             }, 1000);
         } catch (err) {
             console.error("Microphone access error:", err);
@@ -455,12 +459,12 @@
         </div>
     {:else}
         <!-- Center Interactive Voice Visualizer Stage -->
-        <div class="flex-1 flex flex-col items-center justify-center py-3 sm:py-6 gap-12 sm:gap-5 mt-20">
+        <div class="flex-1 flex flex-col items-center justify-center py-4 sm:py-8 gap-10 sm:gap-14 my-auto">
             <!-- Dynamic Pulsing Voice Orb -->
-            <div class="relative flex items-center justify-center">
+            <div class="relative flex items-center justify-center py-6 sm:py-10 px-6">
                 <!-- Ripple Rings -->
-                <div class="absolute size-36 sm:size-44 md:size-52 rounded-full border transition-all duration-700 {isRecording ? 'border-rose-400 scale-125 opacity-90 animate-ping' : isSpeaking ? 'border-primary/20 scale-120 opacity-100 animate-ping' : isGenerating ? 'border-primary/20 scale-110 opacity-70 animate-pulse' : 'border-primary/20 scale-100 opacity-40'}"></div>
-                <div class="absolute size-28 sm:size-36 md:size-44 rounded-full border transition-all duration-500 {isRecording ? 'border-rose-500 scale-115 opacity-80' : isSpeaking ? 'border-primary/30 scale-110 opacity-80' : 'border-primary/30 scale-100 opacity-20'}"></div>
+                <div class="pointer-events-none absolute size-32 sm:size-36 md:size-40 rounded-full border transition-all duration-700 {isRecording ? 'border-rose-400 scale-110 opacity-75 animate-ping' : isSpeaking ? 'border-primary/20 scale-115 opacity-80 animate-ping' : isGenerating ? 'border-primary/20 scale-105 opacity-60 animate-pulse' : 'border-primary/20 scale-100 opacity-40'}"></div>
+                <div class="pointer-events-none absolute size-28 sm:size-30 md:size-34 rounded-full border transition-all duration-500 {isRecording ? 'border-rose-500 scale-105 opacity-70' : isSpeaking ? 'border-primary/30 scale-105 opacity-70' : 'border-primary/30 scale-100 opacity-20'}"></div>
 
                 <!-- Central Voice Core (Clickable for Play/Pause or Voice Recording) -->
                 <button
@@ -483,7 +487,7 @@
 
                     {#if isRecording}
                         <span class="text-[8px] sm:text-[9px] font-mono font-bold text-rose-600 tracking-widest uppercase mt-0.5 animate-pulse">
-                            REC {recordDuration}s
+                            REC {recordDuration}s / {MAX_RECORD_SECONDS}s
                         </span>
                     {:else if isSpeaking}
                         <span class="text-[8px] sm:text-[9px] font-mono font-bold text-primary tracking-widest uppercase mt-0.5 animate-pulse">

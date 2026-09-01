@@ -1,6 +1,5 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { brand } from "$lib/brand.svelte";
 
     interface FeatureItem {
         id: string;
@@ -199,9 +198,11 @@
     }
 
     function openDemoModal() {
-        isDemoModalOpen = true;
-        submitSuccess = false;
-        submitError = null;
+        if (typeof window !== "undefined") {
+            window.dispatchEvent(new CustomEvent("ekson_open_contact_form", {
+                detail: { message: "I'm interested to book a demo.." }
+            }));
+        }
     }
 
     function closeDemoModal() {
@@ -273,7 +274,16 @@
             class="flex items-center gap-2.5 group text-left cursor-pointer focus:outline-none"
             aria-label="Go to top"
         >
-            <img src="logo.png" alt="Ekson Logo" class="h-9"/>
+            <div class="size-9 rounded-xl bg-primary/10 text-primary border border-primary/20 flex items-center justify-center group-hover:scale-105 group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-xs">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-5 shrink-0">
+                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                    <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                    <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                </svg>
+            </div>
+            <span class="text-xl font-black tracking-tight text-text group-hover:text-primary transition-colors">
+                Kubix
+            </span>
         </button>
 
         <!-- Center: Navigation Links -->
@@ -356,7 +366,7 @@
     <!-- svelte-ignore a11y_click_events_have_key_events -->
     <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
-        class="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-xs p-3 sm:p-4 animate-fade-in"
+        class="fixed inset-0 z-100 flex items-center justify-center bg-black/60 backdrop-blur-xs p-3 sm:p-4 animate-fade-in"
         onclick={(e) => { if (e.target === e.currentTarget) closeDemoModal(); }}
     >
         <div class="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl border border-black/10 overflow-hidden flex flex-col max-h-[92vh]">

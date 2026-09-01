@@ -166,6 +166,11 @@
         <!-- TOP ROW (2 Columns): Left = Minimal Feature Card Slider | Right = The Pano -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 items-stretch flex-1 my-auto min-h-100 max-h-[58vh]">
             
+            <!-- RIGHT BOX: THE PANO (360 Image Viewport) -->
+            <div class="w-full h-full relative overflow-hidden rounded-3xl border border-black/10 shadow-md">
+                <Tour360 />
+            </div>
+
             <!-- LEFT BOX: FEATURE CARD AUTO SLIDER (4s per feature with progress indicator line) -->
             <div
                 class="p-5 sm:p-6 flex flex-col justify-between h-full relative overflow-hidden group select-none "
@@ -177,7 +182,7 @@
                 <!-- Card Header Area -->
                 <div class="relative z-10 shrink-0 flex items-center justify-between pb-2">
                     <h2 class="text-4xl sm:text-5xl font-black text-text tracking-tight">
-                        360° <span class="text-transparent bg-clip-text bg-linear-to-r from-primary to-sky-800">Tours</span>
+                        360° <span class="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">Tours</span>
                     </h2>
                 </div>
 
@@ -256,56 +261,51 @@
 
             </div>
 
-                <!-- RIGHT BOX: THE PANO (360 Image Viewport) -->
-                <div class="w-full h-full relative overflow-hidden rounded-3xl border border-black/10 shadow-md">
-                    <Tour360 />
-                </div>
-
-            </div>
-
-            <!-- BOTTOM ROW (Full Width across both columns): PRICING CARDS -->
-            <div class="w-full space-y-2 pt-10 shrink-0">
-                <div class="flex items-center justify-between px-1 pt-2.5">
-                    <div class="flex items-center gap-2">
-                        <span class="material-symbols-rounded text-primary text-base">sell</span>
-                        <h3 class="font-mono text-xs font-bold text-text uppercase tracking-wider">
-                            360° Tour Area Pricing Scope
-                        </h3>
-                    </div>
-                    <span class="text-[9.5px] font-bold text-emerald-600 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
-                        Area-Based Pricing
-                    </span>
-                </div>
-
-                <!-- 4-Column Standard Pricing Component Cards -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                    {#each pricingPlans as plan}
-                        <div class="p-3.5 rounded-3xl bg-white/60 hover:bg-white/90 border {plan.badge === 'Popular' ? 'border-primary ring-2 ring-primary/20 bg-white/90 shadow-md' : 'border-black/10'} shadow-sm flex flex-col justify-between transition-all duration-300 hover:-translate-y-0.5">
-                            <div>
-                                <div class="flex items-center justify-between mb-1.5">
-                                    <h4 class="text-xs font-black text-text tracking-tight">{plan.tier}</h4>
-                                    {#if plan.badge}
-                                        <span class="text-[8.5px] font-bold text-white bg-primary px-2 py-0.5 rounded-full uppercase shadow-2xs">
-                                            {plan.badge}
-                                        </span>
-                                    {/if}
-                                </div>
-                                <div class="font-mono text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-lg w-fit mb-2">
-                                    {plan.area}
-                                </div>
-                                <ul class="space-y-1 text-[11px] text-text/75">
-                                    {#each plan.features as feat}
-                                        <li class="flex items-center gap-1.5">
-                                            <span class="material-symbols-rounded text-emerald-500 text-xs shrink-0">check_circle</span>
-                                            <span class="truncate">{feat}</span>
-                                        </li>
-                                    {/each}
-                                </ul>
-                            </div>
-                        </div>
-                    {/each}
-                </div>
-            </div>
-
         </div>
+
+        <!-- BOTTOM ROW (Full Width across both columns): PRICING CARDS -->
+        <div class="w-full space-y-2 pt-10 shrink-0">
+            <div class="flex items-center justify-between px-1 pt-2.5">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-rounded text-primary text-base">sell</span>
+                    <h3 class="font-mono text-xs font-bold text-text uppercase tracking-wider">
+                        360° Tour Area Pricing Scope
+                    </h3>
+                </div>
+                <span class="text-[9.5px] font-bold text-emerald-600 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                    Area-Based Pricing
+                </span>
+            </div>
+
+            <!-- 4-Column Standard Pricing Component Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                {#each pricingPlans as plan}
+                    <div class="p-3.5 rounded-3xl bg-white/60 hover:bg-white/90 border {plan.badge === 'Popular' ? 'border-primary ring-2 ring-primary/20 bg-white/90 shadow-md' : 'border-black/10'} shadow-sm flex flex-col justify-between transition-all duration-300 hover:-translate-y-0.5">
+                        <div>
+                            <div class="flex items-center justify-between mb-1.5">
+                                <h4 class="text-xs font-black text-text tracking-tight">{plan.tier}</h4>
+                                {#if plan.badge}
+                                    <span class="text-[8.5px] font-bold text-white bg-primary px-2 py-0.5 rounded-full uppercase shadow-2xs">
+                                        {plan.badge}
+                                    </span>
+                                {/if}
+                            </div>
+                            <div class="font-mono text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-lg w-fit mb-2">
+                                {plan.area}
+                            </div>
+                            <ul class="space-y-1 text-[11px] text-text/75">
+                                {#each plan.features as feat}
+                                    <li class="flex items-center gap-1.5">
+                                        <span class="material-symbols-rounded text-emerald-500 text-xs shrink-0">check_circle</span>
+                                        <span class="truncate">{feat}</span>
+                                    </li>
+                                {/each}
+                            </ul>
+                        </div>
+                    </div>
+                {/each}
+            </div>
+        </div>
+
+    </div>
 </div>

@@ -25,14 +25,14 @@ export interface ExtractedBrandColors {
 }
 
 export const FALLBACK_COLOR: ExtractedBrandColors = {
-    primary: "#009dd6",
-    primaryRgb: [0, 157, 214],
-    hsl: { h: 196, s: 1.0, l: 0.42 },
+    primary: "#4abbff",
+    primaryRgb: [74, 187, 255],
+    hsl: { h: 203, s: 1.0, l: 0.65 },
     contrastText: "#ffffff",
-    darkShade: "#04547c",
-    lightTint: "rgba(0, 157, 214, 0.12)",
-    accent: "#00b4d8",
-    palette: ["#009dd6", "#04547c", "#00b4d8"]
+    darkShade: "#ba5fff",
+    lightTint: "rgba(74, 187, 255, 0.12)",
+    accent: "#ba5fff",
+    palette: ["#4abbff", "#ba5fff", "#1b7ec2"]
 };
 
 // Convert RGB to HSL
@@ -92,7 +92,7 @@ export function hexToRgb(hex: string): [number, number, number] {
             parseInt(cleanHex.slice(4, 6), 16)
         ];
     }
-    return [0, 157, 214];
+    return [74, 187, 255];
 }
 
 interface ColorBucket {

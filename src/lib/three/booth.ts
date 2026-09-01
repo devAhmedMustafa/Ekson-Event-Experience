@@ -48,9 +48,9 @@ export const BOOTH = {
  * @returns {THREE.Group}
  */
 export function createBooth(tex, {
-  accent = brand.primaryColor || '#009dd6',
-  darkAccent = brand.darkColor || '#04547c',
-  lightAccent = brand.lightTint || 'rgba(0,157,214,0.12)',
+  accent = brand.primaryColor,
+  darkAccent = brand.darkColor,
+  lightAccent = brand.lightTint,
   palette = brand.palette || [accent, darkAccent],
   detail = 'high'
 } = {}) {

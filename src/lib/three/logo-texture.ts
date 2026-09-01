@@ -39,7 +39,7 @@ export function loadImage(src: string): Promise<HTMLImageElement> {
 }
 
 export function contrastInk(hex: string): string {
-  const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex || '#009dd6')
+  const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex || '#4abbff')
   if (!m) return '#ffffff'
   const r = parseInt(m[1], 16) / 255
   const g = parseInt(m[2], 16) / 255
@@ -81,7 +81,7 @@ export async function getProductImage(): Promise<HTMLImageElement | null> {
 }
 
 export function initials(name: string): string {
-  const words = String(name || 'Ekson')
+  const words = String(name || 'Kubix')
     .replace(/[^\p{L}\p{N}\s]/gu, ' ')
     .trim()
     .split(/\s+/)
@@ -95,7 +95,7 @@ export function initials(name: string): string {
  * Draw the logo into a canvas context, letterboxed inside the given box.
  * Falls back to an initials mark so 3D surfaces are never blank.
  */
-export function drawLogo(ctx: CanvasRenderingContext2D, img: HTMLImageElement | null, x: number, y: number, w: number, h: number, { accent = '#009dd6', company = '' } = {}) {
+export function drawLogo(ctx: CanvasRenderingContext2D, img: HTMLImageElement | null, x: number, y: number, w: number, h: number, { accent = '#4abbff', company = '' } = {}) {
   if (img && img.width) {
     const scale = Math.min(w / img.width, h / img.height)
     const dw = img.width * scale
@@ -208,9 +208,9 @@ export function bannerTexture(logoImg: HTMLImageElement | null, { w = 2048, h = 
       const tx = w * 0.075 + logoBox + w * 0.035
       ctx.textAlign = 'left'
       ctx.textBaseline = 'alphabetic'
-      const titlePx = fitText(ctx, brand.name || 'Ekson', w - tx - w * 0.08, h * 0.26, 700)
+      const titlePx = fitText(ctx, brand.name || 'Kubix', w - tx - w * 0.08, h * 0.26, 700)
       ctx.fillStyle = ink
-      ctx.fillText(brand.name || 'Ekson', tx, h * 0.46)
+      ctx.fillText(brand.name || 'Kubix', tx, h * 0.46)
 
       const sub = brand.description ? brand.description.slice(0, 70) + '…' : 'Innovative Event Experiences'
       if (sub) {
@@ -254,7 +254,7 @@ export function towerTexture(logoImg: HTMLImageElement | null, productImg: HTMLI
 
       ctx.fillStyle = contrastInk(brand.darkColor || brand.primaryColor)
       ctx.font = `600 ${w * 0.05}px 'Montserrat', sans-serif`
-      ctx.fillText('ekson.com', w / 2, h * 0.955)
+      ctx.fillText('kubix.com', w / 2, h * 0.955)
     })
   )
 }
@@ -385,8 +385,8 @@ export function standNumberTexture(number = 'B-14', hall = 'HALL 3') {
 }
 
 export function hexA(hex: string, alpha: number): string {
-  const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex || '#009dd6')
-  if (!m) return `rgba(0,157,214,${alpha})`
+  const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex || '#4abbff')
+  if (!m) return `rgba(74,187,255,${alpha})`
   return `rgba(${parseInt(m[1], 16)},${parseInt(m[2], 16)},${parseInt(m[3], 16)},${alpha})`
 }
 

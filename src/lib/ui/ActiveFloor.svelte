@@ -77,11 +77,11 @@
                     <!-- Decorative Curved Border Overlay SVG with Dots -->
                     <svg class="absolute inset-0 w-full h-full pointer-events-none z-20" preserveAspectRatio="none" viewBox="0 0 100 100">
                         <!-- Curved outline stroke -->
-                        <path d="M 5,2 C 25,2 35,50 38,98" stroke="var(--brand-primary, #009dd6)" stroke-width="0.6" fill="none" stroke-dasharray="2,2" opacity="0.8" />
+                        <path d="M 5,2 C 25,2 35,50 38,98" stroke="var(--brand-primary, #4abbff)" stroke-width="0.6" fill="none" stroke-dasharray="2,2" opacity="0.8" />
                         <!-- Node points along the frame line -->
-                        <circle cx="20" cy="2" r="1" fill="var(--brand-primary, #009dd6)" />
-                        <circle cx="36.5" cy="74" r="1.2" fill="var(--brand-primary, #009dd6)" />
-                        <circle cx="38" cy="98" r="1" fill="var(--brand-primary, #009dd6)" />
+                        <circle cx="20" cy="2" r="1" fill="var(--brand-primary, #4abbff)" />
+                        <circle cx="36.5" cy="74" r="1.2" fill="var(--brand-primary, #4abbff)" />
+                        <circle cx="38" cy="98" r="1" fill="var(--brand-primary, #4abbff)" />
                     </svg>
 
                     <!-- Inner Image Container with Soft Shadow & Rounded Corners -->

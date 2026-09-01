@@ -16,7 +16,7 @@
 </script>
 
 <svelte:head>
-    <title>{brand.name} Event Experiences</title>
+    <title>Kubix Event Experiences</title>
 </svelte:head>
 
 <Navbar />

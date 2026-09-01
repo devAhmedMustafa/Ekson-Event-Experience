@@ -48,7 +48,7 @@
     });
 
     function getArUrl(modelId: string) {
-        return `${originUrl || "https://ekson.com"}/ar?m=${modelId}&name=${encodeURIComponent(brand.name)}&color=${encodeURIComponent(brand.primaryColor)}&dark=${encodeURIComponent(brand.darkColor)}`;
+        return `${originUrl || "https://kubix.com"}/ar?m=${modelId}&name=${encodeURIComponent(brand.name)}&color=${encodeURIComponent(brand.primaryColor)}&dark=${encodeURIComponent(brand.darkColor)}`;
     }
 
     function getQrCodeUrl(modelId: string) {

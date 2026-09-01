@@ -13,14 +13,14 @@
     const SEGMENTS = 8;
 
     const prizes = $derived<Prize[]>([
-        { label: `Free ${brand.name || "Product"} Demo`, win: true, bg: brand.primaryColor || "#009dd6", textColor: "#ffffff" },
-        { label: "10% Off Pass", win: true, bg: "#ffffff", textColor: brand.darkColor || "#04547c" },
-        { label: "Branded Swag", win: true, bg: brand.lightTint || "#ebe9fc", textColor: "#010104" },
-        { label: "Try Again", win: false, bg: brand.darkColor || "#04547c", textColor: "#ffffff" },
+        { label: `Free ${brand.name || "Product"} Demo`, win: true, bg: brand.primaryColor, textColor: "#ffffff" },
+        { label: "10% Off Pass", win: true, bg: "#ffffff", textColor: brand.darkColor },
+        { label: "Branded Swag", win: true, bg: brand.lightTint, textColor: "#010104" },
+        { label: "Try Again", win: false, bg: brand.darkColor, textColor: "#ffffff" },
         { label: "Free Trial", win: true, bg: "#f0fdf4", textColor: "#166534" },
-        { label: "100 Tokens", win: true, bg: brand.lightTint || "#e0f2fe", textColor: brand.primaryColor || "#0369a1" },
+        { label: "100 Tokens", win: true, bg: brand.lightTint, textColor: brand.primaryColor },
         { label: "VIP Pass", win: true, bg: "#ffffff", textColor: "#010104" },
-        { label: "Try Again", win: false, bg: brand.lightTint || "#ebe9fc", textColor: "#010104" },
+        { label: "Try Again", win: false, bg: brand.lightTint, textColor: "#010104" },
     ]);
 
     let canvasEl = $state<HTMLCanvasElement | null>(null);
@@ -77,7 +77,11 @@
         if (prize.win) winsCount++;
 
         if (canvasEl) {
-            particles = createParticles(canvasEl.width / 2, canvasEl.height * 0.46, brand.primaryColor || "#009dd6", 24);
+            const topPadding = 44;
+            const bottomPadding = 64;
+            const availH = Math.max(100, canvasEl.height - topPadding - bottomPadding);
+            const cy = topPadding + availH / 2;
+            particles = createParticles(canvasEl.width / 2, cy, brand.primaryColor || "#4abbff", 24);
         }
 
         promptText = "";
@@ -99,9 +103,12 @@
 
         const w = canvasEl.width;
         const h = canvasEl.height;
+        const topPadding = 44;
+        const bottomPadding = 64;
+        const availH = Math.max(100, h - topPadding - bottomPadding);
         const cx = w / 2;
-        const cy = h * 0.47;
-        const radius = Math.min(w, h) * 0.38;
+        const cy = topPadding + availH / 2;
+        const radius = Math.max(40, Math.min((w - 32) / 2, availH / 2) * 0.88);
 
         ctx.clearRect(0, 0, w, h);
 
@@ -177,6 +184,25 @@
 
         ctx.restore();
 
+        // Draw Pointer Needle at top edge of wheel
+        ctx.save();
+        ctx.translate(cx, cy - radius + 2);
+        ctx.rotate((pointerFlick * Math.PI) / 180);
+        ctx.shadowColor = "rgba(0,0,0,0.4)";
+        ctx.shadowBlur = 8;
+        ctx.shadowOffsetY = 3;
+        ctx.beginPath();
+        ctx.moveTo(-10, -18);
+        ctx.lineTo(10, -18);
+        ctx.lineTo(0, 8);
+        ctx.closePath();
+        ctx.fillStyle = "#f43f5e";
+        ctx.fill();
+        ctx.lineWidth = 1.5;
+        ctx.strokeStyle = "#ffffff";
+        ctx.stroke();
+        ctx.restore();
+
         // Particles
         if (particles.length > 0) {
             updateParticles(particles, dt, ctx);
@@ -209,14 +235,8 @@
     <!-- Canvas Wheel Stage -->
     <canvas bind:this={canvasEl} class="absolute inset-0 w-full h-full block cursor-pointer z-0" onclick={spin}></canvas>
 
-    <!-- Pointer Needle Flick Physics -->
-    <div
-        class="absolute top-[78px] left-1/2 -translate-x-1/2 z-20 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[22px] border-t-rose-500 drop-shadow-md origin-top transition-transform duration-75"
-        style="transform: translateX(-50%) rotate({pointerFlick}deg);"
-    ></div>
-
     <!-- Phone Top HUD Stats Bar Overlay -->
-    <div class="absolute top-11 left-3.5 right-12 z-20 flex items-center gap-1.5 pointer-events-none">
+    <div class="absolute top-2.5 left-3 right-11 z-20 flex items-center gap-1.5 pointer-events-none">
         <div class="flex-1 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-white text-center flex items-center justify-between">
             <span class="text-[10px] text-white/70 font-medium">Spins</span>
             <strong class="text-xs font-bold">{spinsCount}</strong>
@@ -229,7 +249,7 @@
 
     <!-- Phone Prompt Bar at Bottom -->
     {#if promptText && !showOverlay}
-        <div class="absolute bottom-16 left-3.5 right-3.5 z-20 px-3.5 py-1.5 rounded-full bg-slate-900/80 backdrop-blur-md border border-white/10 text-white text-xs font-medium text-center pointer-events-none">
+        <div class="absolute bottom-13 left-3 right-3 z-20 px-3.5 py-1 rounded-full bg-slate-900/80 backdrop-blur-md border border-white/10 text-white text-[11px] font-medium text-center pointer-events-none truncate">
             {promptText}
         </div>
     {/if}
@@ -238,7 +258,7 @@
     {#if !isSpinning && !showOverlay}
         <button
             onclick={spin}
-            class="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 px-8 py-2.5 rounded-full font-semibold text-xs text-white bg-primary shadow-xl transition hover:scale-105 active:scale-95 cursor-pointer border border-white/20"
+            class="absolute bottom-2.5 left-1/2 -translate-x-1/2 z-30 px-7 py-2 rounded-full font-semibold text-xs text-white bg-primary shadow-xl transition hover:scale-105 active:scale-95 cursor-pointer border border-white/20"
         >
             Spin
         </button>

@@ -67,7 +67,7 @@ export function makeBackdrop(profile: any, logoImg: HTMLImageElement | null, { w
   c.width = width
   c.height = height
   const ctx = c.getContext('2d')
-  const accent = profile?.accent || '#009dd6'
+  const accent = profile?.accent || '#4abbff'
 
   const grad = ctx.createLinearGradient(0, 0, width * 0.4, height)
   grad.addColorStop(0, '#ffffff')
@@ -182,7 +182,7 @@ export function productChipTexture(profile: any, logoImg: HTMLImageElement | nul
 
     roundRect(ctx, 10, 8, w - 22, h - 24, w * 0.22)
     ctx.lineWidth = 6
-    ctx.strokeStyle = profile?.accent || '#009dd6'
+    ctx.strokeStyle = profile?.accent || '#4abbff'
     ctx.stroke()
 
     if (logoImg?.width) {
@@ -190,7 +190,7 @@ export function productChipTexture(profile: any, logoImg: HTMLImageElement | nul
       const s = Math.min(box / logoImg.width, box / logoImg.height)
       ctx.drawImage(logoImg, (w - logoImg.width * s) / 2, (h - logoImg.height * s) / 2, logoImg.width * s, logoImg.height * s)
     } else {
-      ctx.fillStyle = profile?.accent || '#009dd6'
+      ctx.fillStyle = profile?.accent || '#4abbff'
       ctx.font = "700 64px 'Space Grotesk', Inter, sans-serif"
       ctx.textAlign = 'center'
       ctx.textBaseline = 'middle'

@@ -217,7 +217,7 @@
         const { ctx, texture } = phone;
         const W = 360;
         const H = 740;
-        const accent = brand.primaryColor || "#009dd6";
+        const accent = brand.primaryColor || "#4abbff";
         const companyName = brand.name || "EXHIBITOR";
 
         ctx.fillStyle = "#0d1017";
@@ -464,8 +464,8 @@
             overhead.shadow.camera.bottom = -22;
             scene.add(overhead);
 
-            const accentHex = brand.primaryColor || "#009dd6";
-            const darkAccentHex = brand.darkColor || "#04547c";
+            const accentHex = brand.primaryColor;
+            const darkAccentHex = brand.darkColor;
 
             await new Promise((r) => setTimeout(r, 20));
 
@@ -980,6 +980,8 @@
                                 </button>
                             </div>
                         </div>
+
+                        <div class="absolute text-white/70 bottom-0 left-1/2 -translate-x-1/2 text-xs">Click escape to exit</div>
                     {/if}
                 </div>
 

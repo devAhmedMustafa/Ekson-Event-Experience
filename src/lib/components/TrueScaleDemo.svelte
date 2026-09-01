@@ -166,7 +166,7 @@
             studioRig.bounce.intensity = 0.15;
         } else if (mode === "tech") {
             scene.background = new THREE.Color("#080c18");
-            const brandColor = new THREE.Color(brand.primaryColor || "#009dd6");
+            const brandColor = new THREE.Color(brand.primaryColor || "#4abbff");
             studioRig.key.color.copy(brandColor);
             studioRig.key.intensity = 1.2;
             studioRig.fill.color.setHex(0x0284c7);
@@ -290,10 +290,10 @@
         invalidateBoothTextures();
         const tex = await buildBoothTextures();
         boothGroup = createBooth(tex, {
-            accent: brand.primaryColor || "#009dd6",
-            darkAccent: brand.darkColor || "#04547c",
-            lightAccent: brand.lightTint || "rgba(0,157,214,0.12)",
-            palette: brand.palette || [brand.primaryColor, brand.darkColor],
+            accent: brand.primaryColor,
+            darkAccent: brand.darkColor,
+            lightAccent: brand.lightTint,
+            palette: brand.palette,
             detail: "high"
         });
         boothGroup.updateMatrixWorld(true);
@@ -302,7 +302,7 @@
         });
         scene.add(boothGroup);
 
-        markersGroup = makeSlotMarkers(boothGroup, brand.primaryColor || "#009dd6");
+        markersGroup = makeSlotMarkers(boothGroup, brand.primaryColor || "#4abbff");
         markersGroup.visible = showLogoSlots;
         scene.add(markersGroup);
     }

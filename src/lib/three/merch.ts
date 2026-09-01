@@ -174,7 +174,7 @@ function drape(geometry: THREE.BufferGeometry, { amount = 0.006, frequency = 3.5
 /* ── Mug ─────────────────────────────────────────────────────────────────── */
 
 function makeMug(opts: MerchModelOpts = {}) {
-  const accent = opts.accent || '#009dd6'
+  const accent = opts.accent || '#4abbff'
   const logoMap = resolveLogoTexture(opts, 2.474, 0.08)
   const g = new THREE.Group()
   g.name = 'mug'
@@ -277,7 +277,7 @@ function makeMug(opts: MerchModelOpts = {}) {
 /* ── Pen ─────────────────────────────────────────────────────────────────── */
 
 function makePen(opts: MerchModelOpts = {}) {
-  const accent = opts.accent || '#009dd6'
+  const accent = opts.accent || '#4abbff'
   const logoMap = resolveLogoTexture(opts, 0.2144, 0.08)
   const g = new THREE.Group()
   g.name = 'pen'
@@ -372,7 +372,7 @@ function makePen(opts: MerchModelOpts = {}) {
 /* ── Notebook ────────────────────────────────────────────────────────────── */
 
 function makeNotebook(opts: MerchModelOpts = {}) {
-  const accent = opts.accent || '#009dd6'
+  const accent = opts.accent || '#4abbff'
   const logoMap = resolveLogoTexture(opts, 1.0, 0.08)
   const g = new THREE.Group()
   g.name = 'notebook'
@@ -465,7 +465,7 @@ function makeNotebook(opts: MerchModelOpts = {}) {
 /* ── Tote bag ────────────────────────────────────────────────────────────── */
 
 function makeBag(opts: MerchModelOpts = {}) {
-  const accent = opts.accent || '#009dd6'
+  const accent = opts.accent || '#4abbff'
   const logoMap = resolveLogoTexture(opts, 1.0, 0.08)
   const g = new THREE.Group()
   g.name = 'bag'

@@ -14,7 +14,7 @@
     let rawPlayers = $state([
         { rank: "01", name: "Chen. Alex", score: 9840, company: "TechCorp Global", trend: "up" as const },
         { rank: "02", name: "Miller. Sarah", score: 9420, company: "Vertex Labs", trend: "flat" as const },
-        { rank: "03", name: "Farooq. Omar", score: 9150, company: "Ekson Dynamics", isHost: true, trend: "up" as const },
+        { rank: "03", name: "Farooq. Omar", score: 9150, company: "Kubix Dynamics", isHost: true, trend: "up" as const },
         { rank: "04", name: "Rostova. Elena", score: 8790, company: "Nexus Media", trend: "down" as const },
         { rank: "05", name: "Davis. Liam", score: 8320, company: "Apex Digital Systems", trend: "up" as const },
     ]);
@@ -22,7 +22,7 @@
     const players = $derived(
         rawPlayers.map((p) => ({
             ...p,
-            company: p.isHost ? (brand.isCustom ? `${brand.name} Team` : "Ekson Dynamics") : p.company,
+            company: p.isHost ? (brand.isCustom ? `${brand.name} Team` : "Kubix Dynamics") : p.company,
         }))
     );
 

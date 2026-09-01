@@ -21,12 +21,16 @@
 	$effect(() => {
 		if (typeof document !== 'undefined') {
 			const root = document.documentElement;
-			root.style.setProperty('--brand-primary', '#009dd6');
-			root.style.setProperty('--brand-secondary', '#04547c');
-			root.style.setProperty('--brand-light-tint', 'rgba(0, 157, 214, 0.12)');
-			root.style.setProperty('--brand-contrast-text', '#ffffff');
-			root.style.setProperty('--color-primary', '#009dd6');
-			root.style.setProperty('--color-secondary', '#04547c');
+			const pColor = brand.primaryColor || '#4abbff';
+			const sColor = brand.darkColor || '#ba5fff';
+			const lTint = brand.lightTint || 'rgba(74, 187, 255, 0.12)';
+			const cText = brand.contrastText || '#ffffff';
+			root.style.setProperty('--brand-primary', pColor);
+			root.style.setProperty('--brand-secondary', sColor);
+			root.style.setProperty('--brand-light-tint', lTint);
+			root.style.setProperty('--brand-contrast-text', cText);
+			root.style.setProperty('--color-primary', pColor);
+			root.style.setProperty('--color-secondary', sColor);
 		}
 	});
 </script>

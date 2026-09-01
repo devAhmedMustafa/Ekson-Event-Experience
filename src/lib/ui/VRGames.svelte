@@ -36,7 +36,7 @@
             description: "Test your aim and reflexes in exciting shooting challenges. Multiple modes, moving targets, and instant scoring.",
             icon: "adjust",
             bgGradient: "from-sky-950 via-slate-950 to-blue-950",
-            accentColor: "#009dd6",
+            accentColor: "#4abbff",
             features: ["Precision Optics", "Multi-Target Waves", "Reflex Combat"],
             image: "images/shooting.png"
         },
@@ -203,139 +203,141 @@
 
 <svelte:window onkeydown={handleKeyDown} />
 
-<div class="w-full min-h-dvh max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-4 sm:py-8 flex flex-col justify-between overflow-visible md:overflow-hidden">
+<div class="w-full min-h-dvh max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-8 flex flex-col justify-center">
     
-    <!-- MAIN STAGE: LEFT = TITLE & DESC (3 Cols) | RIGHT = EXPANDED FLAT 2D CARD SLIDER (9 Cols) -->
-    <div class="flex items-center my-auto w-full flex-1">
+    <!-- 2-COLUMN GRID LAYOUT -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full items-stretch my-auto">
         
-        <!-- LEFT COLUMN: Compact Title & Subtitle Only (col-span-3 out of 12) -->
-        <div class="md:col-span-3 flex flex-col justify-center space-y-3 absolute z-100 w-1/2 bg-white/70 px-5 py-7 rounded-3xl shadow-lg backdrop-blur-xl bottom-29 left-1/2">
-
-            <h2 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-text tracking-tight leading-tight">
-                VR Gaming <span class="text-transparent bg-clip-text bg-linear-to-r from-primary to-sky-800">Experiences</span>
-            </h2>
-            
-            <p class="text-xs sm:text-sm text-text/75 leading-relaxed font-medium">
-                Magnetize exhibition crowds with a complete, multi-user VR esports zone. Visitors step into rhythm, shooting, tennis, boxing, and archery challenges.
-            </p>
-        </div>
-
-        <div class="relative flex items-center justify-center w-full h-full py-30">
-            
-            <!-- Slider Wrapper with Side Arrow Controls -->
-            <div class="relative w-full h-full flex items-center justify-center">
-                
-                <!-- Left Navigation Arrow -->
-                <button
-                    onclick={prevSlide}
-                    class="absolute -left-3 sm:-left-5 top-1/2 -translate-y-1/2 z-30 size-9 sm:size-11 rounded-full bg-white/90 hover:bg-white text-text shadow-lg border border-black/5 backdrop-blur-xl flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 cursor-pointer"
-                    aria-label="Previous Game"
-                    title="Previous Game"
-                >
-                    <span class="material-symbols-rounded text-lg sm:text-2xl text-text/80">chevron_left</span>
-                </button>
-
-                <!-- TALLER & LARGER FLAT 2D CARD VIEWPORT -->
-                <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-                <div
-                    class="relative w-full h-full rounded-3xl overflow-hidden shadow-xl border border-white/10 bg-slate-950 cursor-grab active:cursor-grabbing"
-                    ontouchstart={handleTouchStart}
-                    ontouchmove={handleTouchMove}
-                    ontouchend={handleTouchEnd}
-                    onmousedown={handleMouseDown}
-                    onmousemove={handleMouseMove}
-                    onmouseup={handleMouseUp}
-                    onmouseleave={handleMouseLeave}
-                    role="region"
-                    aria-label="VR Games 2D Carousel"
-                >
-                    <!-- Horizontal Sliding Track -->
-                    <div
-                        class="flex h-full w-full will-change-transform"
-                        style="transform: translateX(calc(-{currentIndex * 100}% + {dragOffset}px)); transition: {isDragging ? 'none' : 'transform 0.45s cubic-bezier(0.2, 0.9, 0.3, 1)'};"
-                    >
-                        {#each games as game (game.id)}
-                            <div class="w-full h-full shrink-0 relative p-6 sm:p-10 flex flex-col justify-start gap-10 text-white overflow-hidden bg-linear-to-br {game.bgGradient}">
-                                
-                                <!-- Background Preview Image with Overlay Scrim -->
-                                {#if game.image}
-                                    <img src={game.image} alt={game.title} class="absolute inset-0 w-full h-full object-cover opacity-50 pointer-events-none" />
-                                    <div class="absolute inset-0 bg-linear-to-t from-slate-950/50 via-slate-950/20 to-black/0 pointer-events-none"></div>
-                                {/if}
-
-                                <!-- Top Card Header: Code Badge & Icon -->
-                                <div class="flex items-center justify-between z-10">
-                                    <div class="flex items-center gap-2">
-                                        <span class="px-3.5 py-1 rounded-full text-xs font-black bg-white/15 backdrop-blur-md text-white border border-white/20">
-                                            GAME {game.code}
-                                        </span>
-                                        <span class="text-xs font-extrabold uppercase tracking-widest text-white/90 bg-white/10 backdrop-blur-md px-3.5 py-1 rounded-full border border-white/15">
-                                            {game.subtitle}
-                                        </span>
-                                    </div>
-                                    <div class="size-11 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/15">
-                                        <span class="material-symbols-rounded text-2xl text-white">{game.icon}</span>
-                                    </div>
-                                </div>
-
-                                <!-- Middle Content Body -->
-                                <div class="z-10 space-y-3 max-w-xl">
-                                    <h3 class="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-white drop-shadow-sm">
-                                        {game.title}
-                                    </h3>
-                                    <p class="text-xs sm:text-sm md:text-base text-white/90 leading-relaxed font-medium">
-                                        {game.description}
-                                    </p>
-                                </div>
-
-                                <!-- Bottom Feature Tags -->
-                                <div class="flex flex-wrap gap-2.5 z-10 pt-4 border-t border-white/15">
-                                    {#each game.features as feat}
-                                        <span class="text-xs font-semibold bg-white/15 backdrop-blur-md px-3 py-1 rounded-xl text-white border border-white/10">
-                                            ✓ {feat}
-                                        </span>
-                                    {/each}
-                                </div>
-
+        <!-- LEFT COLUMN: Game Image Box with Sliding Bar Under Image -->
+        <div class="flex flex-col gap-4 w-full h-full justify-between">
+            <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+            <div 
+                class="relative w-full flex-1 min-h-95 lg:min-h-105 rounded-3xl overflow-hidden shadow-xl flex flex-col justify-between p-6 cursor-grab active:cursor-grabbing group"
+                ontouchstart={handleTouchStart}
+                ontouchmove={handleTouchMove}
+                ontouchend={handleTouchEnd}
+                onmousedown={handleMouseDown}
+                onmousemove={handleMouseMove}
+                onmouseup={handleMouseUp}
+                onmouseleave={handleMouseLeave}
+                role="region"
+                aria-label="VR Games Image Preview"
+            >
+                {#each games as game, idx}
+                    {#if idx === currentIndex}
+                        <img 
+                            src={game.image} 
+                            alt={game.title} 
+                            class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
+                        />
+                        <div class="absolute inset-0 bg-linear-to-t from-slate-950/80 via-slate-950/20 to-transparent pointer-events-none"></div>
+                        
+                        <!-- Overlay Badge on Image Top -->
+                        <div class="relative z-10 flex items-center justify-between w-full">
+                            <span class="px-3.5 py-1.5 rounded-full text-xs font-black bg-black/40 backdrop-blur-md text-white border border-white/20">
+                                &bull; {game.title}
+                            </span>
+                            <div class="size-10 rounded-2xl bg-black/40 backdrop-blur-md flex items-center justify-center border border-white/20">
+                                <span class="material-symbols-rounded text-xl text-white">{game.icon}</span>
                             </div>
-                        {/each}
-                    </div>
+                        </div>
+                    {/if}
+                {/each}
 
-                    
-                </div>
-                
-                <!-- Centered Auto-Slide Progress Line Indicator -->
-                <div class="absolute -bottom-10 left-0 z-20 flex items-center gap-3 bg-black/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/15 shadow-xl">
+                <!-- Sliding Bar under the image -->
+                <div class="relative z-20 flex items-center justify-between pt-3 border-t border-white/20 w-full mt-auto">
+                    <!-- Slide Indicators -->
                     <div class="flex items-center gap-2">
                         {#each games as game, idx}
                             <button
                                 onclick={() => goToSlide(idx)}
-                                class="relative h-2 rounded-full overflow-hidden transition-all duration-300 cursor-pointer bg-black/20 hover:bg-white/35 border border-white/10 {currentIndex === idx ? 'w-12 sm:w-16' : 'w-6 sm:w-8'}"
+                                class="relative h-2 rounded-full overflow-hidden transition-all duration-300 cursor-pointer bg-white/30 hover:bg-white/50 border border-white/20 {currentIndex === idx ? 'w-10 sm:w-12' : 'w-4 sm:w-6'}"
                                 aria-label="Go to slide {idx + 1}: {game.title}"
                                 title="{game.title} ({idx + 1}/{totalGames})"
                             >
                                 <div
-                                    class="absolute top-0 left-0 h-full rounded-full transition-none {currentIndex === idx ? 'bg-primary' : idx < currentIndex ? 'bg-white/60' : 'bg-transparent'}"
+                                    class="absolute top-0 left-0 h-full rounded-full transition-none {currentIndex === idx ? 'bg-primary' : idx < currentIndex ? 'bg-white/70' : 'bg-transparent'}"
                                     style="width: {currentIndex === idx ? `${(progress * 100).toFixed(1)}%` : idx < currentIndex ? '100%' : '0%'};"
                                 ></div>
                             </button>
                         {/each}
                     </div>
-                    <span class="text-xs font-mono font-semibold text-black/90 pl-1 border-l border-white/20 select-none min-w-[3.2rem] text-right">
-                        {(progress * 5).toFixed(1)}s
-                    </span>
+
+                    <!-- Navigation Buttons -->
+                    <div class="flex items-center gap-2">
+                        <button
+                            onclick={prevSlide}
+                            class="size-9 rounded-full bg-black/40 hover:bg-white/30 text-white backdrop-blur-md border border-white/20 flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
+                            aria-label="Previous Game"
+                            title="Previous Game"
+                        >
+                            <span class="material-symbols-rounded text-xl">chevron_left</span>
+                        </button>
+                        <button
+                            onclick={nextSlide}
+                            class="size-9 rounded-full bg-black/40 hover:bg-white/30 text-white backdrop-blur-md border border-white/20 flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
+                            aria-label="Next Game"
+                            title="Next Game"
+                        >
+                            <span class="material-symbols-rounded text-xl">chevron_right</span>
+                        </button>
+                    </div>
                 </div>
+            </div>
+        </div>
 
-                <!-- Right Navigation Arrow -->
-                <button
-                    onclick={nextSlide}
-                    class="absolute -right-3 sm:-right-5 top-1/2 -translate-y-1/2 z-30 size-9 sm:size-11 rounded-full bg-white/90 hover:bg-white text-text shadow-lg border border-black/5 backdrop-blur-xl flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 cursor-pointer"
-                    aria-label="Next Game"
-                    title="Next Game"
-                >
-                    <span class="material-symbols-rounded text-lg sm:text-2xl text-text/80">chevron_right</span>
-                </button>
+        <!-- RIGHT COLUMN: Stacked Cards (Top: MiniGames Desc, Bottom: Current game content) -->
+        <div class="flex flex-col gap-6 w-full justify-between">
+            
+            <!-- TOP RIGHT CARD: MiniGames Header & Description -->
+            <div class="flex flex-col justify-center space-y-3 p-6 sm:p-8 ">
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-text tracking-tight leading-tight">
+                    VR Gaming <span class="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">Experiences</span>
+                </h2>
+                <p class="text-xs sm:text-sm text-text/75 leading-relaxed font-medium">
+                    Magnetize exhibition crowds with a complete, multi-user VR esports zone. Visitors step into rhythm, shooting, tennis, boxing, and archery challenges.
+                </p>
+            </div>
 
+            <!-- BOTTOM RIGHT CARD: Current game content (Clean gradient background, no image overlay) -->
+            <div 
+                class="relative flex-1 w-full p-6 sm:p-8 flex flex-col justify-between text-black min-h-75"
+                role="region"
+                aria-label="Current game content"
+            >
+                {#each games as game, idx}
+                    {#if idx === currentIndex}
+                        <div class="absolute inset-0"></div>
+
+                        <!-- Card Header -->
+                        <div class="relative z-10 flex items-center justify-between">
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <span class="text-xs font-extrabold uppercase tracking-widest py-1 rounded-full border border-white/15">
+                                    {game.subtitle}
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Card Body -->
+                        <div class="relative z-10 space-y-3 my-4">
+                            <h3 class="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight drop-shadow-sm">
+                                {game.title}
+                            </h3>
+                            <p class="text-xs sm:text-sm leading-relaxed font-medium">
+                                {game.description}
+                            </p>
+                        </div>
+
+                        <!-- Card Features -->
+                        <div class="relative z-10 flex flex-wrap gap-2 pt-3 border-t border-black/15">
+                            {#each game.features as feat}
+                                <span class="text-xs font-semibold bg-black/15 backdrop-blur-md px-3 py-1 rounded-xl border border-black/10">
+                                    ✓ {feat}
+                                </span>
+                            {/each}
+                        </div>
+                    {/if}
+                {/each}
             </div>
 
         </div>
@@ -343,3 +345,7 @@
     </div>
 
 </div>
+
+
+
+

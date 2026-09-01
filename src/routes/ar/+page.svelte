@@ -23,9 +23,9 @@
     let reticleMesh: THREE.Mesh | null = null;
 
     // Derived or URL parameters
-    let displayName = $derived(page.url.searchParams.get("name") || brand.name || "Ekson");
-    let displayColor = $derived(page.url.searchParams.get("color") || brand.primaryColor || "#009dd6");
-    let displayDark = $derived(page.url.searchParams.get("dark") || brand.darkColor || "#04547c");
+    let displayName = $derived(page.url.searchParams.get("name") || brand.name || "Kubix");
+    let displayColor = $derived(page.url.searchParams.get("color") || brand.primaryColor);
+    let displayDark = $derived(page.url.searchParams.get("dark") || brand.darkColor);
 
     // Selected Merch Model
     const urlModel = page.url.searchParams.get("m") || page.url.searchParams.get("model") || "mug";
