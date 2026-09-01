@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { onMount } from "svelte";
     import { brand } from "$lib/brand.svelte";
 
     interface VRGameCard {
@@ -81,8 +82,18 @@
     let isDragging = $state(false);
     let startX = $state(0);
     let dragOffset = $state(0);
+    let progress = $state(0);
 
+    const DURATION = 5000;
     const totalGames = games.length;
+
+    let animFrameId: number | null = null;
+    let startTime = 0;
+
+    function resetTimer() {
+        startTime = performance.now();
+        progress = 0;
+    }
 
     function nextSlide() {
         if (currentIndex < totalGames - 1) {
@@ -90,6 +101,7 @@
         } else {
             currentIndex = 0;
         }
+        resetTimer();
     }
 
     function prevSlide() {
@@ -98,11 +110,41 @@
         } else {
             currentIndex = totalGames - 1;
         }
+        resetTimer();
     }
 
     function goToSlide(idx: number) {
         currentIndex = idx;
+        resetTimer();
     }
+
+    onMount(() => {
+        startTime = performance.now();
+
+        function tick(now: number) {
+            if (!isDragging) {
+                const elapsed = now - startTime;
+                progress = Math.min(elapsed / DURATION, 1);
+
+                if (elapsed >= DURATION) {
+                    currentIndex = (currentIndex + 1) % totalGames;
+                    startTime = now;
+                    progress = 0;
+                }
+            } else {
+                startTime = now - (progress * DURATION);
+            }
+            animFrameId = requestAnimationFrame(tick);
+        }
+
+        animFrameId = requestAnimationFrame(tick);
+
+        return () => {
+            if (animFrameId !== null) {
+                cancelAnimationFrame(animFrameId);
+            }
+        };
+    });
 
     // Drag Handlers
     function handleTouchStart(e: TouchEvent) {
@@ -121,6 +163,7 @@
         isDragging = false;
         if (dragOffset < -50) nextSlide();
         else if (dragOffset > 50) prevSlide();
+        else resetTimer();
         dragOffset = 0;
     }
 
@@ -140,6 +183,7 @@
         isDragging = false;
         if (dragOffset < -50) nextSlide();
         else if (dragOffset > 50) prevSlide();
+        else resetTimer();
         dragOffset = 0;
     }
 
@@ -147,6 +191,7 @@
         if (isDragging) {
             isDragging = false;
             dragOffset = 0;
+            resetTimer();
         }
     }
 
@@ -161,13 +206,13 @@
 <div class="w-full min-h-dvh max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-4 sm:py-8 flex flex-col justify-between overflow-visible md:overflow-hidden">
     
     <!-- MAIN STAGE: LEFT = TITLE & DESC (3 Cols) | RIGHT = EXPANDED FLAT 2D CARD SLIDER (9 Cols) -->
-    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8 items-center my-auto w-full flex-1">
+    <div class="flex items-center my-auto w-full flex-1">
         
         <!-- LEFT COLUMN: Compact Title & Subtitle Only (col-span-3 out of 12) -->
-        <div class="md:col-span-3 flex flex-col justify-center space-y-3">
+        <div class="md:col-span-3 flex flex-col justify-center space-y-3 absolute z-100 w-1/2 bg-white/70 px-5 py-7 rounded-3xl shadow-lg backdrop-blur-xl bottom-29 left-1/2">
 
             <h2 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-text tracking-tight leading-tight">
-                VR Gaming <span class="text-transparent bg-clip-text bg-linear-to-r from-primary via-sky-500 to-indigo-600">Experiences</span>
+                VR Gaming <span class="text-transparent bg-clip-text bg-linear-to-r from-primary to-sky-800">Experiences</span>
             </h2>
             
             <p class="text-xs sm:text-sm text-text/75 leading-relaxed font-medium">
@@ -175,11 +220,10 @@
             </p>
         </div>
 
-        <!-- RIGHT COLUMN: EXPANDED FLAT 2D CARD SLIDER (col-span-9 out of 12) -->
-        <div class="md:col-span-9 relative flex items-center justify-center w-full">
+        <div class="relative flex items-center justify-center w-full h-full py-30">
             
             <!-- Slider Wrapper with Side Arrow Controls -->
-            <div class="relative w-full flex items-center justify-center">
+            <div class="relative w-full h-full flex items-center justify-center">
                 
                 <!-- Left Navigation Arrow -->
                 <button
@@ -194,7 +238,7 @@
                 <!-- TALLER & LARGER FLAT 2D CARD VIEWPORT -->
                 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
                 <div
-                    class="relative w-full h-[420px] sm:h-[480px] md:h-[530px] rounded-3xl overflow-hidden shadow-xl border border-white/10 bg-slate-950 cursor-grab active:cursor-grabbing"
+                    class="relative w-full h-full rounded-3xl overflow-hidden shadow-xl border border-white/10 bg-slate-950 cursor-grab active:cursor-grabbing"
                     ontouchstart={handleTouchStart}
                     ontouchmove={handleTouchMove}
                     ontouchend={handleTouchEnd}
@@ -211,12 +255,12 @@
                         style="transform: translateX(calc(-{currentIndex * 100}% + {dragOffset}px)); transition: {isDragging ? 'none' : 'transform 0.45s cubic-bezier(0.2, 0.9, 0.3, 1)'};"
                     >
                         {#each games as game (game.id)}
-                            <div class="w-full h-full shrink-0 relative p-6 sm:p-10 flex flex-col justify-between text-white overflow-hidden bg-gradient-to-br {game.bgGradient}">
+                            <div class="w-full h-full shrink-0 relative p-6 sm:p-10 flex flex-col justify-start gap-10 text-white overflow-hidden bg-linear-to-br {game.bgGradient}">
                                 
                                 <!-- Background Preview Image with Overlay Scrim -->
                                 {#if game.image}
                                     <img src={game.image} alt={game.title} class="absolute inset-0 w-full h-full object-cover opacity-50 pointer-events-none" />
-                                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-black/30 pointer-events-none"></div>
+                                    <div class="absolute inset-0 bg-linear-to-t from-slate-950/50 via-slate-950/20 to-black/0 pointer-events-none"></div>
                                 {/if}
 
                                 <!-- Top Card Header: Code Badge & Icon -->
@@ -235,7 +279,7 @@
                                 </div>
 
                                 <!-- Middle Content Body -->
-                                <div class="my-auto z-10 space-y-3 max-w-xl">
+                                <div class="z-10 space-y-3 max-w-xl">
                                     <h3 class="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-white drop-shadow-sm">
                                         {game.title}
                                     </h3>
@@ -257,18 +301,29 @@
                         {/each}
                     </div>
 
-                    <!-- BOTTOM SLIDER DASH INDICATORS (_ _ _ _ _) -->
-                    <div class="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 bg-black/50 backdrop-blur-md px-4 py-2 rounded-full border border-white/15">
+                    
+                </div>
+                
+                <!-- Centered Auto-Slide Progress Line Indicator -->
+                <div class="absolute -bottom-10 left-0 z-20 flex items-center gap-3 bg-black/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/15 shadow-xl">
+                    <div class="flex items-center gap-2">
                         {#each games as game, idx}
                             <button
                                 onclick={() => goToSlide(idx)}
-                                class="h-1.5 rounded-full transition-all duration-300 cursor-pointer {currentIndex === idx ? 'w-10 bg-primary shadow-sm' : 'w-4 bg-white/40 hover:bg-white/70'}"
-                                aria-label="Go to slide {idx + 1}"
-                                title={game.title}
-                            ></button>
+                                class="relative h-2 rounded-full overflow-hidden transition-all duration-300 cursor-pointer bg-black/20 hover:bg-white/35 border border-white/10 {currentIndex === idx ? 'w-12 sm:w-16' : 'w-6 sm:w-8'}"
+                                aria-label="Go to slide {idx + 1}: {game.title}"
+                                title="{game.title} ({idx + 1}/{totalGames})"
+                            >
+                                <div
+                                    class="absolute top-0 left-0 h-full rounded-full transition-none {currentIndex === idx ? 'bg-primary' : idx < currentIndex ? 'bg-white/60' : 'bg-transparent'}"
+                                    style="width: {currentIndex === idx ? `${(progress * 100).toFixed(1)}%` : idx < currentIndex ? '100%' : '0%'};"
+                                ></div>
+                            </button>
                         {/each}
                     </div>
-
+                    <span class="text-xs font-mono font-semibold text-black/90 pl-1 border-l border-white/20 select-none min-w-[3.2rem] text-right">
+                        {(progress * 5).toFixed(1)}s
+                    </span>
                 </div>
 
                 <!-- Right Navigation Arrow -->
