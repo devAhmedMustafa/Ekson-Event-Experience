@@ -845,7 +845,7 @@
     });
 </script>
 
-<div class="w-full flex flex-col">
+<div class="w-full flex flex-col pt-22">
     <div class="w-full min-h-dvh md:h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-4 sm:py-6 flex flex-col justify-between overflow-visible md:overflow-hidden">
         
         <!-- Top Full-Width Header Card (Title & Desc Box) -->
@@ -928,7 +928,7 @@
                                 class="group/btn relative px-5 py-2 text-white font-semibold text-xs tracking-wide rounded-full shadow-xl transition-all duration-200 transform hover:scale-105 active:scale-95 flex items-center gap-1.5 cursor-pointer border border-white/20 bg-primary"
                             >
                                 <span class="material-symbols-rounded text-base">directions_walk</span>
-                                <span>Enter 3D Walkthrough</span>
+                                <span>Enter</span>
                                 <span class="material-symbols-rounded text-sm opacity-70 group-hover/btn:translate-x-1 transition-transform">arrow_forward</span>
                             </button>
                         </div>

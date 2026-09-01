@@ -12,6 +12,7 @@
     import GlobalCoverage from "$lib/ui/GlobalCoverage.svelte";
     import InvestmentPlans from "$lib/components/InvestmentPlans.svelte";
     import Footer from "$lib/ui/Footer.svelte";
+    import RealTimeWalking from "$lib/ui/RealTimeWalking.svelte";
 </script>
 
 <svelte:head>
@@ -33,17 +34,22 @@
     <InteractionApplications />
 </section>
 
-<section id="active-floor" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-x-hidden md:overflow-hidden py-4 sm:py-6">
+<section id="active-floor" class="relative w-full flex flex-col justify-center items-center overflow-x-hidden md:overflow-hidden py-4 sm:py-6">
     <ActiveFloor />
+</section>
+
+<section id="vr-games" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-x-hidden md:overflow-hidden py-4 sm:py-6">
+    <VRGames />
+</section>
+
+<section id="real-time-walking" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-x-hidden md:overflow-hidden py-4 sm:py-6">
+    <RealTimeWalking />
 </section>
 
 <section id="minigames" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-x-hidden md:overflow-hidden py-4 sm:py-6">
     <MiniGames />
 </section>
 
-<section id="vr-games" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-x-hidden md:overflow-hidden py-4 sm:py-6">
-    <VRGames />
-</section>
 
 <section id="ai-assistant" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-x-hidden md:overflow-hidden py-4 sm:py-6">
     <AiAssitant />
@@ -51,10 +57,6 @@
 
 <section id="ar-apps" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-x-hidden md:overflow-hidden py-3 sm:py-6">
     <ARApps />
-</section>
-
-<section id="global-network" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-x-hidden md:overflow-hidden py-4 sm:py-6">
-    <GlobalCoverage />
 </section>
 
 <section id="plans" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-x-hidden md:overflow-hidden py-4 sm:py-6">

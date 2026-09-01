@@ -259,7 +259,7 @@
                 <span class="material-symbols-rounded text-base text-text/70 mr-1 shrink-0">explore</span>
                 <select
                     onchange={(e) => jumpDirection(Number((e.target as HTMLSelectElement).value))}
-                    class="bg-transparent text-xs font-semibold text-text focus:outline-none cursor-pointer pr-1"
+                    class="bg-transparent text-xs w-30 font-semibold text-text focus:outline-none cursor-pointer pr-1"
                     aria-label="Jump Compass Direction"
                 >
                     <option value="0">North</option>
