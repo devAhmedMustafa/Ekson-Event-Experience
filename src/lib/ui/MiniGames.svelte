@@ -245,7 +245,7 @@
                         >
                             {#each slides as slide (slide.id)}
                                 <div class="w-full h-full shrink-0 relative flex flex-col justify-between overflow-hidden">
-                                    {#if !liveGames[slide.id]}
+                                    {#if !brand.isCustom && !liveGames[slide.id]}
                                         <!-- PREVIEW CARD INSIDE THE KIOSK DISPLAY -->
                                         {#if slide.imageSrc}
                                             <img src={slide.imageSrc} alt={slide.title} class="absolute inset-0 w-full h-full object-cover" />
@@ -289,15 +289,17 @@
                                                 <ProductQuiz />
                                             {/if}
 
-                                            <!-- Exit Live Button INSIDE KIOSK -->
-                                            <button
-                                                onclick={() => toggleLive(slide.id, false)}
-                                                class="absolute top-3 right-3 z-40 size-7.5 rounded-full bg-red-500 hover:bg-red-600 text-white flex items-center justify-center transition cursor-pointer shadow-md"
-                                                title="Exit Live Game"
-                                                aria-label="Exit Live Game"
-                                            >
-                                                <span class="material-symbols-rounded text-base">close</span>
-                                            </button>
+                                            {#if !brand.isCustom}
+                                                <!-- Exit Live Button INSIDE KIOSK -->
+                                                <button
+                                                    onclick={() => toggleLive(slide.id, false)}
+                                                    class="absolute top-3 right-3 z-40 size-7.5 rounded-full bg-red-500 hover:bg-red-600 text-white flex items-center justify-center transition cursor-pointer shadow-md"
+                                                    title="Exit Live Game"
+                                                    aria-label="Exit Live Game"
+                                                >
+                                                    <span class="material-symbols-rounded text-base">close</span>
+                                                </button>
+                                            {/if}
                                         </div>
                                     {/if}
                                 </div>
@@ -305,20 +307,35 @@
                         </div>
                     </div>
 
-                    <!-- SOLID METALLIC PEDESTAL BASE (LOWER BODY - NO VISUAL SCREEN LIKE A REAL KIOSK TOTEM) -->
-                    <div class="w-full shrink-0 pt-3 pb-2 px-3 mt-2.5 rounded-2xl bg-linear-to-b from-slate-800 via-slate-850 to-slate-900 border border-slate-750/80 shadow-md flex flex-col justify-between relative overflow-hidden">
+                    <!-- SOLID METALLIC PEDESTAL BASE (LOWER BODY OF KIOSK DEVICE) -->
+                    <div class="w-full shrink-0 p-2 sm:p-2.5 mt-2.5 rounded-2xl bg-linear-to-b from-slate-800 via-slate-850 to-slate-900 border border-slate-750/80 shadow-md flex flex-col gap-2 relative overflow-hidden">
                         <!-- Brushed Metal Glow Accent -->
                         <div class="absolute inset-0 bg-linear-to-r from-transparent via-white/5 to-transparent pointer-events-none"></div>
 
                         <!-- Top NFC Scanner & Speaker Grille -->
-                        <div class="flex items-center justify-between w-full mb-1.5 relative z-10">
+                        <div class="flex items-center justify-between w-full px-1 relative z-10">
                             <!-- Speaker Grille Slots -->
                             <div class="flex gap-1 opacity-40">
-                                <div class="w-0.5 h-2.5 bg-slate-400 rounded-full"></div>
-                                <div class="w-0.5 h-2.5 bg-slate-400 rounded-full"></div>
-                                <div class="w-0.5 h-2.5 bg-slate-400 rounded-full"></div>
-                                <div class="w-0.5 h-2.5 bg-slate-400 rounded-full"></div>
+                                <div class="w-0.5 h-2 bg-slate-400 rounded-full"></div>
+                                <div class="w-0.5 h-2 bg-slate-400 rounded-full"></div>
+                                <div class="w-0.5 h-2 bg-slate-400 rounded-full"></div>
+                                <div class="w-0.5 h-2 bg-slate-400 rounded-full"></div>
                             </div>
+                        </div>
+
+                        <!-- Game Selector Bar INSIDE Device Pedestal Body -->
+                        <div class="columns-2 gap-2 bg-slate-950/80 p-1 rounded-xl border border-white/10 w-full relative z-10">
+                            {#each slides as slide, idx}
+                                <button
+                                    onclick={() => goToSlide(idx)}
+                                    class="w-full flex items-center justify-center gap-1 sm:gap-1.5 px-2 py-1.5 text-center rounded-lg transition-all duration-200 cursor-pointer text-[11px] font-semibold {currentIndex === idx ? 'bg-primary text-white shadow-xs' : 'text-white/60 hover:text-white hover:bg-white/5'}"
+                                >
+                                    <span class="material-symbols-rounded text-sm sm:text-base shrink-0">
+                                        {slide.icon}
+                                    </span>
+                                    <span class="hidden sm:inline truncate">{slide.title}</span>
+                                </button>
+                            {/each}
                         </div>
                     </div>
 
@@ -333,21 +350,6 @@
                 >
                     <span class="material-symbols-rounded text-lg sm:text-2xl text-text/80">chevron_right</span>
                 </button>
-            </div>
-
-            <!-- Floating Glass Pill Tabs Bar Below Kiosk -->
-            <div class="flex items-center justify- bg-white/80 backdrop-blur-xl p-1.5 rounded-full border border-black/5 shadow-md w-full max-w-xl mx-auto mt-4 shrink-0">
-                {#each slides as slide, idx}
-                    <button
-                        onclick={() => goToSlide(idx)}
-                        class="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-center rounded-full transition-all duration-200 cursor-pointer text-xs font-semibold {currentIndex === idx ? 'bg-primary text-white shadow-xs' : 'text-text/70 hover:text-text hover:bg-black/5'}"
-                    >
-                        <span class="material-symbols-rounded text-base shrink-0">
-                            {slide.icon}
-                        </span>
-                        <span class="hidden sm:inline truncate">{slide.title}</span>
-                    </button>
-                {/each}
             </div>
         </div>
 
