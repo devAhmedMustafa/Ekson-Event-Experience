@@ -396,7 +396,7 @@
     }}
 ></audio>
 
-<div class="relative w-full h-full min-h-[100dvh] md:h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-4 sm:py-8 flex flex-col justify-between overflow-visible md:overflow-hidden">
+<div class="relative w-full h-full max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-4 sm:py-8 flex flex-col overflow-visible md:overflow-hidden">
     <!-- Top Header -->
     <div class="flex items-end justify-between pb-3 border-b border-black/5 shrink-0 w-full mb-3">
         <div>
@@ -423,12 +423,12 @@
 
     {#if !isLive}
         <!-- Stage Card & Launch Action -->
-        <div class="flex-1 w-full my-auto py-4 flex items-center justify-center">
+        <div class="flex-1 w-full py-4">
             <div class="relative w-full h-[52vh] sm:h-[58vh] md:h-[62vh] max-h-145 rounded-3xl border border-black/5 shadow-sm overflow-hidden bg-slate-900 text-white group/ai-card">
                 {#if imageSrc}
                     <img src={imageSrc} alt="{brand.name} AI Voice Assistant" class="w-full h-full object-cover" />
                 {:else}
-                    <div class="w-full h-full flex flex-col items-center justify-center p-6 text-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+                    <div class="w-full h-full flex flex-col items-center justify-center p-6 text-center bg-linear-to-br from-slate-900 via-slate-800 to-slate-900">
                         <div class="size-24 rounded-3xl bg-white/10 backdrop-blur-md flex items-center justify-center mb-5 border border-white/10 shadow-2xl">
                             <span class="material-symbols-rounded text-5xl text-primary">
                                 smart_toy
@@ -455,7 +455,7 @@
         </div>
     {:else}
         <!-- Center Interactive Voice Visualizer Stage -->
-        <div class="flex-1 flex flex-col items-center justify-center my-auto py-3 sm:py-6 gap-3 sm:gap-5">
+        <div class="flex-1 flex flex-col items-center justify-center py-3 sm:py-6 gap-12 sm:gap-5 mt-20">
             <!-- Dynamic Pulsing Voice Orb -->
             <div class="relative flex items-center justify-center">
                 <!-- Ripple Rings -->
@@ -560,58 +560,6 @@
                         <span class="hidden sm:inline">{isMuted ? "Muted" : "Mute"}</span>
                     </button>
                 </div>
-            </div>
-        </div>
-
-        <!-- Bottom Input & Microphone Section (Centered) -->
-        <div class="w-full max-w-2xl mx-auto flex flex-col items-center gap-2 shrink-0">
-            <!-- Quick Prompts Row (Centered) -->
-            <div class="w-full flex items-center justify-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-                {#each quickPrompts as prompt}
-                    <button
-                        onclick={() => sendTextMessage(prompt)}
-                        disabled={isGenerating || isRecording}
-                        class="px-3 py-1 bg-white hover:bg-primary/10 hover:text-primary text-text/70 text-[9px] sm:text-[10px] font-mono whitespace-nowrap rounded-full transition cursor-pointer border border-black/5 shadow-xs disabled:opacity-50 shrink-0"
-                    >
-                        {prompt}
-                    </button>
-                {/each}
-            </div>
-
-            <!-- Clean Input & Mic Control Bar -->
-            <div class="w-full relative flex items-center bg-white border border-black/10 rounded-2xl shadow-md p-1.5 sm:p-2 transition-focus-within focus-within:border-primary gap-1.5">
-                <!-- Dedicated Microphone Button -->
-                <button
-                    onclick={toggleRecording}
-                    disabled={isGenerating}
-                    class="size-8 sm:size-9 rounded-full flex items-center justify-center transition cursor-pointer shrink-0 {isRecording ? 'bg-rose-600 text-white animate-pulse shadow-sm' : 'bg-black/5 hover:bg-primary hover:text-white text-text/70'}"
-                    title={isRecording ? "Stop Recording & Send" : "Click to Speak via Microphone"}
-                    aria-label="Microphone Voice Input"
-                >
-                    <span class="material-symbols-rounded text-[18px] sm:text-[20px]">
-                        {isRecording ? "stop" : "mic"}
-                    </span>
-                </button>
-
-                <!-- Text Input Field -->
-                <input
-                    type="text"
-                    bind:value={inputMessage}
-                    onkeydown={handleKeydown}
-                    disabled={isGenerating || isRecording}
-                    placeholder={isRecording ? "Listening..." : `Ask the ${brand.name} voice assistant...`}
-                    class="flex-1 min-w-0 px-2 py-1.5 sm:py-2 text-xs sm:text-sm font-sans text-text placeholder:text-text/40 bg-transparent focus:outline-none"
-                />
-
-                <!-- Send Text Button -->
-                <button
-                    onclick={() => sendTextMessage()}
-                    disabled={!inputMessage.trim() || isGenerating || isRecording}
-                    class="px-3.5 sm:px-5 py-1.5 sm:py-2 bg-primary hover:bg-primary/90 text-white font-mono text-[10px] sm:text-xs font-bold uppercase tracking-wider rounded-xl transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1 cursor-pointer shrink-0"
-                >
-                    <span>{isGenerating ? "..." : "Ask"}</span>
-                    <span class="material-symbols-rounded text-[12px] sm:text-[14px]">send</span>
-                </button>
             </div>
         </div>
     {/if}
