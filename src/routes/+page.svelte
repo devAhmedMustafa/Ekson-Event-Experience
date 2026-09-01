@@ -55,7 +55,7 @@
     <AiAssitant />
 </section>
 
-<section id="ar-apps" class="relative w-full min-h-dvh md:h-screen flex flex-col justify-center items-center overflow-x-hidden md:overflow-hidden py-3 sm:py-6">
+<section id="ar-apps" class="relative w-full min-h-dvh lg:h-screen flex flex-col justify-center items-center overflow-x-hidden lg:overflow-hidden py-3 sm:py-6">
     <ARApps />
 </section>
 
