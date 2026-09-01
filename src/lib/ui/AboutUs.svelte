@@ -11,25 +11,25 @@
             id: "ai",
             title: "Neural AI Voice",
             badge: "AI Concierge",
-            image: "/images/solutions/ai.svg"
+            image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbZRVaY-eW6LctUwnZT5LBtlmUcm6gqHvBgcTaWK1-Ow&s=10"
         },
         {
             id: "vr",
             title: "Virtual Reality",
             badge: "Metaverse Booth",
-            image: "/images/solutions/vr.svg"
+            image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZe_1PDyf1hDVbqstO2dxymO8GGAEQXhipgkEAdTp5-Q&s=10"
         },
         {
             id: "3d",
             title: "Interactive 3D",
             badge: "WebGL Engine",
-            image: "/images/solutions/3d.svg"
+            image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQZUS9ZTkLlAb0hpgJmPohycYthzHf0JVaMB_XrG-2qA&s=10"
         },
         {
             id: "engagement",
             title: "Visitor Engagement",
             badge: "Lead Analytics",
-            image: "/images/solutions/engagement.svg"
+            image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBNYFmD8Wr1AbT_ZcgnsAywxZkRwtPEbMsOC1aG4zbZQ&s=10"
         }
     ];
 
@@ -75,26 +75,26 @@
                 <!-- Column 1 (Left Offset Downwards or Standard Stack) -->
                 <div class="flex flex-col gap-4 sm:gap-5">
                     <!-- Top Left Card (AI) -->
-                    <div class="relative group bg-white/80 backdrop-blur-xl border border-black/10 shadow-md rounded-3xl p-4 overflow-hidden h-44 sm:h-52 flex flex-col justify-between transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-                            <img src={cards[0].image} alt={cards[0].title} class="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-110" />
+                    <div class="relative group rounded-3xl overflow-hidden h-44 sm:h-52 flex flex-col justify-between transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                            <img src={cards[0].image} alt={cards[0].title} class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110" />
                     </div>
 
                     <!-- Bottom Left Card (3D) -->
-                    <div class="relative group bg-white/80 backdrop-blur-xl border border-black/10 shadow-md rounded-3xl p-4 overflow-hidden h-44 sm:h-52 flex flex-col justify-between transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-                            <img src={cards[2].image} alt={cards[2].title} class="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-110" />
+                    <div class="relative group rounded-3xl overflow-hidden h-44 sm:h-52 flex flex-col justify-between transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                            <img src={cards[2].image} alt={cards[2].title} class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110" />
                     </div>
                 </div>
 
                 <!-- Column 2 (Right Stack) -->
                 <div class="flex flex-col gap-4 sm:gap-5 mt-4 sm:mt-6">
                     <!-- Top Right Card (VR) -->
-                    <div class="relative group bg-white/80 backdrop-blur-xl border border-black/10 shadow-md rounded-3xl p-4 overflow-hidden h-44 sm:h-52 flex flex-col justify-between transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-                            <img src={cards[1].image} alt={cards[1].title} class="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-110" />
+                    <div class="relative group rounded-3xl overflow-hidden h-44 sm:h-52 flex flex-col justify-between transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                            <img src={cards[1].image} alt={cards[1].title} class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110" />
                     </div>
 
                     <!-- Bottom Right Card (Engagement) -->
-                    <div class="relative group bg-white/80 backdrop-blur-xl border border-black/10 shadow-md rounded-3xl p-4 overflow-hidden h-44 sm:h-52 flex flex-col justify-between transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-                            <img src={cards[3].image} alt={cards[3].title} class="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-110" />
+                    <div class="relative group rounded-3xl overflow-hidden h-44 sm:h-52 flex flex-col justify-between transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                            <img src={cards[3].image} alt={cards[3].title} class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110" />
                     </div>
                 </div>
 
