@@ -25,44 +25,43 @@
     <Landing />
 </section>
 
-<section id="about" class="relative w-full min-h-dvh flex flex-col justify-center items-center overflow-x-hidden py-12 sm:py-16 md:py-20">
+<section id="about" class="relative w-full flex flex-col justify-center items-center overflow-x-hidden py-12 sm:py-16 md:py-20">
     <AboutUs />
 </section>
 
-<!-- NO overflow-hidden on interactive section so position:sticky works for Tour360 & TrueScaleDemo, but overflow-x-hidden prevents horizontal scrollbars -->
-<section id="interactive" class="relative w-full min-h-dvh flex flex-col justify-center items-center overflow-x-hidden py-12 sm:py-16 md:py-20">
+<section id="interactive" class="relative w-full flex flex-col justify-center items-center overflow-x-hidden py-12 sm:py-16 md:py-20">
     <InteractionApplications />
 </section>
 
-<section id="active-floor" class="relative w-full min-h-dvh flex flex-col justify-center items-center overflow-x-hidden py-12 sm:py-16 md:py-20">
+<section id="active-floor" class="relative w-full flex flex-col justify-center items-center overflow-x-hidden py-12 sm:py-16 md:py-20">
     <ActiveFloor />
 </section>
 
-<section id="vr-games" class="relative w-full min-h-dvh flex flex-col justify-center items-center overflow-x-hidden py-12 sm:py-16 md:py-20">
+<section id="vr-games" class="relative w-full flex flex-col justify-center items-center overflow-x-hidden py-12 sm:py-16 md:py-20">
     <VRGames />
 </section>
 
-<section id="real-time-walking" class="relative w-full min-h-dvh flex flex-col justify-center items-center overflow-x-hidden py-12 sm:py-16 md:py-20">
+<section id="real-time-walking" class="relative w-full flex flex-col justify-center items-center overflow-x-hidden py-12 sm:py-16 md:py-20">
     <RealTimeWalking />
 </section>
 
-<section id="minigames" class="relative w-full min-h-dvh flex flex-col justify-center items-center overflow-x-hidden py-12 sm:py-16 md:py-20">
+<section id="minigames" class="relative w-full flex flex-col justify-center items-center overflow-x-hidden py-12 sm:py-16 md:py-20">
     <MiniGames />
 </section>
 
-<section id="ai-assistant" class="relative w-full min-h-dvh flex flex-col justify-center items-center overflow-x-hidden py-12 sm:py-16 md:py-20">
+<section id="ai-assistant" class="relative w-full flex flex-col justify-center items-center overflow-x-hidden py-12 sm:py-16 md:py-20">
     <AiAssitant />
 </section>
 
-<section id="ar-apps" class="relative w-full min-h-dvh flex flex-col justify-center items-center overflow-x-hidden py-12 sm:py-16 md:py-20">
+<section id="ar-apps" class="relative w-full flex flex-col justify-center items-center overflow-x-hidden py-12 sm:py-16 md:py-20">
     <ARApps />
 </section>
 
-<section id="plans" class="relative w-full min-h-dvh flex flex-col justify-center items-center overflow-x-hidden py-12 sm:py-16 md:py-20">
+<section id="plans" class="relative w-full flex flex-col justify-center items-center overflow-x-hidden py-12 sm:py-16 md:py-20">
     <InvestmentPlans />
 </section>
 
-<section id="contact" class="relative w-full min-h-dvh flex flex-col justify-center items-center overflow-x-hidden py-12 sm:py-16 md:py-20">
+<section id="contact" class="relative w-full flex flex-col justify-center items-center overflow-x-hidden py-12 sm:py-16 md:py-20">
     <ContactUs />
 </section>
 
