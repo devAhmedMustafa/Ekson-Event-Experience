@@ -65,7 +65,7 @@
             });
         }, observerOptions);
 
-        const allIds = ["landing", "plans", "contact", ...featureItems.map(item => item.id)];
+        const allIds = ["landing", "plans", "addons", "contact", ...featureItems.map(item => item.id)];
         allIds.forEach((id) => {
             const el = document.getElementById(id);
             if (el) observer.observe(el);

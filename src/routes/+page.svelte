@@ -11,6 +11,7 @@
     import AndMore from "$lib/ui/AndMore.svelte";
     import GlobalCoverage from "$lib/ui/GlobalCoverage.svelte";
     import InvestmentPlans from "$lib/components/InvestmentPlans.svelte";
+    import OptionalAddons from "$lib/components/OptionalAddons.svelte";
     import ContactUs from "$lib/ui/ContactUs.svelte";
     import Footer from "$lib/ui/Footer.svelte";
     import RealTimeWalking from "$lib/ui/RealTimeWalking.svelte";
@@ -64,6 +65,10 @@
 
 <section id="plans" class="relative w-full flex flex-col justify-center items-center overflow-x-hidden py-12 sm:py-16 md:py-20">
     <InvestmentPlans />
+</section>
+
+<section id="addons" class="relative w-full flex flex-col justify-center items-center overflow-x-hidden py-12 sm:py-16 md:py-20">
+    <OptionalAddons />
 </section>
 
 <section id="contact" class="relative w-full flex flex-col justify-center items-center overflow-x-hidden py-12 sm:py-16 md:py-20">
