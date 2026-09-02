@@ -15,6 +15,7 @@
         { id: "vr-games", label: "VR Games", icon: "sports_esports", description: "1:1 Virtual Metaverse booths" },
         { id: "ai-assistant", label: "AI Voice", icon: "mic", description: "Neural AI booth concierge" },
         { id: "ar-apps", label: "AR Apps", icon: "qr_code_scanner", description: "WebAR product catalog & 3D" },
+        { id: "and-more", label: "And More...", icon: "auto_awesome", description: "Custom spatial activations" },
     ];
 
     let activeSection = $state("landing");

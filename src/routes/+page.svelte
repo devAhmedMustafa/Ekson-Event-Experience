@@ -8,6 +8,7 @@
     import VRGames from "$lib/ui/VRGames.svelte";
     import AiAssitant from "$lib/components/AiAssitant.svelte";
     import ARApps from "$lib/ui/AR_Apps.svelte";
+    import AndMore from "$lib/ui/AndMore.svelte";
     import GlobalCoverage from "$lib/ui/GlobalCoverage.svelte";
     import InvestmentPlans from "$lib/components/InvestmentPlans.svelte";
     import ContactUs from "$lib/ui/ContactUs.svelte";
@@ -55,6 +56,10 @@
 
 <section id="ar-apps" class="relative w-full flex flex-col justify-center items-center overflow-x-hidden py-12 sm:py-16 md:py-20">
     <ARApps />
+</section>
+
+<section id="and-more" class="relative w-full flex flex-col justify-center items-center overflow-x-hidden py-12 sm:py-16 md:py-20">
+    <AndMore />
 </section>
 
 <section id="plans" class="relative w-full flex flex-col justify-center items-center overflow-x-hidden py-12 sm:py-16 md:py-20">
