@@ -82,7 +82,7 @@
     }
 </script>
 
-<div class="relative w-full h-full max-w-5xl mx-auto px-4 sm:px-6 md:px-8 flex flex-col overflow-visible">
+<div class="relative w-full h-full max-w-6xl mx-auto px-4 sm:px-6 md:px-8 flex flex-col overflow-visible">
     <!-- Header -->
     <div class="flex items-start mb-6 sm:mb-8 pb-3 border-b border-black/5 shrink-0 w-full flex-col">
         <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-text tracking-tight leading-tight">

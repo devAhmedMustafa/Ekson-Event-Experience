@@ -58,7 +58,6 @@
                 built to help businesses engage, train, and
                 perform better.
 
-
                 We go beyond XR content, combining the latest
                 technologies to create real, measurable value.
             </p>
