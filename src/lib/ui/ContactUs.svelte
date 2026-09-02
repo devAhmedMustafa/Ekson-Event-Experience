@@ -208,7 +208,7 @@
                                         id="contact-phone"
                                         type="tel"
                                         bind:value={contactPhone}
-                                        placeholder="+966 50 000 0000"
+                                        placeholder="+20 11 000 0000"
                                         required
                                         disabled={isContactSubmitting}
                                         class="w-full px-4 py-2.5 text-xs text-text bg-white border border-black/15 rounded-xl focus:outline-none focus:border-primary shadow-xs disabled:opacity-60"

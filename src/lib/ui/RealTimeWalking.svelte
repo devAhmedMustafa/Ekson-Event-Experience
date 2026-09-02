@@ -1130,14 +1130,14 @@
 
                         <!-- Control Pill Bar -->
                         <div class="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between pointer-events-none z-20">
-                            <div class="hidden sm:flex items-center gap-1.5 bg-white/80 backdrop-blur-xl px-3 py-1 rounded-full border border-black/5 shadow-xs pointer-events-auto">
+                            <div class="hidden sm:flex items-center gap-1.5 bg-white/40 backdrop-blur-xl px-3 py-1 rounded-full border border-black/5 shadow-xs pointer-events-auto">
                                 <span class="size-2 rounded-full animate-pulse bg-primary"></span>
                                 <span class="text-[11px] font-bold text-text">{brand.name} Stand</span>
                                 <span class="text-[11px] text-text/40">•</span>
                                 <span class="text-[11px] font-medium text-text/70">{distanceToBooth}m</span>
                             </div>
 
-                            <div class="flex items-center gap-1 bg-white/85 backdrop-blur-xl p-1 rounded-full border border-black/5 shadow-md pointer-events-auto ml-auto">
+                            <div class="flex items-center gap-1 bg-white/40 backdrop-blur-xl p-1 rounded-full border border-black/5 shadow-md pointer-events-auto ml-auto">
                                 <button
                                     onclick={triggerAutoWalk}
                                     class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold transition flex items-center gap-1 cursor-pointer {isAutoWalking ? 'bg-primary text-white' : 'bg-black/5 hover:bg-black/10 text-text/80'}"

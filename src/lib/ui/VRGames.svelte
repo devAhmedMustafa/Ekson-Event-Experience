@@ -346,6 +346,9 @@
                     <div class="grid grid-cols-1 gap-2">
                         {#each vrFeatureTags as feat}
                             <div class="flex items-center gap-3 p-2.5 rounded-2xl bg-white/80 border border-black/10 shadow-2xs hover:border-primary/40 transition-colors group">
+                                <div class="size-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-white transition-colors">
+                                    <span class="material-symbols-rounded text-lg">{feat.icon}</span>
+                                </div>
                                 <div class="flex flex-col min-w-0">
                                     <span class="text-xs font-bold text-text truncate tracking-tight">{feat.title}</span>
                                     <span class="text-[10px] text-text/60 font-medium truncate">{feat.subtitle}</span>

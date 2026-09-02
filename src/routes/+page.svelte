@@ -9,7 +9,6 @@
     import AiAssitant from "$lib/components/AiAssitant.svelte";
     import ARApps from "$lib/ui/AR_Apps.svelte";
     import AndMore from "$lib/ui/AndMore.svelte";
-    import GlobalCoverage from "$lib/ui/GlobalCoverage.svelte";
     import InvestmentPlans from "$lib/components/InvestmentPlans.svelte";
     import OptionalAddons from "$lib/components/OptionalAddons.svelte";
     import ContactUs from "$lib/ui/ContactUs.svelte";

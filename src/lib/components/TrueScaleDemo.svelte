@@ -540,14 +540,14 @@
         <!-- Floating Glass Toolbar Header (Minimized & Auto-adapts to small & large screens) -->
         <div class="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none z-10">
             <!-- Stand Title (Hidden on tiny screens to save space) -->
-            <div class="hidden sm:flex bg-white/80 backdrop-blur-xl px-3.5 py-1.5 rounded-full border border-black/5 shadow-sm pointer-events-auto">
+            <div class="hidden sm:flex bg-white/40 backdrop-blur-xl px-3.5 py-1.5 rounded-full border border-black/5 shadow-sm pointer-events-auto">
                 <span class="text-xs font-bold text-text tracking-tight">
                     {brand.name} Stand
                 </span>
             </div>
 
             <!-- Single Consolidated Floating Control Pill -->
-            <div class="flex items-center gap-1 bg-white/85 backdrop-blur-xl p-1.5 rounded-full border border-black/5 shadow-md pointer-events-auto ml-auto">
+            <div class="flex items-center gap-1 bg-white/40 backdrop-blur-xl p-1.5 rounded-full border border-black/5 shadow-md pointer-events-auto ml-auto">
                 <!-- Camera Preset Select Dropdown -->
                 <div class="relative flex items-center px-2.5 py-1 rounded-full bg-black/5 hover:bg-black/10 transition cursor-pointer">
                     <span class="material-symbols-rounded text-base text-text/70 mr-1 shrink-0">videocam</span>

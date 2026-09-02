@@ -29,49 +29,47 @@
     });
 </script>
 
-<div class="relative w-full h-full max-w-6xl mx-auto px-4 sm:px-6 md:px-8 gap-6 md:gap-8 flex flex-col items-center justify-center">
-    <div class="flex flex-col justify-between items-center h-full overflow-hidden py-4 sm:py-6">
+<div class="w-full h-full max-w-6xl mx-auto px-4 sm:px-6 md:px-8 gap-6 md:gap-8 flex flex-col items-center justify-between">
 
-        <!-- Center Hero Title & Subtitle & Brand CTA -->
-        <div class="relative z-10 flex flex-col items-center justify-center my-auto max-w-5xl">
-            <!-- Main Headline -->
-            <h1
-                class="text-center text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-[1.05] transition-all duration-1000 ease-out {isLoaded ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-8 scale-95'}"
+    <!-- Center Hero Title & Subtitle & Brand CTA -->
+    <div class="relative z-10 flex flex-col items-center justify-center my-auto max-w-5xl">
+        <!-- Main Headline -->
+        <h1
+            class="text-center text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-[1.05] transition-all duration-1000 ease-out {isLoaded ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-8 scale-95'}"
+        >
+            <span
+                class="inline-block text-transparent bg-clip-text transition-all duration-300"
+                style="background-image: linear-gradient(135deg, #f1f1f4 0%, var(--brand-primary, #ffa349) 50%, #f1f1f4 100%);"
             >
-                <span
-                    class="inline-block text-transparent bg-clip-text transition-all duration-300"
-                    style="background-image: linear-gradient(135deg, #f1f1f4 0%, var(--brand-primary, #ffa349) 50%, #f1f1f4 100%);"
-                >
-                    The Future Of Event Experiences.
+                The Future Of Event Experiences.
+            </span>
+        </h1>
+
+        <div
+            class="mt-4 sm:mt-6 max-w-xl transition-all duration-1000 delay-200 ease-out {isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}"
+        >
+            <p class="text-sm sm:text-base md:text-lg font-medium text-white/70 leading-relaxed">
+                Make your brand impossible to ignore.
+            </p>
+        </div>
+    </div>
+
+    <!-- Animated Scroll Down Button at Bottom -->
+    <div class="absolute bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 z-10 transition-all duration-1000 delay-500 ease-out {isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}">
+        <button
+            onclick={scrollToExplore}
+            class="group flex flex-col items-center gap-2 text-white/80 hover:text-white transition-all cursor-pointer focus:outline-none"
+            aria-label="Scroll down to explore"
+        >
+            <span class="text-[10px] sm:text-xs font-mono font-bold uppercase tracking-widest text-white/60 group-hover:text-primary transition-colors">
+                Scroll Down
+            </span>
+            <div class="size-6 sm:size-8 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-lg group-hover:bg-primary group-hover:border-primary group-hover:scale-110 transition-all duration-300 animate-bounce translate-y-1">
+                <span class="material-symbols-rounded text-xl group-hover:translate-y-0.5 transition-transform">
+                    keyboard_arrow_down
                 </span>
-            </h1>
-
-            <div
-                class="mt-4 sm:mt-6 max-w-xl transition-all duration-1000 delay-200 ease-out {isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}"
-            >
-                <p class="text-sm sm:text-base md:text-lg font-medium text-white/70 leading-relaxed">
-                    Make your brand impossible to ignore.
-                </p>
             </div>
-        </div>
-
-        <!-- Animated Scroll Down Button at Bottom -->
-        <div class="relative z-10 pb-2 sm:pb-4 transition-all duration-1000 delay-500 ease-out {isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}">
-            <button
-                onclick={scrollToExplore}
-                class="group flex flex-col items-center gap-2 text-white/80 hover:text-white transition-all cursor-pointer focus:outline-none"
-                aria-label="Scroll down to explore"
-            >
-                <span class="text-[10px] sm:text-xs font-mono font-bold uppercase tracking-widest text-white/60 group-hover:text-primary transition-colors">
-                    Scroll Down
-                </span>
-                <div class="size-6 sm:size-8 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-lg group-hover:bg-primary group-hover:border-primary group-hover:scale-110 transition-all duration-300 animate-bounce translate-y-1">
-                    <span class="material-symbols-rounded text-xl group-hover:translate-y-0.5 transition-transform">
-                        keyboard_arrow_down
-                    </span>
-                </div>
-            </button>
-        </div>
+        </button>
     </div>
     
 </div>

@@ -75,13 +75,13 @@
             <div class="space-y-2 text-xs text-text/80">
                 <div class="flex items-center gap-2">
                     <span class="material-symbols-rounded text-base text-primary shrink-0">mail</span>
-                    <a href="mailto:events@ekson.com" class="hover:text-primary transition">
-                        events@ekson.com
+                    <a href="mailto:info@ekson.me" class="hover:text-primary transition">
+                        info@ekson.me
                     </a>
                 </div>
                 <div class="flex items-center gap-2">
                     <span class="material-symbols-rounded text-base text-primary shrink-0">call</span>
-                    <span>+966 11 000 0000</span>
+                    <span>+20 11 000 0000</span>
                 </div>
             </div>
         </div>
