@@ -226,7 +226,7 @@
                         {#each workflowSteps as stepItem, idx}
                             <button
                                 onclick={() => setStep(idx)}
-                                class="px-2.5 py-1 rounded-xl text-xs font-bold font-mono transition-all cursor-pointer flex items-center gap-1.5 {idx === currentStepIndex ? 'bg-primary text-white shadow-md scale-105' : 'bg-white border border-black/40 hover:bg-black/10 text-text'}"
+                                class="px-2.5 py-1 rounded-xl text-xs font-bold font-mono transition-all cursor-pointer flex items-center gap-1.5 {idx === currentStepIndex ? 'bg-primary text-white shadow-md scale-105' : 'bg-white shadow-md hover:bg-black/10 border border-black/10 text-text'}"
                                 title={stepItem.title}
                             >
                                 <span>{stepItem.step}</span>
@@ -239,7 +239,7 @@
                     <div class="flex items-center gap-1 shrink-0">
                         <button
                             onclick={prevStep}
-                            class="p-1.5 rounded-lg bg-white border border-black/40 hover:bg-black/10 text-text/70 hover:text-text transition cursor-pointer"
+                            class="p-1.5 rounded-lg bg-white shadow-sm border border-black/10 hover:bg-black/10 text-text/70 hover:text-text transition cursor-pointer"
                             title="Previous Feature"
                             aria-label="Previous Feature"
                         >
@@ -247,7 +247,7 @@
                         </button>
                         <button
                             onclick={nextStep}
-                            class="p-1.5 rounded-lg bg-white border border-black/40 hover:bg-black/10 text-text/70 hover:text-text transition cursor-pointer"
+                            class="p-1.5 rounded-lg bg-white shadow-sm border border-black/10 hover:bg-black/10 text-text/70 hover:text-text transition cursor-pointer"
                             title="Next Feature"
                             aria-label="Next Feature"
                         >

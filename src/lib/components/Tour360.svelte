@@ -246,8 +246,8 @@
     <!-- Floating Glass Toolbar Header (Minimized & Auto-adapts to small & large screens) -->
     <div class="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none z-10">
         <!-- Title Badge (Hidden on tiny screens) -->
-        <div class="hidden sm:flex bg-white/30 backdrop-blur-xl px-3.5 py-1.5 rounded-full border border-black/5 shadow-sm pointer-events-auto">
-            <span class="text-xs font-bold text-text tracking-tight">
+        <div class="hidden sm:flex bg-black/30 backdrop-blur-xl px-3.5 py-1.5 rounded-full border border-black/5 shadow-sm pointer-events-auto">
+            <span class="text-xs font-bold text-white tracking-tight">
                 360° Panorama View
             </span>
         </div>

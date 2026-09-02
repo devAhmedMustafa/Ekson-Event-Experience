@@ -223,6 +223,7 @@
         ctx.fillStyle = "#0d1017";
         ctx.fillRect(0, 0, W, H);
 
+        // Header Status Bar
         ctx.fillStyle = "rgba(255,255,255,.55)";
         ctx.font = "600 17px 'Inter', sans-serif";
         ctx.textAlign = "left";
@@ -231,6 +232,7 @@
         ctx.textAlign = "right";
         ctx.fillText("EXPO ▾ 5G ▮", W - 20, 26);
 
+        // Header Navigation Banner
         ctx.fillStyle = accent;
         ctx.fillRect(0, 46, W, 96);
         ctx.fillStyle = "rgba(255,255,255,.78)";
@@ -246,6 +248,7 @@
         } while (px > 14);
         ctx.fillText(companyName, 20, 108);
 
+        // 2D Floor Plan Map
         const mapY = 158;
         const mapH = 330;
         ctx.fillStyle = "#151a24";
@@ -256,6 +259,7 @@
         const toMapX = (x: number) => W / 2 + x * scale;
         const toMapY = (z: number) => mapY + mapH / 2 + z * scale;
 
+        // Venue Wall Outline
         ctx.strokeStyle = "rgba(255,255,255,.16)";
         ctx.lineWidth = 2;
         ctx.strokeRect(
@@ -265,6 +269,7 @@
             HALL.depth * scale
         );
 
+        // Booth Slots
         slots.forEach((slot, i) => {
             const isTarget = i === visitorIndex;
             const sw = 7 * scale;
@@ -273,20 +278,55 @@
             ctx.fillRect(toMapX(slot.x) - sw / 2, toMapY(slot.z) - sd / 2, sw, sd);
         });
 
+        // Pulsing Target Beacon on Map
+        const now = typeof performance !== "undefined" ? performance.now() : Date.now();
+        const mapTargetX = toMapX(targetP.x);
+        const mapTargetY = toMapY(targetP.z);
+        const beaconPulse = (Math.sin(now * 0.006) + 1) * 0.5;
+        
+        ctx.strokeStyle = accent;
+        ctx.lineWidth = 1.5;
+        ctx.globalAlpha = 0.3 + beaconPulse * 0.4;
+        ctx.beginPath();
+        ctx.arc(mapTargetX, mapTargetY, 8 + beaconPulse * 6, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.globalAlpha = 1.0;
+
+        ctx.fillStyle = accent;
+        ctx.beginPath();
+        ctx.arc(mapTargetX, mapTargetY, 4, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Path Line from Player to Target
         ctx.strokeStyle = accent;
         ctx.lineWidth = 3;
         ctx.setLineDash([6, 5]);
         ctx.beginPath();
         ctx.moveTo(toMapX(playerP.x), toMapY(playerP.z));
-        ctx.lineTo(toMapX(targetP.x), toMapY(targetP.z));
+        ctx.lineTo(mapTargetX, mapTargetY);
         ctx.stroke();
         ctx.setLineDash([]);
 
+        // Player Position Marker with Vision Cone
         const pxx = toMapX(playerP.x);
         const pyy = toMapY(playerP.z);
+
+        // Player vision field cone
         ctx.save();
         ctx.translate(pxx, pyy);
         ctx.rotate(-playerYaw + Math.PI);
+        
+        const fovGrad = ctx.createRadialGradient(0, 0, 2, 0, -24, 24);
+        fovGrad.addColorStop(0, "rgba(255,255,255,0.35)");
+        fovGrad.addColorStop(1, "rgba(255,255,255,0.0)");
+        ctx.fillStyle = fovGrad;
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.arc(0, 0, 26, -Math.PI / 2 - 0.5, -Math.PI / 2 + 0.5);
+        ctx.closePath();
+        ctx.fill();
+
+        // Player Triangle Marker
         ctx.fillStyle = "#ffffff";
         ctx.beginPath();
         ctx.moveTo(0, -11);
@@ -297,32 +337,171 @@
         ctx.fill();
         ctx.restore();
 
+        // Calculate target booth direction relative to user's camera view
+        const dx = targetP.x - playerP.x;
+        const dz = targetP.z - playerP.z;
+        const forwardDist = dx * Math.sin(playerYaw) + dz * Math.cos(playerYaw);
+        const rightDist = -dx * Math.cos(playerYaw) + dz * Math.sin(playerYaw);
+        const arrowAngle = Math.atan2(rightDist, forwardDist);
+
+        // Bottom AR Navigation Guidance Card
         const cardY = mapY + mapH + 16;
         ctx.fillStyle = "#161b25";
         roundRect(ctx, 16, cardY, W - 32, 150, 20);
         ctx.fill();
 
-        const bearing = Math.atan2(targetP.x - playerP.x, targetP.z - playerP.z);
-        const rel = ((playerYaw - bearing + Math.PI * 3) % (Math.PI * 2)) - Math.PI;
+        // Card Border Highlight
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.08)";
+        ctx.lineWidth = 1.5;
+        roundRect(ctx, 16, cardY, W - 32, 150, 20);
+        ctx.stroke();
 
-        ctx.textAlign = "left";
-        ctx.fillStyle = "#ffffff";
-        ctx.font = "700 40px 'Space Grotesk', Inter, sans-serif";
-        ctx.fillText(`${dist.toFixed(0)} m`, 140, cardY + 62);
-        ctx.fillStyle = "rgba(255,255,255,.55)";
-        ctx.font = "500 17px 'Inter', sans-serif";
-        ctx.fillText(turnHint(rel, dist), 140, cardY + 96);
+        // AR Guide Direction Arrow Widget (Left side of card)
+        const cx = 72;
+        const cy = cardY + 75;
+        const R = 40;
 
         if (dist < ARRIVE_RADIUS) {
+            // Success Card State
             ctx.fillStyle = "#10b981";
             roundRect(ctx, 16, cardY, W - 32, 150, 20);
             ctx.fill();
+
+            // Checkmark Icon Circle
+            ctx.fillStyle = "rgba(255, 255, 255, 0.2)";
+            ctx.beginPath();
+            ctx.arc(cx, cy, R, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.strokeStyle = "#ffffff";
+            ctx.lineWidth = 4;
+            ctx.lineCap = "round";
+            ctx.lineJoin = "round";
+            ctx.beginPath();
+            ctx.moveTo(cx - 12, cy);
+            ctx.lineTo(cx - 3, cy + 9);
+            ctx.lineTo(cx + 13, cy - 9);
+            ctx.stroke();
+
             ctx.fillStyle = "#fff";
-            ctx.textAlign = "center";
-            ctx.font = "700 30px 'Space Grotesk', Inter, sans-serif";
-            ctx.fillText("You have arrived", W / 2, cardY + 62);
+            ctx.textAlign = "left";
+            ctx.font = "700 28px 'Space Grotesk', Inter, sans-serif";
+            ctx.fillText("You have arrived", 132, cardY + 62);
+            ctx.font = "500 15px 'Inter', sans-serif";
+            ctx.fillStyle = "rgba(255,255,255,.85)";
+            ctx.fillText("Welcome to booth!", 132, cardY + 94);
+        } else {
+            // Active AR Direction Compass Widget
+            const arrowPulse = (Math.sin(now * 0.005) + 1) * 0.5;
+
+            // Outer Pulse Ring
+            ctx.strokeStyle = accent;
+            ctx.globalAlpha = 0.2 + arrowPulse * 0.25;
+            ctx.lineWidth = 2 + arrowPulse * 2;
+            ctx.beginPath();
+            ctx.arc(cx, cy, R + 3 + arrowPulse * 3, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.globalAlpha = 1.0;
+
+            // Compass Background Disc
+            ctx.fillStyle = "#0a0e14";
+            ctx.beginPath();
+            ctx.arc(cx, cy, R, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.16)";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Compass Cardinal Ticks (Top = Straight Ahead, Right = Turn Right, Bottom = Turn Around, Left = Turn Left)
+            ctx.fillStyle = accent;
+            ctx.fillRect(cx - 1.5, cy - R + 3, 3, 6); // Top forward indicator
+            ctx.fillStyle = "rgba(255, 255, 255, 0.3)";
+            ctx.fillRect(cx + R - 9, cy - 1.5, 6, 3);
+            ctx.fillRect(cx - 1.5, cy + R - 9, 3, 6);
+            ctx.fillRect(cx - R + 3, cy - 1.5, 6, 3);
+
+            // Dynamic Rotating AR Guide Direction Arrow (Points toward booth in user view space)
+            ctx.save();
+            ctx.translate(cx, cy);
+            ctx.rotate(arrowAngle);
+
+            // Arrow Shadow / Glow
+            ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
+            ctx.beginPath();
+            ctx.moveTo(2, -22);
+            ctx.lineTo(15, 14);
+            ctx.lineTo(2, 7);
+            ctx.lineTo(-11, 14);
+            ctx.closePath();
+            ctx.fill();
+
+            // Arrow Left Wing (White Bright Highlight)
+            ctx.fillStyle = "#ffffff";
+            ctx.beginPath();
+            ctx.moveTo(0, -24);
+            ctx.lineTo(0, 6);
+            ctx.lineTo(-13, 12);
+            ctx.closePath();
+            ctx.fill();
+
+            // Arrow Right Wing (Brand Accent Color)
+            ctx.fillStyle = accent;
+            ctx.beginPath();
+            ctx.moveTo(0, -24);
+            ctx.lineTo(13, 12);
+            ctx.lineTo(0, 6);
+            ctx.closePath();
+            ctx.fill();
+
+            // Arrow Outline for crisp contrast
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.5)";
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(0, -24);
+            ctx.lineTo(13, 12);
+            ctx.lineTo(0, 6);
+            ctx.lineTo(-13, 12);
+            ctx.closePath();
+            ctx.stroke();
+
+            // AR Trailing Pulse Waves
+            for (let i = 1; i <= 2; i++) {
+                const waveOffset = ((now * 0.0035 + i * 0.5) % 1);
+                const waveY = 8 + waveOffset * 16;
+                const waveAlpha = (1 - waveOffset) * 0.6;
+                const waveSpread = 8 * (1 - waveOffset * 0.3);
+
+                ctx.strokeStyle = accent;
+                ctx.globalAlpha = waveAlpha;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(-waveSpread, waveY);
+                ctx.lineTo(0, waveY + 4);
+                ctx.lineTo(waveSpread, waveY);
+                ctx.stroke();
+            }
+            ctx.globalAlpha = 1.0;
+
+            ctx.restore();
+
+            // Distance & Directional Text on Card Right Side
+            ctx.textAlign = "left";
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "700 38px 'Space Grotesk', Inter, sans-serif";
+            ctx.fillText(`${dist.toFixed(0)} m`, 138, cardY + 58);
+
+            ctx.fillStyle = accent;
+            ctx.beginPath();
+            ctx.arc(138, cardY + 88, 4, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = "rgba(255,255,255,.75)";
+            ctx.font = "600 16px 'Inter', sans-serif";
+            ctx.fillText(turnHint(arrowAngle, dist), 148, cardY + 93);
         }
 
+        // Home Indicator Bar
         ctx.fillStyle = "rgba(255,255,255,.3)";
         roundRect(ctx, W / 2 - 60, H - 22, 120, 6, 3);
         ctx.fill();
@@ -333,9 +512,9 @@
     function turnHint(rel: number, dist: number) {
         if (dist < ARRIVE_RADIUS) return "You have arrived";
         const deg = (rel * 180) / Math.PI;
-        if (Math.abs(deg) < 18) return "Straight ahead";
+        if (Math.abs(deg) < 20) return "Straight ahead";
         if (deg > 140 || deg < -140) return "Turn around";
-        return deg > 0 ? "Bear right" : "Bear left";
+        return deg > 0 ? "Turn right" : "Turn left";
     }
 
     function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {

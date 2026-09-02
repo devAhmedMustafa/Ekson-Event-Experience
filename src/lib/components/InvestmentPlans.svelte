@@ -396,7 +396,7 @@
                             {item.icon}
                         </span>
                     </div>
-                    <div class="flex flex-col text-left">
+                    <div class="flex flex-col text-center">
                         <span class="text-xs font-bold text-text leading-tight">{item.title}</span>
                         <span class="text-[9px] sm:text-[10px] text-text/50 leading-tight mt-0.5">{item.subtitle}</span>
                     </div>

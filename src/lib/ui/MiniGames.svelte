@@ -21,29 +21,6 @@
         { id: "product-quiz", title: "Product Quiz", code: "04", icon: "quiz", imageSrc: "https://images.unsplash.com/photo-1606326608606-aa0b62935f2b?w=600&auto=format&fit=crop&q=80", heightClass: "h-48 sm:h-56 md:h-64" },
     ];
 
-    const kioskFeatures = [
-        {
-            title: "Instant QR Prize Claims",
-            description: "Attendees scan to claim discounts, vouchers, or digital passes immediately.",
-            icon: "qr_code_2"
-        },
-        {
-            title: "Live Leaderboard Sync",
-            description: "Real-time high score rankings displayed across booth digital screens.",
-            icon: "leaderboard"
-        },
-        {
-            title: "Brand Lead Capture",
-            description: "Gather attendee contacts & opt-ins before gameplay unlocks.",
-            icon: "contact_page"
-        },
-        {
-            title: "Turnkey Touch Hardware",
-            description: "Works natively on trade show touch kiosks, tablets, and displays.",
-            icon: "touch_app"
-        }
-    ];
-
     let currentIndex = $state(0);
     let isDragging = $state(false);
     let startX = $state(0);
@@ -317,26 +294,6 @@
                                     {/if}
                                 </div>
                             {/each}
-                        </div>
-                    </div>
-
-                    <div class="w-full flex-1 p-3 mt-2.5 rounded-2xl flex flex-col items-center justify-center gap-3 relative overflow-hidden text-center">
-
-                        <!-- NFC Scanner & Speaker Grille -->
-                        <div class="flex items-center justify-center gap-3 opacity-60 relative z-10">
-                            <div class="flex gap-1">
-                                <div class="w-1 h-3 bg-slate-400 rounded-full"></div>
-                                <div class="w-1 h-3 bg-slate-400 rounded-full"></div>
-                                <div class="w-1 h-3 bg-slate-400 rounded-full"></div>
-                                <div class="w-1 h-3 bg-slate-400 rounded-full"></div>
-                            </div>
-                            <span class="material-symbols-rounded text-base text-slate-400">sensors</span>
-                            <div class="flex gap-1">
-                                <div class="w-1 h-3 bg-slate-400 rounded-full"></div>
-                                <div class="w-1 h-3 bg-slate-400 rounded-full"></div>
-                                <div class="w-1 h-3 bg-slate-400 rounded-full"></div>
-                                <div class="w-1 h-3 bg-slate-400 rounded-full"></div>
-                            </div>
                         </div>
                     </div>
 

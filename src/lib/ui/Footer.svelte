@@ -15,7 +15,7 @@
     }
 </script>
 
-<div class="relative w-full h-full max-w-6xl mx-auto px-4 sm:px-6 md:px-8 flex flex-col justify-between overflow-visible">
+<div class="relative w-full h-full max-w-6xl mx-auto px-4 sm:px-6 md:px-8 flex flex-col justify-between overflow-visible mt-auto">
     <!-- Top Headline Section -->
     <div class="relative z-10 flex items-end justify-between pb-3 border-b border-black/5 shrink-0 w-full">
         <div>
@@ -38,7 +38,7 @@
     </div>
 
     <!-- 4-Column Directory Grid -->
-    <div class="relative z-10 grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 my-auto py-4 shrink-0">
+    <div class="relative z-10 grid grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 my-auto py-4 shrink-0">
         <!-- Col 1: Solutions -->
         <div class="flex flex-col gap-2">
             <span class="text-xs font-semibold text-text/40 uppercase tracking-widest">
@@ -85,55 +85,14 @@
                 </div>
             </div>
         </div>
-
-        <!-- Col 4: Newsletter -->
-        <div class="flex flex-col gap-2 col-span-2 lg:col-span-1">
-            <span class="text-xs font-semibold text-text/40 uppercase tracking-widest">
-                Newsletter
-            </span>
-            <p class="text-xs text-text/70 leading-relaxed">
-                Updates on spatial tech & booth gamification.
-            </p>
-
-            {#if newsletterSubscribed}
-                <div class="p-3 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-medium rounded-2xl flex items-center gap-2">
-                    <span class="material-symbols-rounded text-base">check_circle</span>
-                    <span>Subscribed successfully!</span>
-                </div>
-            {:else}
-                <form onsubmit={handleNewsletterSubmit} class="flex items-center gap-2 mt-1">
-                    <input
-                        type="email"
-                        bind:value={newsletterEmail}
-                        placeholder="your@email.com"
-                        required
-                        class="flex-1 min-w-0 px-4 py-2 text-xs text-text bg-white border border-black/10 rounded-full focus:outline-none focus:border-primary shadow-xs"
-                    />
-                    <button
-                        type="submit"
-                        class="px-4 py-2 bg-black hover:bg-slate-900 text-white text-xs font-semibold rounded-full transition cursor-pointer shrink-0"
-                    >
-                        Join
-                    </button>
-                </form>
-            {/if}
-        </div>
     </div>
 
     <!-- Reference Style Huge Brand Title at Footer Bottom -->
     <div class="relative z-10 w-full pt-4 border-t border-black/5 flex flex-col items-center justify-center shrink-0">
-        <h1 class="text-5xl sm:text-7xl md:text-9xl font-black tracking-tighter text-text/90 uppercase text-center leading-none">
-            KUBIX
-        </h1>
+        
         <div class="w-full flex flex-col sm:flex-row items-center justify-between gap-2 mt-4 text-xs text-text/50 font-medium">
             <span>© {new Date().getFullYear()} EKSON Technology. All rights reserved.</span>
-            <div class="flex items-center gap-4">
-                <a href="#landing" class="hover:text-primary transition">Privacy</a>
-                <span>•</span>
-                <a href="#landing" class="hover:text-primary transition">Terms</a>
-                <span>•</span>
-                <a href="#landing" class="hover:text-primary transition">Security</a>
-            </div>
+            
         </div>
     </div>
 </div>

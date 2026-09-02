@@ -134,19 +134,9 @@
                     </div>
                     <div>
                         <span class="block text-[10px] uppercase font-bold text-text/40 tracking-wider">Email Us</span>
-                        <a href="mailto:events@ekson.com" class="text-xs font-semibold text-text hover:text-primary transition">
-                            events@ekson.com
+                        <a href="mailto:info@ekson.me" class="text-xs font-semibold text-text hover:text-primary transition">
+                            info@ekson.me
                         </a>
-                    </div>
-                </div>
-
-                <div class="flex items-center gap-3 p-3.5 rounded-2xl">
-                    <div class="size-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                        <span class="material-symbols-rounded text-xl">call</span>
-                    </div>
-                    <div>
-                        <span class="block text-[10px] uppercase font-bold text-text/40 tracking-wider">Call Us</span>
-                        <span class="text-xs font-semibold text-text">+966 11 000 0000</span>
                     </div>
                 </div>
             </div>

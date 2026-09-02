@@ -508,11 +508,11 @@
 
 <div class="relative w-full h-full min-h-90 overflow-hidden select-none group/canvas" bind:this={containerEl}>
     {#if !isLive}
-        <div class="relative w-full h-full min-h-[38vh] flex items-center justify-center bg-slate-900 overflow-hidden group/image">
+        <div class="relative w-full h-full flex items-center justify-center bg-slate-900 overflow-hidden group/image">
             {#if imageSrc}
                 <img src={imageSrc} alt="{brand.name} True Scale Demo" class="w-full h-full object-cover" />
             {:else}
-                <div class="w-full h-full flex flex-col items-center justify-center p-6 text-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
+                <div class="w-full h-full flex flex-col items-center justify-center text-center bg-linear-to-br from-slate-900 via-orange-900 to-slate-900 text-white">
                     <div class="size-16 rounded-3xl bg-white/10 backdrop-blur-md flex items-center justify-center mb-4 border border-white/10 shadow-xl">
                         <span class="material-symbols-rounded text-4xl text-primary">view_in_ar</span>
                     </div>

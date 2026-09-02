@@ -65,6 +65,6 @@
     <ContactUs />
 </section>
 
-<section id="footer" class="relative w-full min-h-dvh flex flex-col justify-center items-center overflow-x-hidden py-12 sm:py-16 md:py-20">
+<section id="footer" class="relative w-full flex flex-col justify-center items-center overflow-x-hidden py-12 sm:py-16 md:py-20">
     <Footer />
 </section>
