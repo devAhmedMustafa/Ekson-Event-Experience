@@ -275,16 +275,7 @@
             class="flex items-center gap-2.5 group text-left cursor-pointer focus:outline-none"
             aria-label="Go to top"
         >
-            <div class="size-9 rounded-xl bg-primary/10 text-primary border border-primary/20 flex items-center justify-center group-hover:scale-105 group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-xs">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-5 shrink-0">
-                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-                    <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-                    <line x1="12" y1="22.08" x2="12" y2="12"></line>
-                </svg>
-            </div>
-            <span class="text-xl font-black tracking-tight text-text group-hover:text-primary transition-colors">
-                Kubix
-            </span>
+            <img src="logo.png" alt="Kubix Logo" class="h-15 w-auto" />
         </button>
 
         <!-- Center: Navigation Links -->

@@ -2,7 +2,7 @@
     import { onMount, onDestroy } from "svelte";
     import * as THREE from "three";
     import { brand } from "$lib/brand.svelte";
-    import TrueScaleDemo from "$lib/components/TrueScaleDemo.svelte";
+    import VirtualExhibition from "$lib/components/VirtualExhibition.svelte";
     import { createBooth } from "$lib/three/booth";
     import { buildBoothTextures, invalidateBoothTextures } from "$lib/three/booth-textures";
     import {
@@ -20,26 +20,26 @@
     import { mat } from "$lib/three/materials";
 
     // Feature lists matching user layout diagram
-    const trueScaleFeatures = [
+    const virtualExhibitionFeatures = [
         {
-            title: "1:1 Metric Precision",
-            description: "Architectural metric scale for accurate booth layout planning.",
-            icon: "square_foot"
+            title: "360° Cubic Skybox Tour",
+            description: "Full resolution 3D panorama skybox for immersive hall exploration.",
+            icon: "360"
         },
         {
-            title: "Dynamic Brand Styling",
-            description: "Realtime logo texture extraction & custom brand color application.",
+            title: "Interactive Camera Controls",
+            description: "Smooth 360° pan, tilt, zoom, and cardinal compass direction presets.",
+            icon: "center_focus_strong"
+        },
+        {
+            title: "Dynamic Brand Integration",
+            description: "Realtime logo & brand styling seamlessly integrated across virtual spaces.",
             icon: "palette"
         },
         {
-            title: "WebAR Mobile Projection",
-            description: "Instant 3D WebAR projection directly in mobile browsers.",
-            icon: "view_in_ar"
-        },
-        {
-            title: "Interactive Props",
-            description: "Customizable trade show furniture, digital signage & lighting rigs.",
-            icon: "inventory_2"
+            title: "Multi-Angle Hall Navigation",
+            description: "Instant switching across exhibition viewpoints, halls, and booth zones.",
+            icon: "explore"
         }
     ];
 
@@ -1040,23 +1040,23 @@
         <!-- 2 Equal Columns Container (True Scale | Realtime Walkthrough) -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 flex-1 w-full my-auto max-h-none md:max-h-[86vh] items-stretch overflow-hidden">
             
-            <!-- COLUMN 1: True Scale 3D Demo (Top) + Content 1 (Bottom) -->
+            <!-- COLUMN 1: Virtual Exhibition (Top) + Content 1 (Bottom) -->
             <div class="flex flex-col gap-3 sm:gap-4 h-full overflow-hidden">
-                <!-- Top Card: True Scale 3D Demo Viewport -->
+                <!-- Top Card: Virtual Exhibition 360 Viewport -->
                 <div class="w-full h-72 sm:h-84 md:h-96 lg:h-105 relative overflow-hidden rounded-3xl border border-black/10 shadow-md bg-white/70 backdrop-blur-xl shrink-0">
-                    <TrueScaleDemo />
+                    <VirtualExhibition />
                 </div>
 
-                <!-- Bottom Card: Content 1 (True Scale Features) -->
+                <!-- Bottom Card: Content 1 (Virtual Exhibition Features) -->
                 <div class=" p-3.5 sm:p-4 flex-1 overflow-y-auto scrollbar-none flex flex-col">
                     <div class="flex items-center justify-between border-b border-black/5 pb-2 mb-2">
                         <span class="font-mono text-[10px] font-bold text-text/60 uppercase tracking-wider">
-                            1:1 True Scale Features
+                            Virtual Exhibition Features
                         </span>
                     </div>
 
                     <div class="grid grid-cols-1 gap-2">
-                        {#each trueScaleFeatures as feat}
+                        {#each virtualExhibitionFeatures as feat}
                             <div class="py-2 sm:py-2.5 flex items-start gap-2.5 shadow-2xs hover:border-primary/30 transition-all">
                                 <div class="size-7 sm:size-7.5 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0 mt-0.5 font-bold">
                                     <span class="material-symbols-rounded text-sm">{feat.icon}</span>

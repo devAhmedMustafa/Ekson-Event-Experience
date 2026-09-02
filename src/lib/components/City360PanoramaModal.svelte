@@ -30,11 +30,150 @@
     let renderer: THREE.WebGLRenderer | null = null;
     let scene: THREE.Scene | null = null;
     let perspCamera: THREE.PerspectiveCamera | null = null;
-    let orthoCamera: THREE.OrthographicCamera | null = null;
     let sphereMaterial: THREE.MeshBasicMaterial | null = null;
     let animationFrameId: number | null = null;
 
     let autoRotate = $state(true);
+    let showArWindow = $state(true);
+    let ar3DGroup: THREE.Group | null = null;
+
+    function create3DArInfoWindow() {
+        const group = new THREE.Group();
+        group.name = "ar_3d_info_window";
+
+        const width = 8.5;
+        const height = 9.8;
+
+        // Dark Glass Backdrop Mesh
+        const bgGeo = new THREE.PlaneGeometry(width, height);
+        const bgMat = new THREE.MeshBasicMaterial({
+            color: 0x090e17,
+            transparent: true,
+            opacity: 0.88,
+            side: THREE.DoubleSide
+        });
+        const bgMesh = new THREE.Mesh(bgGeo, bgMat);
+        group.add(bgMesh);
+
+        // Cyan Glowing Border Frame
+        const edgesGeo = new THREE.EdgesGeometry(bgGeo);
+        const edgesMat = new THREE.LineBasicMaterial({
+            color: 0x06b6d4,
+            transparent: true,
+            opacity: 0.95
+        });
+        const edgesMesh = new THREE.LineSegments(edgesGeo, edgesMat);
+        edgesMesh.position.z = 0.01;
+        group.add(edgesMesh);
+
+        // AR Corner Bracket Accents
+        const bracketMat = new THREE.LineBasicMaterial({ color: 0x22d3ee });
+        const len = 0.8;
+        const hw = width / 2;
+        const hh = height / 2;
+
+        const corners = [
+            [[-hw, hh - len, 0.02], [-hw, hh, 0.02], [-hw + len, hh, 0.02]],
+            [[hw - len, hh, 0.02], [hw, hh, 0.02], [hw, hh - len, 0.02]],
+            [[-hw, -hh + len, 0.02], [-hw, -hh, 0.02], [-hw + len, -hh, 0.02]],
+            [[hw - len, -hh, 0.02], [hw, -hh, 0.02], [hw, -hh + len, 0.02]]
+        ];
+
+        corners.forEach((pts) => {
+            const points = pts.map((p) => new THREE.Vector3(p[0], p[1], p[2]));
+            const geom = new THREE.BufferGeometry().setFromPoints(points);
+            const line = new THREE.Line(geom, bracketMat);
+            group.add(line);
+        });
+
+        // Exhibition Image Mesh (/cubic_views/exhibition/info.jpeg)
+        const imgW = 7.5;
+        const imgH = 4.6;
+        const imgGeo = new THREE.PlaneGeometry(imgW, imgH);
+
+        const imgTexLoader = new THREE.TextureLoader();
+        imgTexLoader.load("/cubic_views/exhibition/info.jpeg", (tex) => {
+            tex.colorSpace = THREE.SRGBColorSpace;
+            tex.minFilter = THREE.LinearFilter;
+            const imgMat = new THREE.MeshBasicMaterial({
+                map: tex,
+                side: THREE.DoubleSide
+            });
+            const imgMesh = new THREE.Mesh(imgGeo, imgMat);
+            imgMesh.position.set(0, 1.8, 0.03);
+            group.add(imgMesh);
+
+            const imgEdgesGeo = new THREE.EdgesGeometry(imgGeo);
+            const imgEdgesMat = new THREE.LineBasicMaterial({ color: 0x06b6d4, opacity: 0.5, transparent: true });
+            const imgEdgesMesh = new THREE.LineSegments(imgEdgesGeo, imgEdgesMat);
+            imgEdgesMesh.position.set(0, 1.8, 0.04);
+            group.add(imgEdgesMesh);
+
+            if (renderer && scene && perspCamera) {
+                renderer.render(scene, perspCamera);
+            }
+        });
+
+        // Text & AR Header Canvas Texture Mesh
+        const canvas = document.createElement("canvas");
+        canvas.width = 1024;
+        canvas.height = 512;
+        const ctx = canvas.getContext("2d")!;
+
+        ctx.fillStyle = "#06b6d4";
+        ctx.font = "bold 28px monospace";
+        ctx.fillText("● AR INFO OVERLAY // EXHIBITION", 30, 45);
+
+        ctx.strokeStyle = "rgba(6, 182, 212, 0.35)";
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(30, 65);
+        ctx.lineTo(994, 65);
+        ctx.stroke();
+
+        ctx.fillStyle = "#f8fafc";
+        ctx.font = "italic 34px 'Inter', sans-serif";
+
+        const text = "To the coasts of the Mediterranean and from the Greater Caucasus to the Red Sea. He bore the title of King of Kings.";
+        
+        const words = text.split(" ");
+        let line = "";
+        let y = 135;
+        const lineHeight = 48;
+        const maxWidth = 960;
+
+        for (let n = 0; n < words.length; n++) {
+            const testLine = line + words[n] + " ";
+            const metrics = ctx.measureText(testLine);
+            if (metrics.width > maxWidth && n > 0) {
+                ctx.fillText(line, 30, y);
+                line = words[n] + " ";
+                y += lineHeight;
+            } else {
+                line = testLine;
+            }
+        }
+        ctx.fillText(line, 30, y);
+
+        const textTexture = new THREE.CanvasTexture(canvas);
+        textTexture.colorSpace = THREE.SRGBColorSpace;
+
+        const textGeo = new THREE.PlaneGeometry(7.8, 3.8);
+        const textMat = new THREE.MeshBasicMaterial({
+            map: textTexture,
+            transparent: true,
+            side: THREE.DoubleSide
+        });
+        const textMesh = new THREE.Mesh(textGeo, textMat);
+        textMesh.position.set(0, -2.4, 0.03);
+        group.add(textMesh);
+
+        // Position in 3D world space (anchored in cube view, independent of camera rotation)
+        group.position.set(3.8, 0.5, -13.0);
+        group.lookAt(0, 0, 0);
+
+        return group;
+    }
 
     // 360 View Camera Controls
     let yaw = Math.PI * 0.2;
@@ -147,12 +286,26 @@
                 loadPanoramaTexture(activePlace.url);
             }
         }
+
+        // Add 3D AR Info Window to the scene
+        ar3DGroup = create3DArInfoWindow();
+        ar3DGroup.visible = showArWindow;
+        scene.add(ar3DGroup);
     }
 
     $effect(() => {
         // Rebuild scene when active place changes
         if (activePlaceIndex !== undefined && containerEl && canvasEl) {
             rebuildScene();
+        }
+    });
+
+    $effect(() => {
+        if (ar3DGroup) {
+            ar3DGroup.visible = showArWindow;
+            if (renderer && scene && perspCamera) {
+                renderer.render(scene, perspCamera);
+            }
         }
     });
 
@@ -274,6 +427,10 @@
                 const lookY = Math.sin(pitch);
                 const lookZ = Math.cos(yaw) * cosPitch;
 
+                if (ar3DGroup && showArWindow) {
+                    ar3DGroup.position.y = 0.5 + Math.sin(clock.getElapsedTime() * 1.8) * 0.22;
+                }
+
                 if (perspCamera && renderer && scene) {
                     perspCamera.fov = fov;
                     perspCamera.updateProjectionMatrix();
@@ -330,58 +487,7 @@
 
     <!-- TOP GLASS TOOLBAR (City Badge & Control Pill) -->
     <div class="relative z-10 p-4 sm:p-6 flex items-start justify-between pointer-events-none w-full">
-        <!-- City Badge & Location Tag -->
-        <div class="bg-black/45 backdrop-blur-xs border border-white/15 px-4 py-2.5 rounded-2xl shadow-2xl flex flex-col gap-1 pointer-events-auto max-w-md">
-        
-            <h2 class="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2">
-                <span>{city.name}</span>
-                <span class="text-sm font-semibold text-white/50 truncate">• {activePlace.title}</span>
-            </h2>
-        </div>
-
-        <!-- Right Controls: Compass, Auto-Rotate & Close -->
         <div class="flex items-center gap-2 pointer-events-auto">
-            <!-- Viewport Controls Pill (For WebGL Views) -->
-            {#if activePlace.type !== "embed"}
-                <div class="flex items-center gap-1.5 bg-black/75 backdrop-blur-xl p-1.5 rounded-2xl border border-white/15 shadow-2xl">
-                    <!-- Compass Direction Dropdown -->
-                    <div class="relative flex items-center px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 transition cursor-pointer text-white">
-                        <span class="material-symbols-rounded text-base text-white/80 mr-1 shrink-0">explore</span>
-                        <select
-                            onchange={(e) => jumpDirection(Number((e.target as HTMLSelectElement).value))}
-                            class="bg-transparent text-xs font-semibold text-white focus:outline-none cursor-pointer pr-1"
-                            aria-label="Jump Compass Direction"
-                        >
-                            <option value="0" class="bg-slate-900 text-white">North</option>
-                            <option value={Math.PI / 2} class="bg-slate-900 text-white">East</option>
-                            <option value={Math.PI} class="bg-slate-900 text-white">South</option>
-                            <option value={-Math.PI / 2} class="bg-slate-900 text-white">West</option>
-                        </select>
-                    </div>
-
-                    <!-- Auto-Rotate Toggle -->
-                    <button
-                        onclick={() => (autoRotate = !autoRotate)}
-                        class="size-8 rounded-xl flex items-center justify-center transition cursor-pointer {autoRotate ? 'bg-white/25 text-white font-bold' : 'bg-white/10 text-white/60 hover:bg-white/20'}"
-                        title={autoRotate ? "Pause Auto Rotation" : "Start Auto Rotation"}
-                        aria-label="Toggle Auto Rotation"
-                    >
-                        <span class="material-symbols-rounded text-lg">
-                            {autoRotate ? 'sync' : 'sync_disabled'}
-                        </span>
-                    </button>
-
-                    <!-- Reset Camera Button -->
-                    <button
-                        onclick={resetView}
-                        class="size-8 rounded-xl bg-white/10 hover:bg-white/20 text-white/80 flex items-center justify-center transition cursor-pointer"
-                        title="Reset Camera Angle"
-                        aria-label="Reset Camera Angle"
-                    >
-                        <span class="material-symbols-rounded text-lg">refresh</span>
-                    </button>
-                </div>
-            {/if}
 
             <!-- Close Modal Button -->
             <button
@@ -395,76 +501,16 @@
         </div>
     </div>
 
-    <!-- SIDE FLOATING SLIDER ARROW BUTTONS -->
-    <div class="absolute inset-y-0 inset-x-4 flex items-center justify-between pointer-events-none z-20">
-        <!-- Previous Location Side Button -->
+    <!-- FLOATING 3D AR WINDOW TOGGLE BUTTON (When 3D window is hidden) -->
+    {#if !showArWindow}
         <button
-            onclick={prevPlace}
-            class="size-12 sm:size-14 rounded-full bg-black/75 hover:bg-black/90 backdrop-blur-xl border border-white/20 active:scale-95 text-white flex items-center justify-center cursor-pointer pointer-events-auto transition duration-200 shadow-2xl hover:border-white/40"
-            title="Previous Location (Left Arrow)"
-            aria-label="Previous Location"
+            onclick={() => (showArWindow = true)}
+            class="absolute top-22 left-4 sm:left-8 z-30 bg-slate-950/85 backdrop-blur-xl border border-cyan-500/40 text-cyan-300 hover:text-white hover:bg-cyan-500/20 px-3.5 py-2 rounded-xl shadow-[0_0_15px_rgba(6,182,212,0.3)] transition-all duration-300 pointer-events-auto flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-wider cursor-pointer"
+            title="Open 3D AR Info Window"
         >
-            <span class="material-symbols-rounded text-3xl sm:text-4xl">chevron_left</span>
+            <span class="material-symbols-rounded text-lg text-cyan-400 animate-pulse">view_in_ar</span>
+            <span>Open 3D AR Info</span>
         </button>
+    {/if}
 
-        <!-- Next Location Side Button -->
-        <button
-            onclick={nextPlace}
-            class="size-12 sm:size-14 rounded-full bg-black/75 hover:bg-black/90 backdrop-blur-xl border border-white/20 active:scale-95 text-white flex items-center justify-center cursor-pointer pointer-events-auto transition duration-200 shadow-2xl hover:border-white/40"
-            title="Next Location (Right Arrow)"
-            aria-label="Next Location"
-        >
-            <span class="material-symbols-rounded text-3xl sm:text-4xl">chevron_right</span>
-        </button>
-    </div>
-
-    <!-- BOTTOM FLOATING CONTROLS (Location Selector & Controls) -->
-    <div class="relative z-10 p-4 sm:p-6 flex flex-col items-center pointer-events-none w-full mt-auto">
-        <div class="bg-black/75 backdrop-blur-xl border border-white/15 p-3 rounded-2xl shadow-2xl flex items-center gap-3 pointer-events-auto max-w-xl w-full">
-            <!-- Prev Location Button -->
-            <button
-                onclick={prevPlace}
-                disabled={city.placeholders.length <= 1}
-                class="size-9 rounded-xl bg-white/10 hover:bg-white/20 disabled:opacity-30 disabled:pointer-events-none text-white flex items-center justify-center transition cursor-pointer shrink-0"
-                title="Previous Location"
-            >
-                <span class="material-symbols-rounded text-xl">chevron_left</span>
-            </button>
-
-            <!-- Location Slider Card & Dot Indicators -->
-            <div class="flex-1 flex flex-col items-center text-center px-2 min-w-0">
-                <!-- Dot Pagination Indicators -->
-                <div class="flex items-center gap-1.5 mb-1">
-                    {#each city.placeholders as _, idx}
-                        <button
-                            onclick={() => (activePlaceIndex = idx)}
-                            class="h-1.5 rounded-full transition-all duration-300 cursor-pointer {activePlaceIndex === idx ? 'w-6 bg-primary' : 'w-1.5 bg-white opacity-40 hover:opacity-75'}"
-                            title="Go to location {idx + 1}"
-                            aria-label="Go to location {idx + 1}"
-                        ></button>
-                    {/each}
-                </div>
-
-                <!-- Active Location Title & Tag -->
-                <div class="flex items-center justify-center gap-2 truncate max-w-full">
-                    <span class="text-xs sm:text-sm font-bold text-white tracking-wide truncate">
-                        {activePlaceIndex + 1}. {activePlace.title}
-                    </span>
-                    <span class="text-[9px] font-mono font-bold uppercase px-2 py-0.5 rounded-full bg-white/15 text-white/80 shrink-0 hidden sm:inline">
-                        {activePlace.tag}
-                    </span>
-                </div>
-            </div>
-
-            <!-- Right Slider Arrow Button -->
-            <button
-                onclick={nextPlace}
-                class="size-9 sm:size-10 rounded-full bg-white/10 hover:bg-white/25 active:scale-95 text-white flex items-center justify-center transition cursor-pointer shrink-0 border border-white/10"
-                title="Next Location"
-                aria-label="Next Location"
-            >
-                <span class="material-symbols-rounded text-xl sm:text-2xl">chevron_right</span>
-            </button>
-        </div>
-    </div>
 </div>
