@@ -331,7 +331,8 @@
                 <div class="space-y-3">
                     
                     <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-text tracking-tight leading-tight">
-                        VR Gaming <span class="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">Experiences</span>
+                        Experience
+                        <span class="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">VR Gaming</span>
                     </h2>
                     <p class="text-xs sm:text-sm text-text/75 leading-relaxed font-medium">
                         Magnetize exhibition crowds with a complete, multi-user VR esports zone. Visitors step into rhythm, shooting, tennis, boxing, and archery challenges with real-time spectator feeds and leaderboards.

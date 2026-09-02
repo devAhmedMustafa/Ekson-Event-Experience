@@ -203,7 +203,7 @@
                 </div>
 
                 <!-- Card Body Content -->
-                <div class="relative z-10 flex-1 flex flex-col justify-center my-2 space-y-3 transition-all duration-300">
+                <div class="relative z-10 flex-1 flex flex-col space-y-3 transition-all duration-300 my-6">
                     <div class="flex items-center gap-3">
                         <div class="flex flex-col">
                             <span class="text-[10px] font-extrabold uppercase tracking-widest text-primary font-mono">
@@ -218,42 +218,6 @@
                     <p class="text-xs sm:text-sm text-text/80 leading-relaxed font-medium pl-1 min-h-12">
                         {workflowSteps[currentStepIndex].description}
                     </p>
-                </div>
-
-                <!-- Step Navigation Controls & Pills -->
-                <div class="relative z-10 shrink-0 pt-3 border-t border-black/10 flex items-center justify-between gap-1.5">
-                    <div class="flex items-center gap-1.5 py-1">
-                        {#each workflowSteps as stepItem, idx}
-                            <button
-                                onclick={() => setStep(idx)}
-                                class="px-2.5 py-1 rounded-xl text-xs font-bold font-mono transition-all cursor-pointer flex items-center gap-1.5 {idx === currentStepIndex ? 'bg-primary text-white shadow-md scale-105' : 'bg-white shadow-md hover:bg-black/10 border border-black/10 text-text'}"
-                                title={stepItem.title}
-                            >
-                                <span>{stepItem.step}</span>
-                                {#if idx === currentStepIndex}
-                                    <span class="text-[10px] font-sans truncate max-w-24 hidden sm:inline">{stepItem.title}</span>
-                                {/if}
-                            </button>
-                        {/each}
-                    </div>
-                    <div class="flex items-center gap-1 shrink-0">
-                        <button
-                            onclick={prevStep}
-                            class="p-1.5 rounded-lg bg-white shadow-sm border border-black/10 hover:bg-black/10 text-text/70 hover:text-text transition cursor-pointer"
-                            title="Previous Feature"
-                            aria-label="Previous Feature"
-                        >
-                            <span class="material-symbols-rounded text-sm">chevron_left</span>
-                        </button>
-                        <button
-                            onclick={nextStep}
-                            class="p-1.5 rounded-lg bg-white shadow-sm border border-black/10 hover:bg-black/10 text-text/70 hover:text-text transition cursor-pointer"
-                            title="Next Feature"
-                            aria-label="Next Feature"
-                        >
-                            <span class="material-symbols-rounded text-sm">chevron_right</span>
-                        </button>
-                    </div>
                 </div>
 
             </div>

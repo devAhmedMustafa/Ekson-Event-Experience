@@ -3,7 +3,7 @@
     function handleContact() {
         if (typeof window !== "undefined") {
             window.dispatchEvent(new CustomEvent("ekson_open_contact_form", {
-                detail: { message: "I'm interested in custom spatial tech activation (And More section)..." }
+                detail: { message: "I'm interested in custom spatial tech activation..." }
             }));
         }
     }

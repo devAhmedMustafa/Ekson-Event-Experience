@@ -143,7 +143,8 @@
         <div class="md:col-span-5 flex flex-col justify-between space-y-5 sm:space-y-6">
             <div>
                 <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-text tracking-tight leading-tight">
-                    Mini Games <span class="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">Suite</span>
+                    Kiosk
+                    <span class="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">Mini Games</span>
                 </h2>
                 
                 <p class="text-xs sm:text-sm text-text/75 mt-2.5 leading-relaxed font-medium">
@@ -210,8 +211,8 @@
                     <span class="material-symbols-rounded text-lg sm:text-2xl text-text/80">chevron_left</span>
                 </button>
 
-                <!-- REAL TRADE SHOW INTERACTIVE KIOSK TOTEM STAND (60% SCREEN / 40% METALLIC BASE) -->
-                <div class="relative flex flex-col w-[min(380px,90vw)] sm:w-102.5 md:w-110 h-140 sm:h-157.5 md:h-167.5 p-3 sm:p-4 rounded-4xl bg-slate-900 shadow-2xl ring-1 ring-white/10 border-2 border-slate-700/60 overflow-hidden">
+                <!-- REAL TRADE SHOW INTERACTIVE KIOSK TOTEM STAND (50% SCREEN / 50% METALLIC BASE) -->
+                <div class="relative flex flex-col w-[min(380px,90vw)] sm:w-102.5 md:w-110 h-140 sm:h-157.5 md:h-167.5 p-3 sm:p-4 rounded-2xl bg-slate-900 shadow-2xl ring-1 ring-white/10 border-2 border-slate-700/60 overflow-hidden">
 
                     <!-- TOUCHSCREEN VIEWPORT (UPPER HALF / ~50% HEIGHT) -->
                     <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->

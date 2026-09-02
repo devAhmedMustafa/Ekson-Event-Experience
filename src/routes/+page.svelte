@@ -54,10 +54,6 @@
     <AiAssitant />
 </section>
 
-<section id="ar-apps" class="relative w-full flex flex-col justify-center items-center overflow-x-hidden py-12 sm:py-16 md:py-20">
-    <ARApps />
-</section>
-
 <section id="and-more" class="relative w-full flex flex-col justify-center items-center overflow-x-hidden py-12 sm:py-16 md:py-20">
     <AndMore />
 </section>
