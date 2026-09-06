@@ -11,25 +11,25 @@
             id: "ai",
             title: "Neural AI Voice",
             badge: "AI Concierge",
-            image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbZRVaY-eW6LctUwnZT5LBtlmUcm6gqHvBgcTaWK1-Ow&s=10"
+            image: "who-are-kubix-1.jpg"
         },
         {
             id: "vr",
             title: "Virtual Reality",
             badge: "Metaverse Booth",
-            image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZe_1PDyf1hDVbqstO2dxymO8GGAEQXhipgkEAdTp5-Q&s=10"
+            image: "who-are-kubix-2.jpg"
         },
         {
             id: "3d",
             title: "Interactive 3D",
             badge: "WebGL Engine",
-            image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQZUS9ZTkLlAb0hpgJmPohycYthzHf0JVaMB_XrG-2qA&s=10"
+            image: "who-are-kubix-3.jpg"
         },
         {
             id: "engagement",
             title: "Visitor Engagement",
             badge: "Lead Analytics",
-            image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBNYFmD8Wr1AbT_ZcgnsAywxZkRwtPEbMsOC1aG4zbZQ&s=10"
+            image: "who-are-kubix-4.jpg"
         }
     ];
 

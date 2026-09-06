@@ -2,7 +2,7 @@
     import { onDestroy } from "svelte";
     import { brand } from "$lib/brand.svelte";
 
-    let { imageSrc = "" } = $props();
+    let { imageSrc = "ai.png" } = $props();
     let isLive = $state(false);
 
     function handleTryLive() {

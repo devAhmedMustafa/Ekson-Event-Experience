@@ -76,8 +76,8 @@
     let isMoving = $state(false);
     let showGestureHint = $state(true);
     let showRadar = $state(false);
-    let videoPreviewEl = $state<HTMLVideoElement | null>(null);
-    let videoPreviewSrc = $state<string>("");
+    let imgPreviewEl = $state<HTMLImageElement | null>(null);
+    let imgPreviewSrc = $state<string>("");
 
     let modalContainerEl = $state<HTMLElement | null>(null);
     let canvasEl = $state<HTMLCanvasElement | null>(null);
@@ -994,31 +994,6 @@
         camera = null;
     }
 
-    onMount(() => {
-        window.addEventListener("resize", onWindowResize);
-        if (typeof window !== "undefined" && "IntersectionObserver" in window) {
-            const videoObserver = new IntersectionObserver(
-                (entries) => {
-                    entries.forEach((entry) => {
-                        if (entry.isIntersecting) {
-                            if (!videoPreviewSrc) {
-                                videoPreviewSrc = "https://pixabay.com/videos/download/x-173899_medium.mp4";
-                            }
-                            videoPreviewEl?.play().catch(() => {});
-                        } else {
-                            videoPreviewEl?.pause();
-                        }
-                    });
-                },
-                { threshold: 0.1 }
-            );
-            if (videoPreviewEl) videoObserver.observe(videoPreviewEl);
-            return () => videoObserver.disconnect();
-        } else {
-            videoPreviewSrc = "https://pixabay.com/videos/download/x-173899_medium.mp4";
-        }
-    });
-
     onDestroy(() => {
         cleanupThreeScene();
     });
@@ -1081,16 +1056,12 @@
                     {#if !is3DActive}
                         <!-- Video Preview Showcase Container -->
                         <!-- svelte-ignore a11y_media_has_caption -->
-                        <video
-                            bind:this={videoPreviewEl}
+                        <img
+                            bind:this={imgPreviewEl}
                             class="w-full h-full object-cover opacity-80 group-hover:opacity-95 transition duration-500"
-                            src={videoPreviewSrc}
-                            preload="none"
-                            autoplay
-                            muted
-                            loop
-                            playsinline
-                        ></video>
+                            src="navigation.jpeg"
+                            alt="Real-Time 3D Walkthrough"
+                        />
 
                         <!-- Center Launch Overlay -->
                         <div class="absolute inset-0 bg-linear-to-t from-black/80 via-black/30 to-black/60 flex flex-col items-center justify-center p-4 text-center">

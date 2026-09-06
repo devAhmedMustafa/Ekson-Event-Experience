@@ -24,7 +24,7 @@
     <div class="relative w-full h-[65vh] min-h-120 max-h-187.5 rounded-3xl overflow-hidden border border-black/10 shadow-xl group flex flex-col justify-between p-6 sm:p-8 md:p-10">
         <!-- Full Section Background Image -->
         <img
-            src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1600&auto=format&fit=crop&q=80"
+            src="more_panel.png"
             alt="And More Custom Event Activations"
             class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             loading="lazy"
